@@ -1,0 +1,97 @@
+
+  /* define a fixed width for the entire menu */
+  .sidenav {
+    height: auto;
+    width: 20%;
+    z-index: 1;
+    top: 1;
+    left: 0;
+    background-color: rgb(237, 234, 234);
+    overflow-x: hidden;
+    padding-top: 30px;
+    float: left;
+    padding-left: 20px;
+  }
+  
+  .sidenav a {
+    padding: 6px 8px 6px 16px;
+    text-decoration: none;
+    font-size: 20px;
+    display: block;
+    text-align: left;
+    margin-bottom: 30px;
+    border-top: 1px solid rgba(255, 255, 255, 0.05);
+  }
+  
+  .sidenav a:hover {
+    border-top: 1px solid rgba(255, 255, 255, 0.05);
+  }
+  
+  .main {
+    margin-left: 160px; /* Same as the width of the sidenav */
+    font-size: 20px; /* Increased text to enable scrolling */
+    padding: 0px 10px;
+    position: fixed;
+    height: 100%;
+  }
+  
+  @media screen and (max-height: 450px) {
+    .sidenav {
+      padding-top: 15px;
+    }
+    .sidenav a {
+      font-size: 18px;
+    }
+  }
+  .mainmenus a {
+    display: block;
+    text-decoration: none;
+    /* padding: 1px; */
+    color: #000;
+    height: 100%;
+  }
+  /* reset our lists to remove bullet points and padding */
+  .mainmenu,
+  .submenu {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+  }
+  
+  .mainmenu a {
+    display: block;
+    background-color: #ccc;
+    text-decoration: none;
+    padding: 10px;
+    color: #000;
+    height: 100%;
+  }
+  
+  .mainmenus li:hover .submenu {
+    display: block;
+    max-height: 700px;
+  }
+  
+  .submenu {
+    overflow: hidden;
+    max-height: 900rem;
+    -webkit-transition: all 0.5s ease-out;
+  }
+  .wrapper {
+    display: block;
+  }
+  .nav {
+    display: flex;
+    flex-direction: column;
+    padding: 0;
+    width: 100%;
+  }
+
+  .rightsidebar {
+    width: 80%;
+    float: left;
+    
+  }
+  .element.style {
+    padding-left: 1rem;
+}

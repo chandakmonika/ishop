@@ -1,0 +1,44 @@
+main {
+    width: 50%;
+    margin: 50px auto;
+    }
+    .has-search .form-control {
+    padding-left: 2.375rem;
+    }
+    
+    .container {
+        padding: 2rem 0rem;
+        width: 100%;
+      }
+      
+      h4 {
+        margin: 2rem 0rem 1rem;
+      }
+      
+
+      #customers {
+        font-family: Arial, Helvetica, sans-serif;
+        border-collapse: collapse;
+        width: 100%;
+      }
+      
+      #customers td, #customers th {
+        border: 1px solid #ddd;
+        padding: 10px;
+      }
+      
+      #customers tr:nth-child(even){background-color: #f2f2f2;}
+      
+      #customers tr:hover {background-color: #ddd;}
+      
+      #customers th {
+        padding-top: 12px;
+        padding-bottom: 12px;
+        text-align: left;
+       
+        color: white;
+      }
+      td, th {
+        border: 1px solid #ddd;
+        padding: 8px;
+      }
