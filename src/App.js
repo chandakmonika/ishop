@@ -102,38 +102,38 @@ function App() {
                   </Link>
                   <ul class="submenu">
                     <li>
-                      <a href="/statelist">State List</a>
+                      <a href="/mastermanagement/state/list">State List</a>
                     </li>
                     <li>
-                      <a href="/addstate">Add State</a>
+                      <a href="/mastermanagement/state/add">Add State</a>
                     </li>
 
                     <li>
-                      <a href="/citylist">City List</a>
+                      <a href="/mastermanagement/city/list">City List</a>
                     </li>
                     <li>
-                      <a href="/addcity">Add City</a>
+                      <a href="/mastermanagement/city/add">Add City</a>
                     </li>
                   </ul>
                 </li>
                 <li>
-                  <Link to="/productlist">
+                  <Link to="/product/list">
                     <i className="fa fa-map-pin"></i>&nbsp;Products
                   </Link>
                   <ul class="submenu">
                     <li>
-                      <Link to="/addproduct">Add Product</Link>
+                      <Link to="/product/addproduct">Add Product</Link>
                     </li>
                     <li>
-                      <Link to="/addproductcategory">Product Category</Link>
+                      <Link to="/product/category/add">Product Category</Link>
                     </li>
                     <li>
-                      <Link to="/productcategorylist">
+                      <Link to="/product/category/list">
                         Product Category List
                       </Link>
                     </li>
                     <li>
-                      <Link to="/productwishlist">Product Wish List</Link>
+                      <Link to="/product/wishlist">Product Wish List</Link>
                     </li>
                   </ul>
                 </li>
@@ -144,10 +144,10 @@ function App() {
                   </Link>
                   <ul class="submenu">
                     <li>
-                      <Link to="/brandlist">Brand List</Link>
+                      <Link to="/brand/list">Brand List</Link>
                     </li>
                     <li>
-                      <Link to="/addbrand">Add Brand</Link>
+                      <Link to="/brand/add">Add Brand</Link>
                     </li>
                   </ul>
                 </li>
@@ -161,7 +161,7 @@ function App() {
                       <a href="/customer/addnewcustomer">Add New Customer</a>
                     </li>
                     <li>
-                      <a href="/addlistcustomer">Customer List</a>
+                      <a href="/customer/list">Customer List</a>
                     </li>
                   </ul>
                 </li>
@@ -171,7 +171,7 @@ function App() {
                   </Link>
                   <ul class="submenu">
                     <li>
-                      <a href="/addaddress">Add Address</a>
+                      <a href="/customer/address/add">Add Address</a>
                     </li>
                   </ul>
                 </li>
@@ -198,16 +198,16 @@ function App() {
                 </li>
 
                 <li>
-                  <Link to="/addcategoryfaq">
+                  <Link to="/mastermanagement/faq/category/add">
                     <i className="fa fa-map-pin"></i>&nbsp;FAQ
                   </Link>
                   <li>
-                    <a href="/faqcategorylist">FAQ Category List</a>
+                    <a href="/mastermanagement/faq/category/list">FAQ Category List</a>
                   </li>
                   <ul class="submenu">
                     <li>
-                      <a href="/faqlist">FAQ List</a>
-                      <a href="/addfaq">Add FAQ</a>
+                      <a href="/mastermanagement/faq/list">FAQ List</a>
+                      <a href="/mastermanagement/faq/add">Add FAQ</a>
                     </li>
                   </ul>
                 </li>
@@ -218,24 +218,24 @@ function App() {
                   </Link>
                   <ul class="submenu">
                     <li>
-                      <a href="/cmslistpage">CMS Pages</a>
-                      <a href="/cmseditpage">CMS Edit Page</a>
+                      <a href="/mastermanagement/cms/listpage">CMS Pages</a>
+                      <a href="/mastermanagement/cms/editpage">CMS Edit Page</a>
                     </li>
                     <li>
-                      <a href="/settinglist">Setting</a>
+                      <a href="/mastermanagement/setting/list">Setting</a>
                     </li>
                     <li>
-                      <a href="/emailtemplatelist">Email Template List</a>
-                      <a href="/editemail">Edit Email</a>
+                      <a href="/mastermanagement/email/list">Email Template List</a>
+                      <a href="/mastermanagement/email/edit">Edit Email</a>
                     </li>
                     <li>
-                      <a href="/newsletterlist">NewsLetter List</a>
-                      <a href="/newslettertemplate">NewsLetter Template</a>
-                      <a href="/sendnewsletter">Send NewsLetter</a>
+                      <a href="/mastermanagement/newsletter/list">NewsLetter List</a>
+                      <a href="/mastermanagement/newslettertemplate">NewsLetter Template</a>
+                      <a href="/mastermanagement/sendnewsletter">Send NewsLetter</a>
                     </li>
                     <li>
-                      <a href="/countrylist">Country List</a>
-                      <a href="/addcountry">Add Country</a>
+                      <a href="/mastermanagement/country/list">Country List</a>
+                      <a href="/mastermanagement/country/add">Add Country</a>
                     </li>
                     <li>
                       <a href="/customerlist">CMS</a>
@@ -251,68 +251,68 @@ function App() {
                   element={<Customer_Addnewcustomer />}
                 />
                 <Route
-                  path="/addlistcustomer"
+                  path="/customer/list"
                   element={<Customer_Customerlist />}
                 />
-                <Route path="/productlist" element={<Prodct_Productlist />} />
-                <Route path="/addproduct" element={<Product_AddProduct />} />
+                <Route path="/product/list" element={<Prodct_Productlist />} />
+                <Route path="/product/addproduct" element={<Product_AddProduct />} />
                 <Route
-                  path="/addproductcategory"
+                  path="/product/category/add"
                   element={<Product_AddProductCategory />}
                 />
                 <Route
-                  path="/productcategorylist"
+                  path="/product/category/list"
                   element={<Product_ProductCategoryList />}
                 />
-                <Route path="/brandlist" element={<Brand_BrandList />} />
-                <Route path="/addbrand" element={<Brand_AddBrand />} />
-                <Route path="/paymentlist" element={<Payment_Payment />} />
+                <Route path="/brand/list" element={<Brand_BrandList />} />
+                <Route path="/brand/add" element={<Brand_AddBrand />} />
+                <Route path="/payment/list" element={<Payment_Payment />} />
                 <Route path="/coupencode" element={<Coupen_CoupenCode />} />
                 <Route path="/customer/address/list" element={<Address_AddressList />} />
-                <Route path="/addaddress" element={<Address_AddAddress />} />
-                <Route path="/faqlist" element={<Faq_FAQList />} />
-                <Route path="/addfaq" element={<Faq_AddFAQ />} />
+                <Route path="/customer/address/add" element={<Address_AddAddress />} />
+                <Route path="/mastermanagement/faq/list" element={<Faq_FAQList />} />
+                <Route path="/mastermanagement/faq/add"element={<Faq_AddFAQ />} />
                 <Route
-                  path="/addcategoryfaq"
+                  path="/mastermanagement/faq/category/add"
                   element={<Faq_AddCategoryListFAQ />}
                 />
                 <Route
-                  path="/faqcategorylist"
+                  path="/mastermanagement/faq/category/list"
                   element={<Faq_AddCategoryList />}
                 />
                 <Route
-                  path="/cmslistpage"
+                  path="/mastermanagement/cms/listpage"
                   element={<Mastermange_CMSListpages />}
                 />
-                <Route path="/cmseditpage" element={<M_CMSEditpage />} />
-                <Route path="/settinglist" element={<Master_SettingList />} />
+                <Route path="/mastermanagement/cms/editpage" element={<M_CMSEditpage />} />
+                <Route path="/mastermanagement/setting/list" element={<Master_SettingList />} />
                 <Route
-                  path="/productwishlist"
+                  path="/product/wishlist"
                   element={<Product_ProductWishList />}
                 />
                 <Route
-                  path="/emailtemplatelist"
+                  path="/mastermanagement/email/list"
                   element={<Master_EmailList />}
                 />
-                <Route path="/editemail" element={<Master_EmailEdit />} />
+                <Route path="/mastermanagement/email/edit" element={<Master_EmailEdit />} />
                 <Route
-                  path="/newsletterlist"
+                  path="/mastermanagement/newsletter/list"
                   element={<Master_NewsLetterList />}
                 />
                 <Route
-                  path="/newslettertemplate"
+                  path="/mastermanagement/newsletter/template"
                   element={<Master_EditNewsLetter />}
                 />
                 <Route
-                  path="/sendnewsletter"
+                  path="/mastermanagement/sendnewsletter"
                   element={<Master_SendNewsLetter />}
                 />
-                <Route path="/countrylist" element={<Master_CountryList />} />
-                <Route path="/addcountry" element={<Master_Country />} />
-                <Route path="/statelist" element={<Master_StateList />} />
-                <Route path="/addstate" element={<Master_State />} />
-                <Route path="/citylist" element={<Master_CityList />} />
-                <Route path="/addcity" element={<Master_City />} />
+                <Route path="/mastermanagement/country/list" element={<Master_CountryList />} />
+                <Route path="/mastermanagement/country/add" element={<Master_Country />} />
+                <Route path="/mastermanagement/state/list" element={<Master_StateList />} />
+                <Route path="/mastermanagement/state/add" element={<Master_State />} />
+                <Route path="/mastermanagement/city/list" element={<Master_CityList />} />
+                <Route path="/mastermanagement/city/add" element={<Master_City />} />
                 <Route path="/customer/edit" element={<Customer_Editcustomer />} />
               </Routes>
             </div>
