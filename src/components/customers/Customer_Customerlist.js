@@ -9,6 +9,7 @@ import NavDropdown from 'react-bootstrap/NavDropdown';
 import './Customer_Customerlist.css'
 import { Link } from "react-router-dom";
 
+
 export default function Customer_Customerlist() {
   const [index, setIndex] = useState([]);
   const [query, setQuery] = useState({ text: "" });
@@ -29,6 +30,8 @@ export default function Customer_Customerlist() {
       .get(`http://admin.ishop.sunhimlabs.com/api/v1/customer/list`)
       .then((res) => setIndex(res.data.data));
   }, []);
+  
+
   return (
     <div>
        <Navbar expand="lg">
@@ -111,7 +114,11 @@ export default function Customer_Customerlist() {
                     <td></td>
                     <td></td>
                     <td><Link to="/customer/address/list" ><i class="fa fa-address-book" style={{fontSize:'24px'}}></i></Link>&nbsp;&nbsp;
-                    <Link to="/customer/edit"><i class="fas fa-edit"  style={{fontSize:'24px'}}></i></Link></td>
+                    <Link to="/customer/edit/{item.user_id}"><i class="fas fa-edit"  style={{fontSize:'24px'}}></i></Link>
+                    
+                    
+                    
+                    </td>
                   </tr>
                 );
               })}

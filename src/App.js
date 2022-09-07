@@ -4,7 +4,7 @@ import Form from "react-bootstrap/Form";
 import Nav from "react-bootstrap/Nav";
 import Navbar from "react-bootstrap/Navbar";
 import NavDropdown from "react-bootstrap/NavDropdown";
-import { Route, Routes, Link } from "react-router-dom";
+import { Route, Routes, Link,useParams } from "react-router-dom";
 import Prodct_Productlist from "./components/product/Prodct_Productlist";
 import Product_AddProduct from "./components/product/Product_AddProduct";
 import Customer_Addnewcustomer from "./components/customers/Customer_Addnewcustomer";
@@ -313,7 +313,7 @@ function App() {
                 <Route path="/mastermanagement/state/add" element={<Master_State />} />
                 <Route path="/mastermanagement/city/list" element={<Master_CityList />} />
                 <Route path="/mastermanagement/city/add" element={<Master_City />} />
-                <Route path="/customer/edit" element={<Customer_Editcustomer />} />
+                <Route path="/customer/edit/:user_id" element={<Customer_Editcustomer />} />
               </Routes>
             </div>
           </div>

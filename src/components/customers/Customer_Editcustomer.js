@@ -1,20 +1,27 @@
-import React, { useState, useEffect } from 'react';
-import {useHistory, useParams} from 'react-router-dom';
+import React, { useState, useEffect } from "react";
+
 export default function Customer_Editcustomer() {
-    const [first_name, setFirst_name] = useState("");
+  const [first_name, setFirst_name] = useState("");
   const [last_name, setLast_name] = useState("");
   const [email, setEmail] = useState("");
   const [phone, setPhone] = useState("");
+  const [gender, setGender] = useState("");
+  const [user_id, setUser_id] = useState("");
+  const [password, setPassword] = useState("");
+
   function customerUser() {
-    console.warn(first_name, last_name, email, phone);
+    console.warn(first_name, last_name, email,password, phone, gender,user_id);
     let datas = {
       first_name,
       last_name,
       email,
+      password,
       phone,
+      gender,
+      user_id
     };
-    fetch('http://admin.ishop.sunhimlabs.com/api/v1/customer/edit/${user_id}', {
-      method: "PUT",
+    fetch("http://admin.ishop.sunhimlabs.com/api/v1/customer/edit", {
+      method: "POST",
       headers: {
         Accept: "application/json",
         "Content-Type": "Application/json",
@@ -28,13 +35,11 @@ export default function Customer_Editcustomer() {
   }
   const submit = (e) => {
     e.preventDefault();
-
   };
 
   return (
     <div style={{ paddingLeft: "10rem" }}>
       <h4 style={{ paddingLeft: "2rem" }}>
-        
         <span>Edit Customer</span>
       </h4>
       <div className="card" style={{ width: "50rem" }}>
@@ -42,7 +47,10 @@ export default function Customer_Editcustomer() {
           <br />
 
           <h6 style={{ paddingLeft: "2rem" }}>Customer Details</h6>
-          <form onSubmit={submit} style={{ Display: "float-right", paddingLeft: "2rem" }}>
+          <form
+            onSubmit={submit}
+            style={{ Display: "float-right", paddingLeft: "2rem" }}
+          >
             <div
               className="form-group"
               controlId="formBasicFirstName"
@@ -83,7 +91,17 @@ export default function Customer_Editcustomer() {
                 }}
                 name="email"
               />
-
+              <label className="demo">Password</label>
+              <input
+                type="password"
+                className="form-control"
+                placeholder="Enter Password"
+                value={password}
+                onChange={(e) => {
+                  setPassword(e.target.value);
+                }}
+                name="password"
+              />
               <label className="demo">Mobile Number</label>
               <input
                 type="phone"
@@ -95,6 +113,29 @@ export default function Customer_Editcustomer() {
                 }}
                 name="phone"
               />
+
+              <label className="demo">Gender</label>
+              <input
+                type="text"
+                className="form-control"
+                placeholder="Enter Gender"
+                value={gender}
+                onChange={(e) => {
+                  setGender(e.target.value);
+                }}
+                name="gender"
+              />
+              <label className="demo">User Id</label>
+              <input
+                type="text"
+                className="form-control"
+                placeholder="Enter UserId"
+                value={user_id}
+                onChange={(e) => {
+                  setUser_id(e.target.value);
+                }}
+                name="user_id"
+              />
             </div>
             <button type="button" class="btn btn-info" onClick={customerUser}>
               Update Customer
@@ -104,6 +145,5 @@ export default function Customer_Editcustomer() {
         </div>
       </div>
     </div>
-  )
+  );
 }
-
