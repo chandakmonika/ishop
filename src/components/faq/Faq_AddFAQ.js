@@ -47,9 +47,9 @@ export default function Faq_AddFAQ() {
                 setCategory_id(e.target.value);
               }}
               name="category_id">
-              <option>Home</option>
-              <option>About</option>
-            </select>
+              <option value="1">Home</option>
+              <option value="1">About</option>
+            </select >
             <br />
 
             <label className="demo">Question</label>

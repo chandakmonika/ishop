@@ -1,11 +1,9 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 import Button from "react-bootstrap/Button";
-import Dropdown from "react-bootstrap/Dropdown";
 import Container from "react-bootstrap/Container";
 import Nav from "react-bootstrap/Nav";
 import Navbar from "react-bootstrap/Navbar";
-import NavDropdown from "react-bootstrap/NavDropdown";
 import { Link } from "react-router-dom";
 
 export default function Master_StateList() {
@@ -89,7 +87,7 @@ export default function Master_StateList() {
                     <td>{item.state_name}</td>
                     <td>{item.country_name}</td>
                     <td>
-                      <Link to="/addstate">
+                      <Link to={`/mastermanagement/state/edit/${item.id}`}>
                         <i class="fas fa-edit" style={{ fontSize: "24px" }}></i>
                       </Link>
                     </td>

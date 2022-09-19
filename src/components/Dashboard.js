@@ -1,103 +1,180 @@
+import React, { useState } from "react";
+import Button from "react-bootstrap/Button";
 
-import Button from 'react-bootstrap/Button';
-import Container from 'react-bootstrap/Container';
-import Form from 'react-bootstrap/Form';
-import Nav from 'react-bootstrap/Nav';
-import Navbar from 'react-bootstrap/Navbar';
-import NavDropdown from 'react-bootstrap/NavDropdown';
-import './Dashboard.css';
+import "./Dashboard.css";
+export default function Dashboard() {
+  const [showText, setShowText] = useState(false);
+  const onClick = () => setShowText(true);
 
-function Dashboard() {
   return (
-    <>
-    <Navbar bg="light" expand="lg">
-      <Container fluid>
-        <Navbar.Brand href="#">iSHOP</Navbar.Brand>
-        {/* <Navbar.Toggle aria-controls="navbarScroll" /> */}
-        <Navbar.Collapse id="navbarScroll">
-          <Nav
-            className="ml-auto my-2 my-lg-0"
-            style={{ maxHeight: '100px' }}
-            navbarScroll
-          >
-          <Form className="d-flex ml-auto my-2 my-lg-0" >
-            <Form.Control
-              type="search"
-              placeholder="Search"
-              className="me-2"
-              aria-label="Search"
-            />
-            <Button variant="outline-success">Search</Button>
-          </Form>&nbsp;&nbsp;&nbsp;
-          <Nav.Link href="#action1"> <i className="fas fa-user-alt"></i></Nav.Link>
-          <NavDropdown title="User Name" id="navbarScrollingDropdown">
-              <NavDropdown.Item href="#action3">Login</NavDropdown.Item>
-              <NavDropdown.Item href="#action4">
-                Another action
-              </NavDropdown.Item>
-              <NavDropdown.Divider />
-              <NavDropdown.Item href="#action5">
-                Logout
-              </NavDropdown.Item>
-            </NavDropdown>   
-            </Nav>
-        </Navbar.Collapse>
-      </Container>
-    </Navbar>
-    <div className="sidenav">
-        <ul class="mainmenus">
-        <li> <a href="/">
-          <i className="fa fa-home"></i>&nbsp;Home</a>
-        </li>
-        <li>
-        <a href="/">
-          <i className="fa fa-address-book"></i>&nbsp;Orders</a>
-        </li>
-       <li>
-       <a href="#delivery">
-          <i className="fa fa-ad"></i>&nbsp;Delivery
-        </a></li> 
-       <li>
-       <a href="product">
-          <i className="fa fa-map-pin"></i>&nbsp;Products
-        </a>
-        <ul class="submenu">
-        <li><a href="/">Product List</a></li>
-        <li><a href="/">Add Product</a></li>
-      </ul>
-       </li>
-        <li>
-        <a href="customer">
-          <i className="fas fa-user-alt"></i>&nbsp;Customers
-        </a>
-        </li>
-      <li>
-      <a href="analytics">
-          <i className="fa fa-address-book"></i>&nbsp;Analytics
-        </a></li>  
-        <li>
-        <a href="marketing">
-          <i className="fas fa-ad" style={{color: "grey"}}></i>&nbsp;Marketing
-        </a>
-        </li>
-       <li>
-       <a href="themes">
-          <i className="fa fa-book"></i>&nbsp;Themes
-        </a></li> 
-      <li><a href="disscount">
-          <i className="fas fa-user-alt"></i>&nbsp;Disscount
-        </a></li>  
-       <li>
-       <a href="payment">
-          <i className="fa fa-map-pin"></i>&nbsp;Payment
-        </a></li> 
-        </ul>
-        
-      </div>
-    
+    <div style={{ paddingLeft: "4rem" }}>
+      <br />
+      <h5 style={{ paddingLeft: "2rem" }}>Subscribtion Plan</h5>
+      <div className="card" style={{ width: "70rem" }}>
+        <div className="card-body">
+          <p>Neque porro quisquam est qui dolorem ipsum quia dolor sit amet</p>
 
-    </>
+          <label class="switch">
+            <input class="switch-input" type="checkbox" />
+            <span
+              class="switch-label"
+              data-on="Monthly"
+              data-off="yearly"
+            ></span>
+            <span class="switch-handle"></span>
+          </label>
+          <br />
+          <div className="row">
+            <div className="col-md-4">
+              <div className="card">
+                <div className="card-body">
+                  <p>Silver Plan</p>
+                  <p>Reference site about Lorem</p>
+                  <h6>
+                    $600<span>/month</span>
+                  </h6>
+                  <ul className="index">
+                    <li>Reference site about Lorem</li>
+                    <li>Reference site Lorem</li>
+                    <li>Reference site </li>
+                  </ul>
+                  <div
+                    class="input-group-append"
+                    style={{ marginLeft: "7rem" }}
+                  >
+                    <Button variant="info" type="submit">
+                      Subscribe
+                    </Button>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div className="col-md-4">
+              <div className="card">
+                <div className="card-body">
+                  <p>Silver Plan</p>
+                  <p>Reference site about Lorem</p>
+                  <h6>
+                    $600<span>/month</span>
+                  </h6>
+                  <ul className="index">
+                    <li>Reference site about Lorem</li>
+                    <li>Reference site Lorem</li>
+                    <li>Reference site </li>
+                  </ul>
+                  <div
+                    class="input-group-append"
+                    style={{ marginLeft: "7rem" }}
+                  >
+                    <Button variant="info" type="submit">
+                      Subscribe
+                    </Button>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div className="col-md-4">
+              <div className="card">
+                <div className="card-body">
+                  <p>Silver Plan</p>
+                  <p>Reference site about Lorem</p>
+                  <h6>
+                    $600<span>/month</span>
+                  </h6>
+                  <ul className="index">
+                    <li>Reference site about Lorem</li>
+                    <li>Reference site Lorem</li>
+                    <li>Reference site </li>
+                  </ul>
+                  <div
+                    class="input-group-append"
+                    style={{ marginLeft: "7rem" }}
+                  >
+                    <Button variant="info" type="submit">
+                      Subscribe
+                    </Button>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <br />
+          <button onClick={onClick} style={{ marginLeft: "25rem" }}>
+            Show Plan Features
+          </button>
+          {showText ? <Text /> : null}
+        </div>
+
+        <br /><br/>
+      </div>
+    </div>
   );
 }
+const Text = () => (
+  <div>
+    <table class="table table-bordered" style={{ width: "95%" }}>
+      <thead >
+        <tr>
+          <th scope="col"></th>
+          
 
-export default Dashboard;
+          <th scope="col">
+            <p style={{ textAlign: "center" }}>Silver</p>
+            <p style={{ textAlign: "center" }}>$5690</p>
+            <Button variant="info" type="submit" style={{ marginLeft: "4rem" }}>
+              Subscribe
+            </Button>
+          </th>
+          <th scope="col">
+            <p style={{ textAlign: "center" }}>Silver</p>
+            <p style={{ textAlign: "center" }}>$5690</p>
+            <Button variant="info" type="submit" style={{ marginLeft: "4rem" }}>
+              Subscribe
+            </Button>
+          </th>
+          <th scope="col">
+            <p style={{ textAlign: "center" }}>Silver</p>
+            <p style={{ textAlign: "center" }}>$5690</p>
+            <Button variant="info" type="submit" style={{ marginLeft: "4rem" }}>
+              Subscribe
+            </Button>
+          </th>
+        </tr>
+      </thead>
+      <tbody >
+        <tr>
+         
+          <td>Products</td>
+          <td style={{textAlign:'center'}}><i class="fa fa-check"></i></td>
+          <td style={{textAlign:'center'}}><i class="fa fa-check"></i></td>
+          <td style={{textAlign:'center'}}><i class="fa fa-check"></i></td>
+        
+        </tr>
+        <tr>
+         
+          <td>Custom Domian</td>
+          <td style={{textAlign:'center'}}>-</td>
+          <td style={{textAlign:'center'}}>FREE<br/>
+            <span>1st year free</span>
+          </td>
+          <td style={{textAlign:'center'}}>FREE<br/>
+            <span>1st year free</span>
+          </td>
+        
+        </tr>
+        <tr>
+          
+          <td>Chiline Store<br/>
+          <span>And product categoty and more</span>
+          </td>
+          <td style={{textAlign:'center'}}>-</td>
+          <td style={{textAlign:'center'}}><i class="fa fa-check"></i></td>
+          <td style={{textAlign:'center'}}><i class="fa fa-check"></i></td>
+          
+        </tr>
+      </tbody>
+    </table>
+  </div>
+);

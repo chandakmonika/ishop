@@ -4,7 +4,7 @@ import Form from "react-bootstrap/Form";
 import Nav from "react-bootstrap/Nav";
 import Navbar from "react-bootstrap/Navbar";
 import NavDropdown from "react-bootstrap/NavDropdown";
-import { Route, Routes, Link,useParams } from "react-router-dom";
+import { Route, Routes, Link } from "react-router-dom";
 import Prodct_Productlist from "./components/product/Prodct_Productlist";
 import Product_AddProduct from "./components/product/Product_AddProduct";
 import Customer_Addnewcustomer from "./components/customers/Customer_Addnewcustomer";
@@ -37,6 +37,14 @@ import Master_CountryList from "./components/mastermanagment/Master_CountryList"
 import Master_State from "./components/mastermanagment/Master_State";
 import Master_StateList from "./components/mastermanagment/Master_StateList";
 import Customer_Editcustomer from "./components/customers/Customer_Editcustomer";
+import Brand_EditBrand from "./components/brand/Brand_EditBrand";
+import Master_NewsLetterSubscribtion from "./components/mastermanagment/Master_NewsLetterSubscribtion";
+import Order_OrderList from "./components/order/Order_OrderList";
+import Order_OrderDetails from "./components/order/Order_OrderDetails";
+import Dashboard from "./components/Dashboard";
+import StoreDetails from "./components/topnav/StoreDetails";
+import Subscrption from "./components/topnav/Subscrption";
+import Master_EditState from "./components/mastermanagment/Master_EditState";
 
 function App() {
   return (
@@ -70,8 +78,11 @@ function App() {
                     </Nav.Link>
                     <NavDropdown title="User Name" id="navbarScrollingDropdown">
                       <NavDropdown.Item href="#action3">Login</NavDropdown.Item>
-                      <NavDropdown.Item href="#action4">
-                        Another action
+                      <NavDropdown.Item>
+                        <Link to="/dashboard">Setting</Link>
+                      </NavDropdown.Item>
+                      <NavDropdown.Item>
+                        <Link to="/storedetails">Account</Link>
                       </NavDropdown.Item>
                       <NavDropdown.Divider />
                       <NavDropdown.Item href="#action5">
@@ -81,6 +92,12 @@ function App() {
                   </Nav>
                 </Navbar.Collapse>
               </Container>
+              {/* <Routes>
+              <Route
+                  path="/dashboard"
+                  element={<Dashboard />}
+                />
+              </Routes> */}
             </Navbar>
           </div>
           <div className="row">
@@ -92,9 +109,17 @@ function App() {
                   </Link>
                 </li>
                 <li>
-                  <Link to="">
+                  <Link to="/">
                     <i className="fa fa-address-book"></i>&nbsp;Orders
                   </Link>
+                  <ul class="submenu">
+                    <li>
+                      <Link to="/order/orderlist">Add Order</Link>
+                    </li>
+                    <li>
+                      <Link to="/order/orderdetails">Order Details</Link>
+                    </li>
+                  </ul>
                 </li>
                 <li>
                   <Link to="">
@@ -202,7 +227,9 @@ function App() {
                     <i className="fa fa-map-pin"></i>&nbsp;FAQ
                   </Link>
                   <li>
-                    <a href="/mastermanagement/faq/category/list">FAQ Category List</a>
+                    <a href="/mastermanagement/faq/category/list">
+                      FAQ Category List
+                    </a>
                   </li>
                   <ul class="submenu">
                     <li>
@@ -225,13 +252,22 @@ function App() {
                       <a href="/mastermanagement/setting/list">Setting</a>
                     </li>
                     <li>
-                      <a href="/mastermanagement/email/list">Email Template List</a>
+                      <a href="/mastermanagement/email/list">
+                        Email Template List
+                      </a>
                       <a href="/mastermanagement/email/edit">Edit Email</a>
                     </li>
                     <li>
-                      <a href="/mastermanagement/newsletter/list">NewsLetter List</a>
-                      <a href="/mastermanagement/newslettertemplate">NewsLetter Template</a>
-                      <a href="/mastermanagement/sendnewsletter">Send NewsLetter</a>
+                      <a href="/mastermanagement/newsletter/list">
+                        NewsLetter List
+                      </a>
+                      {/* <a href="/mastermanagement/newslettertemplate">NewsLetter Template</a> */}
+                      <a href="/mastermanagement/sendnewsletter">
+                        Send NewsLetter
+                      </a>
+                      <a href="/mastermanagement/newslettersubscribtion">
+                        NewsLetter Subscribtion
+                      </a>
                     </li>
                     <li>
                       <a href="/mastermanagement/country/list">Country List</a>
@@ -255,7 +291,10 @@ function App() {
                   element={<Customer_Customerlist />}
                 />
                 <Route path="/product/list" element={<Prodct_Productlist />} />
-                <Route path="/product/addproduct" element={<Product_AddProduct />} />
+                <Route
+                  path="/product/addproduct"
+                  element={<Product_AddProduct />}
+                />
                 <Route
                   path="/product/category/add"
                   element={<Product_AddProductCategory />}
@@ -266,12 +305,29 @@ function App() {
                 />
                 <Route path="/brand/list" element={<Brand_BrandList />} />
                 <Route path="/brand/add" element={<Brand_AddBrand />} />
+                <Route
+                  path="/brand/edit/:brand_id"
+                  element={<Brand_EditBrand />}
+                />
+
                 <Route path="/payment/list" element={<Payment_Payment />} />
                 <Route path="/coupencode" element={<Coupen_CoupenCode />} />
-                <Route path="/customer/address/list" element={<Address_AddressList />} />
-                <Route path="/customer/address/add" element={<Address_AddAddress />} />
-                <Route path="/mastermanagement/faq/list" element={<Faq_FAQList />} />
-                <Route path="/mastermanagement/faq/add"element={<Faq_AddFAQ />} />
+                <Route
+                  path="/customer/address/list"
+                  element={<Address_AddressList />}
+                />
+                <Route
+                  path="/customer/address/add"
+                  element={<Address_AddAddress />}
+                />
+                <Route
+                  path="/mastermanagement/faq/list"
+                  element={<Faq_FAQList />}
+                />
+                <Route
+                  path="/mastermanagement/faq/add"
+                  element={<Faq_AddFAQ />}
+                />
                 <Route
                   path="/mastermanagement/faq/category/add"
                   element={<Faq_AddCategoryListFAQ />}
@@ -284,8 +340,14 @@ function App() {
                   path="/mastermanagement/cms/listpage"
                   element={<Mastermange_CMSListpages />}
                 />
-                <Route path="/mastermanagement/cms/editpage" element={<M_CMSEditpage />} />
-                <Route path="/mastermanagement/setting/list" element={<Master_SettingList />} />
+                <Route
+                  path="/mastermanagement/cms/editpage"
+                  element={<M_CMSEditpage />}
+                />
+                <Route
+                  path="/mastermanagement/setting/list"
+                  element={<Master_SettingList />}
+                />
                 <Route
                   path="/product/wishlist"
                   element={<Product_ProductWishList />}
@@ -294,7 +356,10 @@ function App() {
                   path="/mastermanagement/email/list"
                   element={<Master_EmailList />}
                 />
-                <Route path="/mastermanagement/email/edit" element={<Master_EmailEdit />} />
+                <Route
+                  path="/mastermanagement/email/edit"
+                  element={<Master_EmailEdit />}
+                />
                 <Route
                   path="/mastermanagement/newsletter/list"
                   element={<Master_NewsLetterList />}
@@ -304,16 +369,55 @@ function App() {
                   element={<Master_EditNewsLetter />}
                 />
                 <Route
+                  path="/mastermanagement/newslettersubscribtion"
+                  element={<Master_NewsLetterSubscribtion />}
+                />
+                <Route
                   path="/mastermanagement/sendnewsletter"
                   element={<Master_SendNewsLetter />}
                 />
-                <Route path="/mastermanagement/country/list" element={<Master_CountryList />} />
-                <Route path="/mastermanagement/country/add" element={<Master_Country />} />
-                <Route path="/mastermanagement/state/list" element={<Master_StateList />} />
-                <Route path="/mastermanagement/state/add" element={<Master_State />} />
-                <Route path="/mastermanagement/city/list" element={<Master_CityList />} />
-                <Route path="/mastermanagement/city/add" element={<Master_City />} />
-                <Route path="/customer/edit/:user_id" element={<Customer_Editcustomer />} />
+                <Route
+                  path="/mastermanagement/country/list"
+                  element={<Master_CountryList />}
+                />
+                <Route
+                  path="/mastermanagement/country/add"
+                  element={<Master_Country />}
+                />
+                <Route
+                  path="/mastermanagement/state/list"
+                  element={<Master_StateList />}
+                />
+                <Route
+                  path="/mastermanagement/state/add"
+                  element={<Master_State />}
+                />
+
+                <Route
+                  path="/mastermanagement/state/edit:id"
+                  element={<Master_EditState />}
+                />
+                <Route
+                  path="/mastermanagement/city/list"
+                  element={<Master_CityList />}
+                />
+                <Route
+                  path="/mastermanagement/city/add"
+                  element={<Master_City />}
+                />
+                <Route
+                  path="/customer/edit/:user_id"
+                  element={<Customer_Editcustomer />}
+                />
+                <Route path="/order/orderlist" element={<Order_OrderList />} />
+                <Route
+                  path="/order/orderdetails"
+                  element={<Order_OrderDetails />}
+                />
+                <Route path="/dashboard" element={<Dashboard />} />
+
+                <Route path="/storedetails" element={<StoreDetails />} />
+                <Route path="/account/subscrption" element={<Subscrption />} />
               </Routes>
             </div>
           </div>

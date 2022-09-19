@@ -136,6 +136,7 @@ export default function ProductsComponent() {
                 <th scope="col">Category</th>
                 <th scope="col">Product Quantity</th>
                 <th scope="col">Status</th>
+                <th scope="col">Action</th>
               </tr>
             </thead>
             <tbody>
@@ -159,6 +160,7 @@ export default function ProductsComponent() {
                     <td>{item.category_id}</td>
                     <td>{item.product_qty}</td>
                     <td>{item.status === 0 ? "inactive" : "active"}</td>
+                    <td><i class="fas fa-edit" style={{fontSize:'24px'}}></i></td>
                   </tr>
                 );
               })}

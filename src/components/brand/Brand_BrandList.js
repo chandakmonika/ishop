@@ -5,8 +5,8 @@ import Dropdown from "react-bootstrap/Dropdown";
 import Container from "react-bootstrap/Container";
 import Nav from "react-bootstrap/Nav";
 import Navbar from "react-bootstrap/Navbar";
-import NavDropdown from "react-bootstrap/NavDropdown";
 import "./Brand_BrandList.css";
+import { Link } from "react-router-dom";
 
 export default function Brand_BrandList() {
   const [parent_category_id, setParent_category_id] = useState("");
@@ -33,6 +33,7 @@ export default function Brand_BrandList() {
       .then((res) => setFirst(res.data.data));
   };
   useEffect(() => {
+    
     axios
       .get(`http://admin.ishop.sunhimlabs.com/api/v1/products/brands/list`)
       .then((res) => setFirst(res.data.data));
@@ -120,8 +121,9 @@ export default function Brand_BrandList() {
                 </th>
                 <th scope="col">Category Name</th>
                 <th scope="col">Brand Name</th>
-                <th scope="col">Brand Logo Status</th>
+                <th scope="col">Logo</th>
                 <th scope="col">Status</th>
+                <th scope="col">Action</th>
               </tr>
             </thead>
             <tbody>
@@ -145,6 +147,7 @@ export default function Brand_BrandList() {
                     <td>{item.brand_name}</td>
                     <td>{item.brand_logo}</td>
                     <td>{item.status === 0 ? "inactive" : "active"}</td>
+                    <td>  <Link to={`/brand/edit/${item.brand_id}`}><i class="fas fa-edit"  style={{fontSize:'24px'}}></i></Link></td>
                   </tr>
                 );
               })}
