@@ -25,7 +25,7 @@ export default function Master_CountryList() {
   };
   useEffect(() => {
     axios
-      .get(`http://admin.ishop.sunhimlabs.com/api/v1/countries/list/1/`)
+      .get(`http://admin.ishop.sunhimlabs.com/api/v1/countries/list/`)
       .then((res) => setFirst(res.data.data));
   }, []);
   return (
@@ -92,7 +92,7 @@ export default function Master_CountryList() {
             <tbody>
               {first.map((item) => {
                 return (
-                  <tr key={item.product_id}>
+                  <tr key={item.country_id}>
                     <td>
                       <div class="custom-control custom-checkbox">
                         <input
@@ -108,7 +108,7 @@ export default function Master_CountryList() {
                     </td>
                     <td>{item.country_name}</td>
                     
-                    <td><Link to="/addcountry"><i class="fas fa-edit" style={{ fontSize: "24px" }}></i></Link></td>
+                    <td><Link to={`/mastermanagment/country/edit/${item.country_id}`}><i class="fas fa-edit" style={{ fontSize: "24px" }}></i></Link></td>
                     
                   </tr>
                 );

@@ -10,10 +10,10 @@ export default function Master_EditState() {
     state_name: "",
     country_id: "",
   });
-  const { id } = useParams();
+  const { state_id } = useParams();
   useEffect(() => {
     axios
-      .get(`http://admin.ishop.sunhimlabs.com/api/v1/states/details/${id}`)
+      .get(`http://admin.ishop.sunhimlabs.com/api/v1/states/details/${state_id}`)
       .then((res) => {
         const getData = res.data.data;
         console.log(getData);
@@ -71,7 +71,7 @@ export default function Master_EditState() {
                 onChange={handleChange}
               >
                 {index.map((item) => {
-                  return <option value={item.id}>{item.country_name}</option>;
+                  return <option value={item.country_id}>{item.country_name}</option>;
                 })}
               </select>
               <br />

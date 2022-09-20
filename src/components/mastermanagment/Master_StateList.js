@@ -11,7 +11,7 @@ export default function Master_StateList() {
   useEffect(() => {
     axios
       .get(
-        `http://admin.ishop.sunhimlabs.com/api/v1/states/list/1?country_id=101`
+        `http://admin.ishop.sunhimlabs.com/api/v1/states/list/?country_id=`
       )
       .then((res) => setFirst(res.data.data));
   }, []);
@@ -87,7 +87,7 @@ export default function Master_StateList() {
                     <td>{item.state_name}</td>
                     <td>{item.country_name}</td>
                     <td>
-                      <Link to={`/mastermanagement/state/edit/${item.id}`}>
+                      <Link to={`/mastermanagement/state/edit/${item.state_id}`}>
                         <i class="fas fa-edit" style={{ fontSize: "24px" }}></i>
                       </Link>
                     </td>

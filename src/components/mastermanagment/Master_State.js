@@ -70,7 +70,7 @@ export default function Master_State() {
               >
                 {index.map((item) => {
                   return (
-                    <option value={item.id}>
+                    <option value={item.country_id}>
                       {item.country_name}
                     </option>
                   );

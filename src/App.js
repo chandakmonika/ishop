@@ -45,6 +45,8 @@ import Dashboard from "./components/Dashboard";
 import StoreDetails from "./components/topnav/StoreDetails";
 import Subscrption from "./components/topnav/Subscrption";
 import Master_EditState from "./components/mastermanagment/Master_EditState";
+import Master_EditCountry from "./components/mastermanagment/Master_EditCountry";
+import FAQ_EditFAQ from "./components/faq/FAQ_EditFAQ";
 
 function App() {
   return (
@@ -92,12 +94,7 @@ function App() {
                   </Nav>
                 </Navbar.Collapse>
               </Container>
-              {/* <Routes>
-              <Route
-                  path="/dashboard"
-                  element={<Dashboard />}
-                />
-              </Routes> */}
+              
             </Navbar>
           </div>
           <div className="row">
@@ -325,6 +322,10 @@ function App() {
                   element={<Faq_FAQList />}
                 />
                 <Route
+                  path="/faq/edit/:faq_id"
+                  element={<FAQ_EditFAQ />}
+                />
+                <Route
                   path="/mastermanagement/faq/add"
                   element={<Faq_AddFAQ />}
                 />
@@ -381,6 +382,10 @@ function App() {
                   element={<Master_CountryList />}
                 />
                 <Route
+                  path="/mastermanagment/country/edit/:country_id"
+                  element={<Master_EditCountry />}
+                />
+                <Route
                   path="/mastermanagement/country/add"
                   element={<Master_Country />}
                 />
@@ -394,7 +399,7 @@ function App() {
                 />
 
                 <Route
-                  path="/mastermanagement/state/edit:id"
+                  path="/mastermanagement/state/edit:state_id"
                   element={<Master_EditState />}
                 />
                 <Route

@@ -114,7 +114,7 @@ export default function Faq_FAQList() {
                     <td>{item.category_name}</td>
                     <td>{item.question}</td>
                     
-                    <td><Link to="/addcity"><i class="fas fa-edit" style={{ fontSize: "24px" }}></i></Link></td>
+                    <td><Link to={`/faq/edit/${item.faq_id}`}><i class="fas fa-edit" style={{ fontSize: "24px" }}></i></Link></td>
                     
                   </tr>
                 );
