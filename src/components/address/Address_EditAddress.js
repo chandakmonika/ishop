@@ -8,19 +8,40 @@ export default function Address_EditAddress() {
   const [last_name, setLast_name] = useState("");
   const [email, setEmail] = useState("");
   const [phone, setPhone] = useState("");
+  const [addressline1, setAddressline1] = useState("");
+  const [addressline2, setAddressline2] = useState("");
+  const [country, setCountry] = useState("");
+  const [state, setState] = useState("");
+  const [city, setCity] = useState("");
+  const [zipcode, setZipcode] = useState("");
+  const [isdefault, setIsdefault] = useState("");
+  const [address_type, setAddress_type] = useState("");
   const [gender, setGender] = useState("");
+  const [user_id, setUser_id] = useState("");
+
   const [userdata, setUser_data] = useState({
     first_name: "",
     last_name: "",
     email: "",
     phone: "",
     gender: "",
+    addressline1: "",
+    addressline2: "",
+    country: "",
+    state: "",
+    city: "",
+    zipcode: "",
+    isdefault: "",
+    address_type: "",
+    user_id: "",
+
+    
   });
-  const { user_id } = useParams();
+  const {address_id} = useParams();
   useEffect(() => {
     axios
       .get(
-        `http://admin.ishop.sunhimlabs.com/api/v1/customer/details/${user_id}`
+        `http://admin.ishop.sunhimlabs.com/api/v1/customer/address/details/${address_id}`
       )
       .then((res) => {
         const getData = res.data.data;
@@ -39,9 +60,9 @@ export default function Address_EditAddress() {
   };
 
   function customerUser() {
-    console.warn(first_name, last_name, email, phone, gender);
+    console.warn(first_name, last_name, email, phone, gender,addressline1,addressline2,country,state,city,zipcode,isdefault,address_type,user_id);
 
-    fetch(`http://admin.ishop.sunhimlabs.com/api/v1/customer/edit/`, {
+    fetch(`http://admin.ishop.sunhimlabs.com/customer/address/edit/`, {
       method: "POST",
       headers: {
         Accept: "application/json",
@@ -103,17 +124,6 @@ export default function Address_EditAddress() {
                 onChange={handleChange}
               />
 
-              <label className="demo">Password</label>
-              <input
-              
-                // type="password"
-                className="form-control"
-                name="password"
-                placeholder="Enter Password"
-                value={userdata.password}
-                onChange={handleChange}
-              />
-
               <label className="demo">Mobile Number</label>
               <input
               
@@ -137,9 +147,102 @@ export default function Address_EditAddress() {
                 <option>F</option>
                 <option>O</option>
               </select>
+
+              <label className="demo">Address Line 1</label>
+              <input
+              
+                type="text"
+                className="form-control"
+                name="addressline1"
+                placeholder="Enter Address Line 1"
+                value={userdata.addressline1}
+                onChange={handleChange}
+              />
+
+             <label className="demo">Address Line 2</label>
+              <input
+              
+                type="text"
+                className="form-control"
+                name="addressline2"
+                placeholder="Enter Address Line 2"
+                value={userdata.addressline2}
+                onChange={handleChange}
+              />
+
+          <label className="demo">Zip Code</label>
+              <input
+              
+                type="text"
+                className="form-control"
+                name="zipcode"
+                placeholder="Enter Zip Code"
+                value={userdata.zipcode}
+                onChange={handleChange}
+              />
+
+<label className="demo">Country</label>
+              <input
+              
+                type="text"
+                className="form-control"
+                name="country"
+                placeholder="Enter Zip Code"
+                value={userdata.country}
+                onChange={handleChange}
+              />
+
+<label className="demo">State</label>
+              <input
+              
+                type="text"
+                className="form-control"
+                name="state"
+                placeholder="Enter State"
+                value={userdata.state}
+                onChange={handleChange}
+              />
+
+<label className="demo">City</label>
+              <input
+              
+                type="text"
+                className="form-control"
+                name="city"
+                placeholder="Enter City"
+                value={userdata.city}
+                onChange={handleChange}
+              />
+
+
+
+<label for="exampleFormControlSelect1">Address Type</label>
+              <select
+                class="form-control"
+                id="exampleFormControlSelect1"
+                name="address_type"
+                value={userdata.address_type}
+                onChange={handleChange}
+              >
+                <option>Home Address</option>
+                <option>Office Address</option>
+              </select>
+
+              <label for="exampleFormControlSelect1">Is Default</label>
+              <select
+                class="form-control"
+                id="exampleFormControlSelect1"
+                name="isdefault"
+                value={userdata.isdefault}
+                onChange={handleChange}
+              >
+                <option>Yes</option>
+                <option>No</option>
+              </select>
+
             </div>
             <button type="button" class="btn btn-info" onClick={customerUser}>
-              Update Customer
+              Update Address
             </button>
             &nbsp;
           </form>

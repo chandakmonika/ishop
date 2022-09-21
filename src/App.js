@@ -47,6 +47,9 @@ import Subscrption from "./components/topnav/Subscrption";
 import Master_EditState from "./components/mastermanagment/Master_EditState";
 import Master_EditCountry from "./components/mastermanagment/Master_EditCountry";
 import FAQ_EditFAQ from "./components/faq/FAQ_EditFAQ";
+import Master_EditCity from "./components/mastermanagment/Master_EditCity";
+import Address_EditAddress from "./components/address/Address_EditAddress";
+import Faq_EditCategoryFaq from "./components/faq/Faq_EditCategoryFaq";
 
 function App() {
   return (
@@ -94,7 +97,6 @@ function App() {
                   </Nav>
                 </Navbar.Collapse>
               </Container>
-              
             </Navbar>
           </div>
           <div className="row">
@@ -318,13 +320,14 @@ function App() {
                   element={<Address_AddAddress />}
                 />
                 <Route
+                  path="/customer/address/edit/:address_id"
+                  element={<Address_EditAddress />}
+                />
+                <Route
                   path="/mastermanagement/faq/list"
                   element={<Faq_FAQList />}
                 />
-                <Route
-                  path="/faq/edit/:faq_id"
-                  element={<FAQ_EditFAQ />}
-                />
+                <Route path="/faq/edit/:faq_id" element={<FAQ_EditFAQ />} />
                 <Route
                   path="/mastermanagement/faq/add"
                   element={<Faq_AddFAQ />}
@@ -332,6 +335,11 @@ function App() {
                 <Route
                   path="/mastermanagement/faq/category/add"
                   element={<Faq_AddCategoryListFAQ />}
+                />
+
+                <Route
+                  path="/mastermanagement/faq/category/edit/:faq_category_id"
+                  element={<Faq_EditCategoryFaq />}
                 />
                 <Route
                   path="/mastermanagement/faq/category/list"
@@ -399,7 +407,7 @@ function App() {
                 />
 
                 <Route
-                  path="/mastermanagement/state/edit:state_id"
+                  path="/mastermanagement/state/edit/:state_id"
                   element={<Master_EditState />}
                 />
                 <Route
@@ -409,6 +417,11 @@ function App() {
                 <Route
                   path="/mastermanagement/city/add"
                   element={<Master_City />}
+                />
+
+                <Route
+                  path="/mastermanagement/city/edit/:city_id"
+                  element={<Master_EditCity />}
                 />
                 <Route
                   path="/customer/edit/:user_id"

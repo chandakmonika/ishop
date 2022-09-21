@@ -1,33 +1,41 @@
-
 import axios from "axios";
 import React, { useState, useEffect } from "react";
 import { useParams } from "react-router-dom";
 export default function Master_EditCity() {
-  const [first_name, setFirst_name] = useState("");
-  const [last_name, setLast_name] = useState("");
-  const [email, setEmail] = useState("");
-  const [phone, setPhone] = useState("");
-  const [gender, setGender] = useState("");
+  const [city_name, setCity_name] = useState("");
+  // const [city_id, setCity_id] = useState("");
+  const [state_id, setState_id] = useState("");
+  const [countryName, setCountryName] = useState("");
+  const [countryId, setCountryId] = useState("");
+  const [state_name, setState_name] = useState("");
+  const [index, setIndex] = useState([]);
+  const [indexs, setIndexs] = useState([]);
   const [userdata, setUser_data] = useState({
-    first_name: "",
-    last_name: "",
-    email: "",
-    phone: "",
-    gender: "",
+    city_name: "",
+    // city_id: "",
+    state_id: "",
   });
-  const { user_id } = useParams();
+  const { city_id } = useParams();
   useEffect(() => {
     axios
-      .get(
-        `http://admin.ishop.sunhimlabs.com/api/v1/customer/details/${user_id}`
-      )
+      .get(`http://admin.ishop.sunhimlabs.com/api/v1/cities/details/${city_id}`)
       .then((res) => {
         const getData = res.data.data;
         console.log(getData);
         setUser_data(getData);
       });
   }, []);
+  useEffect(() => {
+    axios
+      .get(`http://admin.ishop.sunhimlabs.com/api/v1/allstates/${countryId}`)
+      .then((res) => setIndexs(res.data.data));
+  }, [countryId]);
 
+  useEffect(() => {
+    axios
+      .get(`http://admin.ishop.sunhimlabs.com/api/v1/allcountries/`)
+      .then((res) => setIndex(res.data.data));
+  }, []);
   const handleChange = (e) => {
     console.log(e.target);
 
@@ -38,9 +46,9 @@ export default function Master_EditCity() {
   };
 
   function customerUser() {
-    console.warn(first_name, last_name, email, phone, gender);
+    console.warn(city_name, state_id);
 
-    fetch(`http://admin.ishop.sunhimlabs.com/api/v1/customer/edit/`, {
+    fetch(`http://admin.ishop.sunhimlabs.com/api/v1/cities/edit/`, {
       method: "POST",
       headers: {
         Accept: "application/json",
@@ -72,70 +80,50 @@ export default function Master_EditCity() {
               controlId="formBasicFirstName"
               style={{ width: "40%" }}
             >
-              <label className="demo">First Name</label>
-              <input
-                type="text"
-                className="form-control"
-                name="first_name"
-                placeholder="Enter First Name"
-                value={userdata.first_name}
-                onChange={handleChange}
-              />
-
-              <label className="demo">Last Name</label>
-              <input
-                type="text"
-                className="form-control"
-                name="last_name"
-                placeholder="Enter Last Name"
-                value={userdata.last_name}
-                onChange={handleChange}
-              />
-
-              <label className="demo">Email</label>
-              <input
-                type="email"
-                className="form-control"
-                name="email"
-                placeholder="Enter Email"
-                value={userdata.email}
-                onChange={handleChange}
-              />
-
-              <label className="demo">Password</label>
-              <input
-              
-                // type="password"
-                className="form-control"
-                name="password"
-                placeholder="Enter Password"
-                value={userdata.password}
-                onChange={handleChange}
-              />
-
-              <label className="demo">Mobile Number</label>
-              <input
-              
-                type="phone"
-                className="form-control"
-                name="phone"
-                placeholder="Enter Mobile Number"
-                value={userdata.phone}
-                onChange={handleChange}
-              />
-
-              <label for="exampleFormControlSelect1">Gender</label>
+              <label for="exampleFormControlSelect1">Country</label>
               <select
                 class="form-control"
                 id="exampleFormControlSelect1"
-                name="gender"
-                value={userdata.gender}
-                onChange={handleChange}
+                onChange={(e) => {
+                  setCountryId(e.target.value);
+                }}
+                name="country_id"
               >
-                <option>M</option>
-                <option>F</option>
-                <option>O</option>
+                {index.map((item) => {
+                  return (
+                    <option value={item.country_id}>{item.country_name}</option>
+                  );
+                })}
               </select>
+              <br />
+
+              <label for="exampleFormControlSelect1">State</label>
+              <select
+                class="form-control"
+                id="exampleFormControlSelect1"
+                value={state_id}
+                onChange={(e) => {
+                  setState_id(e.target.value);
+                }}
+                name="state_id"
+              >
+                {indexs.map((item) => {
+                  return (
+                    <option value={item.state_id}>{item.state_name}</option>
+                  );
+                })}
+              </select>
+              <br />
+
+              <label className="demo">City Name</label>
+              <input
+                type="text"
+                className="form-control"
+                name="city_name"
+                placeholder="Enter City Name"
+                value={userdata.city_name}
+                onChange={handleChange}
+              />
             </div>
             <button type="button" class="btn btn-info" onClick={customerUser}>
               Update Customer

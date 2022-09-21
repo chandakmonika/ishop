@@ -107,7 +107,7 @@ export default function Address_AddressList() {
                     <td>{item.email}</td>
                     <td>{item.addressline1}{item.addressline2}{item.city}{item.zipcode}</td>
                     <td>{item.address_type}</td>
-                    <td><Link to="/addaddress"><i class="fas fa-edit" style={{ fontSize: "24px" }}></i></Link></td>
+                    <td><Link to={`/customer/address/edit/${item.address_id}`}><i class="fas fa-edit" style={{ fontSize: "24px" }}></i></Link></td>
                     
                   </tr>
                 );

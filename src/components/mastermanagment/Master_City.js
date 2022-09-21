@@ -74,7 +74,7 @@ export default function Master_City() {
               name="country_id"
             >
               {index.map((item) => {
-                return <option value={item.id}>{item.country_name}</option>;
+                return <option value={item.country_id}>{item.country_name}</option>;
               })}
             </select>
             <br />
@@ -90,7 +90,7 @@ export default function Master_City() {
               name="state_id"
             >
               {indexs.map((item) => {
-                return <option value={item.id}>{item.state_name}</option>;
+                return <option value={item.state_id}>{item.state_name}</option>;
               })}
             </select>
             <br />

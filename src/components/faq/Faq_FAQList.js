@@ -5,7 +5,7 @@ import Container from "react-bootstrap/Container";
 import Nav from "react-bootstrap/Nav";
 import Navbar from "react-bootstrap/Navbar";
 import NavDropdown from "react-bootstrap/NavDropdown";
-import { Link } from '@mui/material';
+import { Link } from "react-router-dom";
 import axios from "axios";
 
 export default function Faq_FAQList() {
@@ -113,7 +113,7 @@ export default function Faq_FAQList() {
                     </td>
                     <td>{item.category_name}</td>
                     <td>{item.question}</td>
-                    
+
                     <td><Link to={`/faq/edit/${item.faq_id}`}><i class="fas fa-edit" style={{ fontSize: "24px" }}></i></Link></td>
                     
                   </tr>

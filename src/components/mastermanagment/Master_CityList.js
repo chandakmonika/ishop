@@ -1,32 +1,64 @@
-import React,{ useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { Link } from "react-router-dom";
 import Button from "react-bootstrap/Button";
-import Dropdown from "react-bootstrap/Dropdown";
 import Container from "react-bootstrap/Container";
 import Nav from "react-bootstrap/Nav";
 import Navbar from "react-bootstrap/Navbar";
-import NavDropdown from "react-bootstrap/NavDropdown";
+import TablePagination from "@mui/material/TablePagination";
+
 export default function Master_CityList() {
   const [first, setFirst] = useState([]);
-  const [query, setQuery] = useState({ text: "" });
+  const [index, setIndex] = useState([]);
+  const [indexs, setIndexs] = useState([]);
+  const [country_name, setCountry_name] = useState("");
+  const [country_id, setCountry_id] = useState("");
+  const [state_id, setState_id] = useState("");
+  const [querys, setQuerys] = useState({ state_id: "" });
 
+  const [query, setQuery] = useState({ text: "" });
+  const [page, setPage] = React.useState(2);
+  const [rowsPerPage, setRowsPerPage] = React.useState(10);
+
+  useEffect(() => {
+    axios
+      .get(`http://admin.ishop.sunhimlabs.com/api/v1/allstates/${country_id}`)
+      .then((res) => setIndexs(res.data.data));
+  }, [country_id]);
+
+  useEffect(() => {
+    axios
+      .get(`http://admin.ishop.sunhimlabs.com/api/v1/allcountries/`)
+      .then((res) => setIndex(res.data.data));
+  }, []);
+  const handleChangePage = (event, newPage) => {
+    setPage(newPage);
+  };
+
+  const handleChangeRowsPerPage = (event) => {
+    setRowsPerPage(parseInt(event.target.value, 10));
+    setPage(0);
+  };
   console.log(query);
+  console.log(querys);
   const handleChange = (e) => {
+    // setQuerys({ texts: e ? e.value : '' });
     setQuery({ text: e.target.value });
+
   };
   const handleSubmit = (e) => {
     e.preventDefault();
+     setQuerys({ texts: e ? e.value : '' });
     axios
       .get(
-        `http://admin.ishop.sunhimlabs.com/api/v1/cities/list/1?state_id=21/q=${query.text}`
+        `http://admin.ishop.sunhimlabs.com/api/v1/cities/list/?state_id=${querys.state_id}&q=${query.text}`
       )
       .then((res) => setFirst(res.data.data));
   };
 
   useEffect(() => {
     axios
-      .get(`http://admin.ishop.sunhimlabs.com/api/v1/cities/list/1?state_id=21`)
+      .get(`http://admin.ishop.sunhimlabs.com/api/v1/cities/list/?state_id=`)
       .then((res) => setFirst(res.data.data));
   }, []);
   return (
@@ -47,10 +79,10 @@ export default function Master_CityList() {
       <div class="card" style={{ width: "95%" }}>
         <div class="card-body" style={{ width: "100%" }}>
           <div class="row">
-            <div className="col-sm-3">
-            <form onSubmit={handleSubmit}>
-              <div class="input-group">
-                <input
+            <div className="col-sm-7">
+              <form onSubmit={handleSubmit}>
+                <div class="input-group">
+                  <input
                     type="text"
                     name="search"
                     className="form-control"
@@ -59,12 +91,47 @@ export default function Master_CityList() {
                     placeholder="Search this blog"
                     onChange={handleChange}
                   />
-                <div class="input-group-append">
-                  <Button variant="info" type="submit">
-                    Search
-                  </Button>
+                  &nbsp;&nbsp;&nbsp;&nbsp;
+                  <select
+                    class="form-control"
+                    id="exampleFormControlSelect1"
+                    onChange={(e) => {
+                      setCountry_id(e.target.value);
+                    }}
+                    name="country_id"
+                  >
+                    {index.map((item) => {
+                      return (
+                        <option value={item.country_id}>
+                          {item.country_name}
+                        </option>
+                      );
+                    })}
+                  </select>
+                  &nbsp;&nbsp;&nbsp;&nbsp;
+                  <select
+                    class="form-control"
+                    id="exampleFormControlSelect1"
+                    value={state_id}
+                    onChange={(e) => {
+                      setState_id(e.target.value);
+                    }}
+
+                    name="state_id"
+                  >
+                    {indexs.map((item) => {
+                      return (
+                        <option value={item.state_id}>{item.state_name}</option>
+                      );
+                    })}
+                  </select>
+                  &nbsp;&nbsp;&nbsp;&nbsp;
+                  <div class="input-group-append">
+                    <Button variant="info" type="submit">
+                      Search
+                    </Button>
+                  </div>
                 </div>
-              </div>
               </form>
             </div>
           </div>
@@ -112,13 +179,25 @@ export default function Master_CityList() {
                     <td>{item.city_name}</td>
                     <td>{item.state_name}</td>
                     <td>{item.country_name}</td>
-                    <td><Link to="/addcity"><i class="fas fa-edit" style={{ fontSize: "24px" }}></i></Link></td>
-                    
+                    <td>
+                
+                      <Link to={`/mastermanagement/city/edit/${item.city_id}`}>
+                        <i class="fas fa-edit" style={{ fontSize: "24px" }}></i>
+                      </Link>
+                    </td>
                   </tr>
                 );
               })}
             </tbody>
           </table>
+          <TablePagination
+            component="div"
+            count={100}
+            page={page}
+            onPageChange={handleChangePage}
+            rowsPerPage={rowsPerPage}
+            onRowsPerPageChange={handleChangeRowsPerPage}
+          />
           {/* <-------------------------TableEnd----------------------> */}
 
           <div class="text-left">

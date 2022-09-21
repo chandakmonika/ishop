@@ -13,7 +13,7 @@ export default function Address_AddAddress() {
   const [isdefault, setIsdefault] = useState("");
   const [address_type, setAddress_type] = useState("");
   const [countryName, setCountryName] = useState("");
-  const [countryId, setCountryId] = useState("");
+  const [country_id, setCountry_id] = useState("");
   const [country, setCountry] = useState("");
   const [state_id, setState_id] = useState("");
   const [state_name, setState_name] = useState("");
@@ -28,9 +28,9 @@ export default function Address_AddAddress() {
 
   useEffect(() => {
     axios
-      .get(`http://admin.ishop.sunhimlabs.com/api/v1/allstates/${countryId}`)
+      .get(`http://admin.ishop.sunhimlabs.com/api/v1/allstates/${country_id}`)
       .then((res) => setIndexs(res.data.data));
-  }, [countryId]);
+  }, [country_id]);
 
   useEffect(() => {
     axios
@@ -58,7 +58,7 @@ export default function Address_AddAddress() {
       address_type,
       countryName,
       state_name,
-      countryId,
+      country_id,
       state_id,
       city_name
     );
@@ -75,7 +75,7 @@ export default function Address_AddAddress() {
       address_type,
       country,
       state,
-      countryId,
+      country_id,
       state_id,
       city,
     };
@@ -223,14 +223,14 @@ export default function Address_AddAddress() {
             <select
               class="form-control"
               id="exampleFormControlSelect1"
-              value={countryId}
+              value={country_id}
               onChange={(e) => {
-                setCountryId(e.target.value);
+                setCountry_id(e.target.value);
               }}
-              name="countryId"
+              name="country_id"
             >
               {index.map((item) => {
-                return <option value={item.id}>{item.country_name}{item.country}</option>;
+                return <option value={item.country_id}>{item.country_name}{item.country}</option>;
               })}
             </select>
             <br />
@@ -246,7 +246,7 @@ export default function Address_AddAddress() {
               name="state_id"
             >
               {indexs.map((item) => {
-                return <option value={item.id}>{item.state_name}{item.state}</option>;
+                return <option value={item.state_id}>{item.state_name}{item.state}</option>;
               })}
             </select>
             <br />
@@ -262,7 +262,7 @@ export default function Address_AddAddress() {
               name="city_id"
             >
               {indexss.map((item) => {
-                return <option value={item.id}>{item.city_name}{item.city}</option>;
+                return <option value={item.city_id}>{item.city_name}{item.city}</option>;
               })}
             </select>
             <br />

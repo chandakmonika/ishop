@@ -5,26 +5,35 @@ export default function Master_EditState() {
   const [state_name, setState_name] = useState("");
   const [country_id, setCountry_id] = useState("");
   const [index, setIndex] = useState([]);
+  const [country_name, setCountry_name] = useState("");
+  useEffect(() => {
+    axios
+      .get(`http://admin.ishop.sunhimlabs.com/api/v1/allcountries/`)
+      .then((res) => setIndex(res.data.data));
+  }, []);
 
-  const [userdata, setUser_data] = useState({
+  const [userdata, setUserdata] = useState({
     state_name: "",
+    country_name:"",
     country_id: "",
   });
   const { state_id } = useParams();
   useEffect(() => {
     axios
-      .get(`http://admin.ishop.sunhimlabs.com/api/v1/states/details/${state_id}`)
+      .get(
+        `http://admin.ishop.sunhimlabs.com/api/v1/states/details/${state_id}`
+      )
       .then((res) => {
         const getData = res.data.data;
         console.log(getData);
-        setUser_data(getData);
+        setUserdata(getData);
       });
   }, []);
 
   const handleChange = (e) => {
     console.log(e.target);
 
-    setUser_data({
+    setUserdata({
       ...userdata,
       [e.target.name]: e.target.value,
     });
@@ -71,7 +80,9 @@ export default function Master_EditState() {
                 onChange={handleChange}
               >
                 {index.map((item) => {
-                  return <option value={item.country_id}>{item.country_name}</option>;
+                  return (
+                    <option value={item.country_id}>{item.country_name}</option>
+                  );
                 })}
               </select>
               <br />

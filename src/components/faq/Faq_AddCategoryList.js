@@ -107,7 +107,7 @@ export default function Faq_AddCategoryList() {
                     </td>
                     <td>{item.category_name}</td>
                     
-                    <td><Link to="/addcategoryfaq"><i class="fas fa-edit" style={{ fontSize: "24px" }}></i></Link></td>
+                    <td><Link to={`/mastermanagement/faq/category/edit/${item.faq_category_id}`}><i class="fas fa-edit" style={{ fontSize: "24px" }}></i></Link></td>
                     
                   </tr>
                 );
