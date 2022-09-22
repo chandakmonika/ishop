@@ -8,6 +8,40 @@ import { Link } from "react-router-dom";
 
 export default function Master_StateList() {
   const [first, setFirst] = useState([]);
+  const [country, setCountry] = useState([]);
+  const [states, setStates] = useState([]);
+  const [country_id, setCountry_id] = useState("");
+  const [state_id, setState_id] = useState("");
+  const [query, setQuery] = useState({ text: "" });
+  const [page, setPage] = useState([]);
+  const [cpage, setCpage] = useState();
+  const [rowsPerPage, setRowsPerPage] = useState(10);
+  
+  console.log(page);
+  const url = "http://admin.ishop.sunhimlabs.com/api/v1/";
+  // useEffect(() => {
+  //   axios
+  //     .get(`${`http://admin.ishop.sunhimlabs.com/api/v1/`}/allstates/${country_id}`)
+  //     .then((res) => setStates(res.data.data));
+  // }, [country_id]);
+
+  useEffect(() => {
+    axios.get(`${`http://admin.ishop.sunhimlabs.com/api/v1/`}/allcountries/`).then((res) => setCountry(res.data.data));
+  }, []);
+  const handleChangePage = async (e, newPage) => {
+    setCpage(newPage);
+    try {
+      const res = await axios.get(
+        `${`http://admin.ishop.sunhimlabs.com/api/v1/`}/states/list/?country_id=${country_id}&q=${query.text}&page=${newPage}`
+      );
+      const { data, pages } = res.data;
+      setFirst(data);
+      setPage(pages);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
   useEffect(() => {
     axios
       .get(
@@ -15,6 +49,24 @@ export default function Master_StateList() {
       )
       .then((res) => setFirst(res.data.data));
   }, []);
+
+
+  const handleChange = (e) => {
+    setQuery({ text: e.target.value });
+  };
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    try {
+      const res = await axios.get(
+        `${url}/states/list/?country_id=${country_id}&q=${query.text}`
+      );
+      const { data, pages } = res.data;
+      setFirst(data);
+      setPage(pages);
+    } catch (error) {
+      console.log(error);
+    }
+  };
   return (
     <div>
       <Navbar expand="lg">
@@ -33,15 +85,42 @@ export default function Master_StateList() {
       <div class="card" style={{ width: "95%" }}>
         <div class="card-body" style={{ width: "100%" }}>
           <div class="row">
-            <div className="col-sm-3">
-              <div class="input-group">
-                <input type="text" class="form-control" placeholder="Search" />
-                <div class="input-group-append">
-                  <Button variant="info" type="submit">
-                    Search
-                  </Button>
+          <div className="col-sm-7">
+              <form onSubmit={handleSubmit}>
+                <div class="input-group">
+                  <input
+                    type="text"
+                    name="search"
+                    className="form-control"
+                    id="exampleInputEmail1"
+                    aria-describedby="texthelp"
+                    placeholder="Search this blog"
+                    onChange={handleChange}
+                  />
+                  &nbsp;&nbsp;&nbsp;&nbsp;
+                  <select
+                    class="form-control"
+                    id="exampleFormControlSelect1"
+                    onChange={(e) => {
+                      setCountry_id(e.target.value);
+                    }}
+                    name="country_id"
+                  >
+                    {country.map((item) => {
+                      return (
+                        <option value={item.country_id}>
+                          {item.country_name}
+                        </option>
+                      );
+                    })}
+                  </select>&nbsp;&nbsp;&nbsp;
+                  <div class="input-group-append">
+                    <Button variant="info" type="submit">
+                      Search
+                    </Button>
+                  </div>
                 </div>
-              </div>
+              </form>
             </div>
           </div>
           <br />

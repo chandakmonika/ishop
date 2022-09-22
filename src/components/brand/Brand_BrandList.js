@@ -167,6 +167,7 @@ export default function Brand_BrandList() {
                   <option selected>Action</option>
                   <option>Active</option>
                   <option>Inactive</option>
+                  <option>Delete</option>
                 </select>
               </div>
               <div className="col-md-4">
