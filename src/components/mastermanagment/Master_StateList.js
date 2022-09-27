@@ -143,7 +143,9 @@ export default function Master_StateList() {
                 </th>
                 <th scope="col">State </th>
                 <th scope="col">Country </th>
+                <th scope="col">Status</th>
                 <th scope="col">Action</th>
+
               </tr>
             </thead>
             <tbody>
@@ -165,6 +167,7 @@ export default function Master_StateList() {
                     </td>
                     <td>{item.state_name}</td>
                     <td>{item.country_name}</td>
+                    <td>{item.status === 0 ? "inactive" : "active"}</td>
                     <td>
                       <Link to={`/mastermanagement/state/edit/${item.state_id}`}>
                         <i class="fas fa-edit" style={{ fontSize: "24px" }}></i>

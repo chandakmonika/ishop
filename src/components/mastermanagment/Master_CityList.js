@@ -232,7 +232,7 @@
 
 import React, { useEffect, useState } from "react";
 import axios from "axios";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import Button from "react-bootstrap/Button";
 import Container from "react-bootstrap/Container";
 import Nav from "react-bootstrap/Nav";
@@ -240,6 +240,8 @@ import Navbar from "react-bootstrap/Navbar";
 import TablePagination from "@mui/material/TablePagination";
 
 export default function Master_CityList() {
+  const navigate = useNavigate();
+  console.log(navigate);
   const [first, setFirst] = useState([]);
   const [country, setCountry] = useState([]);
   const [states, setStates] = useState([]);
@@ -253,18 +255,25 @@ export default function Master_CityList() {
   const url = "http://admin.ishop.sunhimlabs.com/api/v1/";
   useEffect(() => {
     axios
-      .get(`${`http://admin.ishop.sunhimlabs.com/api/v1/`}/allstates/${country_id}`)
+      .get(
+        `${`http://admin.ishop.sunhimlabs.com/api/v1/`}/allstates/${country_id}`
+      )
       .then((res) => setStates(res.data.data));
   }, [country_id]);
 
   useEffect(() => {
-    axios.get(`${`http://admin.ishop.sunhimlabs.com/api/v1/`}/allcountries/`).then((res) => setCountry(res.data.data));
+    handleChangePage("e", 1);
+    axios
+      .get(`${`http://admin.ishop.sunhimlabs.com/api/v1/`}/allcountries/`)
+      .then((res) => setCountry(res.data.data));
   }, []);
   const handleChangePage = async (e, newPage) => {
     setCpage(newPage);
     try {
       const res = await axios.get(
-        `${`http://admin.ishop.sunhimlabs.com/api/v1/`}/cities/list/?state_id=${state_id}&q=${query.text}&page=${newPage}`
+        `${`http://admin.ishop.sunhimlabs.com/api/v1/`}/cities/list/?state_id=${state_id}&q=${
+          query.text
+        }&page=${newPage}`
       );
       const { data, pages } = res.data;
       setFirst(data);
@@ -274,13 +283,13 @@ export default function Master_CityList() {
     }
   };
   useEffect(() => {
-        axios
-          .get(`http://admin.ishop.sunhimlabs.com/api/v1/cities/list/?state_id=`)
-          .then((res) => setFirst(res.data.data));
-      }, []);
+    axios
+      .get(`http://admin.ishop.sunhimlabs.com/api/v1/cities/list/?state_id=`)
+      .then((res) => setFirst(res.data.data));
+  }, []);
   const handleChangeRowsPerPage = (e, page) => {
-    setRowsPerPage(parseInt(e.target.value, 10));
-    setPage(0);
+    setRowsPerPage(parseInt(e.target.value, page));
+    setPage(1);
   };
 
   const handleChange = (e) => {
@@ -394,6 +403,7 @@ export default function Master_CityList() {
                 <th scope="col">City Name</th>
                 <th scope="col">State Name</th>
                 <th scope="col">Country Name</th>
+                <th scope="col">Status</th>
                 <th scope="col">Action</th>
               </tr>
             </thead>
@@ -417,6 +427,7 @@ export default function Master_CityList() {
                     <td>{item.city_name}</td>
                     <td>{item.state_name}</td>
                     <td>{item.country_name}</td>
+                    <td>{item.status === 0 ? "inactive" : "active"}</td>
                     <td>
                       <Link to={`/mastermanagement/city/edit/${item.city_id}`}>
                         <i class="fas fa-edit" style={{ fontSize: "24px" }}></i>

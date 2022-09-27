@@ -61,6 +61,7 @@ export default function Master_SettingList() {
                 </th>
                 <th scope="col">Variable Name</th>
                 <th scope="col">Variable Value</th>
+                <th scope="col">Status</th>
                 <th scope="col">Action</th>
               </tr>
             </thead>
@@ -83,7 +84,7 @@ export default function Master_SettingList() {
                     </td>
                     <td>{item.var_name}</td>
                     <td>{item.var_value}</td>
-                    
+                    <td>{item.status === 0 ? "inactive" : "active"}</td>
                     <td><i class="fas fa-edit" style={{ fontSize: "24px" }}></i></td>
                     
                   </tr>

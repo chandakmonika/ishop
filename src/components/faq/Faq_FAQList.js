@@ -91,6 +91,7 @@ export default function Faq_FAQList() {
                   </div></th>
                 <th scope="col">FAQ Category</th>
                 <th scope="col">Questions</th>
+                <th scope='col'>Status</th>
                 <th scope="col">Action</th>
               </tr>
             </thead>
@@ -113,7 +114,7 @@ export default function Faq_FAQList() {
                     </td>
                     <td>{item.category_name}</td>
                     <td>{item.question}</td>
-
+                    <td>{item.status === 0 ? "inactive" : "active"}</td>
                     <td><Link to={`/faq/edit/${item.faq_id}`}><i class="fas fa-edit" style={{ fontSize: "24px" }}></i></Link></td>
                     
                   </tr>

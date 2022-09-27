@@ -85,6 +85,7 @@ export default function Faq_AddCategoryList() {
                   </div>
                 </th>
                 <th scope="col">Category Name</th>
+                <th scope="col">Status</th>
                 <th scope="col">Action</th>
               </tr>
             </thead>
@@ -106,7 +107,7 @@ export default function Faq_AddCategoryList() {
                       </div>
                     </td>
                     <td>{item.category_name}</td>
-                    
+                    <td>{item.status === 0 ? "inactive" : "active"}</td>
                     <td><Link to={`/mastermanagement/faq/category/edit/${item.faq_category_id}`}><i class="fas fa-edit" style={{ fontSize: "24px" }}></i></Link></td>
                     
                   </tr>

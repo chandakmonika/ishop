@@ -86,6 +86,7 @@ export default function Master_CountryList() {
                   </div>
                 </th>
                 <th scope="col">Country Name</th>
+                <th scope="col">Status</th>
                 <th scope="col">Action</th>
               </tr>
             </thead>
@@ -107,7 +108,8 @@ export default function Master_CountryList() {
                       </div>
                     </td>
                     <td>{item.country_name}</td>
-                    
+                    <td>{item.status === 0 ? "inactive" : "active"}</td>
+
                     <td><Link to={`/mastermanagment/country/edit/${item.country_id}`}><i class="fas fa-edit" style={{ fontSize: "24px" }}></i></Link></td>
                     
                   </tr>

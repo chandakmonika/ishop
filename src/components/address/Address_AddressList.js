@@ -83,6 +83,7 @@ export default function Address_AddressList() {
                 <th scope="col">Email</th>
                 <th scope="col">Address</th>
                 <th scope="col">Address Type</th>
+                <th scope="col">status</th>
                 <th scope="col">Action</th>
               </tr>
             </thead>
@@ -107,6 +108,7 @@ export default function Address_AddressList() {
                     <td>{item.email}</td>
                     <td>{item.addressline1}{item.addressline2}{item.city}{item.zipcode}</td>
                     <td>{item.address_type}</td>
+                    <td>{item.status === 0 ? "inactive" : "active"}</td>
                     <td><Link to={`/customer/address/edit/${item.address_id}`}><i class="fas fa-edit" style={{ fontSize: "24px" }}></i></Link></td>
                     
                   </tr>

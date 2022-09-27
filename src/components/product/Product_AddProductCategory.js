@@ -1,16 +1,17 @@
 import axios from "axios";
 import React, { useState, useEffect } from "react";
 import "./Product_AddProductCategory.css";
+
 export default function Product_AddProductCategory() {
   const [parent_category_id, setParent_category_id] = useState("");
   const [category_name, setCategory_name] = useState("");
-  const [category_image, setCategory_image] = useState({});
+  const [category_image, setCategory_image] = useState("");
   const [attributes_label, setAttributes_label] = useState("");
   const [attributes_name, setAttributes_name] = useState("");
   const [attributes_type, setAttributes_type] = useState("");
   const [attributes_value, setAttributes_value] = useState("");
   const [is_variant_key, setIs_variant_key] = useState("");
-
+  const [attributes_group_name, setAttributes_group_name] = useState("");
   const [index, setIndex] = useState([]);
 
   useEffect(() => {
@@ -24,6 +25,7 @@ export default function Product_AddProductCategory() {
       parent_category_id,
       category_name,
       category_image,
+      attributes_group_name,
       attributes_label,
       attributes_name,
       attributes_type,
@@ -34,6 +36,7 @@ export default function Product_AddProductCategory() {
       parent_category_id,
       category_name,
       category_image,
+      attributes_group_name,
       attributes_label,
       attributes_name,
       attributes_type,
@@ -47,6 +50,7 @@ export default function Product_AddProductCategory() {
         "Content-Type": "Application/json",
       },
       body: JSON.stringify(data),
+      
     }).then((result) => {
       result.json().then((resp) => {
         console.warn("resp", resp);
@@ -77,7 +81,6 @@ export default function Product_AddProductCategory() {
       fieldtype: "",
       fieldvalue: "",
     };
-
     setFormFields([...formFields, object]);
   };
 
@@ -92,7 +95,7 @@ export default function Product_AddProductCategory() {
       <h4>Add Product Category</h4>
       <div class="card">
         <div class="card-body">
-          <form onSubmit={submit}>
+          <form enctype="multipart/form-data" onSubmit={submit}>
             <div className="form-group" style={{ width: "30rem" }}>
               <label for="exampleFormControlSelect1">Product Category</label>
               <select
@@ -157,11 +160,11 @@ export default function Product_AddProductCategory() {
                         Group Name
                       </label>
                       <input
-                        name="attributes_label"
+                        name="attributes_group_name"
                         // placeholder='Field Label'
                         // onChange={(e) => handleFormChange(e, index)}
                         onChange={(e) => {
-                          setAttributes_label(e.target.value);
+                          setAttributes_group_name(e.target.value);
                         }}
                         // value={attributes_label}
                         style={{ width: "29rem" }}
