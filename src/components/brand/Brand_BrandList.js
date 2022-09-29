@@ -13,7 +13,9 @@ export default function Brand_BrandList() {
   const [index, setIndex] = useState([]);
   const [first, setFirst] = useState([]);
   const [query, setQuery] = useState({ text: "" });
-
+  const [brand_id, setBrand_id] = useState([]);
+  const [selectedcustomer, setSelectedcustomer] = useState([]);
+  const [selectedStatus, setSelectedStatus] = useState("");
   useEffect(() => {
     axios
       .get(`http://admin.ishop.sunhimlabs.com/api/v1/products/parentcategories`)
@@ -32,12 +34,81 @@ export default function Brand_BrandList() {
       )
       .then((res) => setFirst(res.data.data));
   };
-  useEffect(() => {
-    
+
+  const getCustomerList = () => {
     axios
       .get(`http://admin.ishop.sunhimlabs.com/api/v1/products/brands/list`)
       .then((res) => setFirst(res.data.data));
+  };
+
+  useEffect(() => {
+    getCustomerList();
   }, []);
+  
+  const statusChange = (apidata) => {
+    fetch(
+      "http://admin.ishop.sunhimlabs.com/api/v1/products/brands/changestatus",
+      {
+        method: "POST",
+        headers: {
+          Accept: "application/json",
+          "Content-Type": "Application/json",
+        },
+        body: JSON.stringify(apidata),
+      }
+    ).then((result) => {
+      result.json().then((resps) => {
+        console.warn("resps", resps);
+        getCustomerList();
+      });
+    });
+  };
+
+  function handleClick(brandId, status) {
+    console.warn(brand_id, status);
+
+    let apidata = {
+      brand_id: brandId,
+      status: status === "0" ? "1" : "0",
+    };
+    statusChange(apidata);
+  }
+
+  const onSelectCustomer = (e, brand_id) => {
+    const datas =
+    first.length > 0 &&
+    first.map((item) => {
+        if (item.brand_id === brand_id) {
+          return {
+            ...item,
+            isSelected: e.target.checked,
+          };
+        } else {
+          return {
+            ...item,
+          };
+        }
+      });
+    setFirst(datas);
+    console.log(e.target.checked, brand_id);
+    const selectedData = datas.filter((item) => item.isSelected === true);
+    console.log(selectedData, 10);
+    setSelectedcustomer(selectedData);
+
+    console.log(datas);
+  };
+
+  const applyStatus = () => {
+    console.log(3, selectedcustomer, selectedStatus);
+    const selectedId = selectedcustomer.map((id) => id.brand_id).join(",");
+    console.log(selectedId);
+    const apidata = {
+      brand_id: selectedId,
+      status: selectedStatus,
+    };
+    statusChange(apidata);
+  };
+
   return (
     <div>
       <Navbar expand="lg">
@@ -109,12 +180,8 @@ export default function Brand_BrandList() {
                   <div class="custom-control custom-checkbox">
                     <input
                       type="checkbox"
-                      class="custom-control-input"
-                      id="customCheck"
-                      checked
                     />
                     <label
-                      class="custom-control-label"
                       for="customCheck"
                     ></label>
                   </div>
@@ -127,30 +194,46 @@ export default function Brand_BrandList() {
               </tr>
             </thead>
             <tbody>
-              {first.map((item) => {
-                return (
-                  <tr key={item.product_id}>
-                    <td>
-                      <div class="custom-control custom-checkbox">
-                        <input
-                          type="checkbox"
-                          class="custom-control-input"
-                          id="customCheck2"
-                        />
-                        <label
-                          class="custom-control-label"
-                          for="customCheck2"
-                        ></label>
-                      </div>
-                    </td>
-                    <td>{item.id}</td>
-                    <td>{item.brand_name}</td>
-                    <td>{item.brand_logo}</td>
-                    <td>{item.status === 0 ? "inactive" : "active"}</td>
-                    <td>  <Link to={`/brand/edit/${item.brand_id}`}><i class="fas fa-edit"  style={{fontSize:'24px'}}></i></Link></td>
-                  </tr>
-                );
-              })}
+              {first &&
+                first.length > 0 &&
+                first.map((item) => {
+                  return (
+                    <tr key={item.id}>
+                      <td>
+                        <div class="custom-control custom-checkbox">
+                          <input
+                            type="checkbox"
+                            value={item.isSelected}
+                            onChange={(e) => onSelectCustomer(e, item.brand_id)}
+                          />
+                          <label for="customCheck{item.id}"></label>
+                        </div>
+                      </td>
+                      <td>{item.id}</td>
+                      <td>{item.brand_name}</td>
+                      <td>{item.brand_logo}</td>
+                      <td>
+                        <button
+                          type="button"
+                          onClick={() =>
+                            handleClick(item.brand_id, item.status)
+                          }
+                        >
+                          {item.status === "0" ? "inactive" : "active"}
+                        </button>
+                      </td>
+                      <td>
+                       
+                        <Link to={`/brand/edit/${item.brand_id}`}>
+                          <i
+                            class="fas fa-edit"
+                            style={{ fontSize: "24px" }}
+                          ></i>
+                        </Link>
+                      </td>
+                    </tr>
+                  );
+                })}
             </tbody>
           </table>
           {/* <-------------------------TableEnd----------------------> */}
@@ -158,16 +241,16 @@ export default function Brand_BrandList() {
           <div class="text-left">
             <div className="row">
               <div className="col-md-2">
-                {/* <label for="exampleFormControlSelect1">Action</label> */}
                 <select
                   class="form-control"
                   id="exampleFormControlSelect1"
                   placeholder="Action"
+                  onChange={(e) => setSelectedStatus(e.target.value)}
                 >
                   <option selected>Action</option>
-                  <option>Active</option>
-                  <option>Inactive</option>
-                  <option>Delete</option>
+                  <option value={"1"}>Active</option>
+                  <option value={"0"}>Inactive</option>
+                  <option value={"2"}>Delete</option>
                 </select>
               </div>
               <div className="col-md-4">
@@ -175,6 +258,7 @@ export default function Brand_BrandList() {
                   type="button"
                   class="btn btn-light"
                   style={{ width: "8rem" }}
+                  onClick={() => applyStatus()}
                 >
                   Apply
                 </button>
@@ -182,7 +266,6 @@ export default function Brand_BrandList() {
             </div>
           </div>
         </div>
-
       </div>
     </div>
   );
@@ -321,7 +404,7 @@ export default function Brand_BrandList() {
 //               showCheckboxColumn
 //               data={tableData}
 //               keyField="id"
-              
+
 //             >
 //               <Column header="Category Name" field="id" />
 //               <Column header="brand Name" field="brand_name" />

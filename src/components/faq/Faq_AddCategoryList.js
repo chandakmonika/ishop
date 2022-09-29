@@ -6,9 +6,12 @@ import Nav from "react-bootstrap/Nav";
 import Navbar from "react-bootstrap/Navbar";
 import { Link } from "react-router-dom";
 export default function Faq_AddCategoryList() {
+  const [index, setIndex] = useState([]);
   const [first, setFirst] = useState([]);
   const [query, setQuery] = useState({ text: "" });
-
+  const [faq_category_id, setFaq_category_id] = useState([]);
+  const [selectedcustomer, setSelectedcustomer] = useState([]);
+  const [selectedStatus, setSelectedStatus] = useState("0");
   console.log(query);
   const handleChange = (e) => {
     setQuery({ text: e.target.value });
@@ -22,11 +25,83 @@ export default function Faq_AddCategoryList() {
       .then((res) => setFirst(res.data.data));
   };
 
-  useEffect(() => {
+
+  const getCustomerList = () => {
     axios
-      .get(`http://admin.ishop.sunhimlabs.com/api/v1/faq/categories/list`)
-      .then((res) => setFirst(res.data.data));
+    .get(`http://admin.ishop.sunhimlabs.com/api/v1/faq/categories/list`)
+    .then((res) => setFirst(res.data.data));
+  };
+
+  useEffect(() => {
+    getCustomerList();
   }, []);
+
+  const statusChange = (apidata) => {
+    fetch("http://admin.ishop.sunhimlabs.com/api/v1/faq/categories/changestatus", {
+      method: "POST",
+      headers: {
+        Accept: "application/json",
+        "Content-Type": "Application/json",
+      },
+      body: JSON.stringify(apidata),
+    }).then((result) => {
+      result.json().then((resps) => {
+        console.warn("resps", resps);
+        getCustomerList();
+        
+      });
+    });
+  };
+
+  function handleClick(faq_category_id, status) {
+    console.warn(faq_category_id, status);
+
+    let apidata = {
+      faq_category_id: faq_category_id,
+      status: status === "0" ? "1" : "0",
+    };
+    statusChange(apidata);
+  }
+
+  const onSelectCustomer = (e, faq_category_id) => {
+    const datas =
+      first.length > 0 &&
+      first.map((item) => {
+        if (item.faq_category_id === faq_category_id) {
+          return {
+            ...item,
+            isSelected: e.target.checked,
+          };
+        } else {
+          return {
+            ...item,
+          };
+        }
+      });
+    setFirst(datas);
+    console.log(e.target.checked, faq_category_id);
+    const selectedData = datas.filter((item) => item.isSelected === true);
+    console.log(selectedData, 10);
+    setSelectedcustomer(selectedData);
+
+    console.log(datas);
+  };
+
+  const applyStatus = () => {
+    console.log(3, selectedcustomer, selectedStatus);
+    const selectedId = selectedcustomer.map((id) => id.faq_category_id).join(",");
+    console.log(selectedId);
+    const apidata = {
+      faq_category_id: selectedId,
+      status: selectedStatus,
+    };
+    statusChange(apidata);
+  };
+  // useEffect(() => {
+  //   axios
+  //     .get(`http://admin.ishop.sunhimlabs.com/api/v1/faq/categories/list`)
+  //     .then((res) => setFirst(res.data.data));
+  // }, []);
   return (
     <div>
       <Navbar expand="lg">
@@ -90,24 +165,32 @@ export default function Faq_AddCategoryList() {
               </tr>
             </thead>
             <tbody>
-              {first.map((item) => {
+            {first &&
+                first.length > 0 &&
+              first.map((item) => {
                 return (
                   <tr key={item.product_id}>
-                    <td>
-                      <div class="custom-control custom-checkbox">
-                        <input
-                          type="checkbox"
-                          class="custom-control-input"
-                          id="customCheck2"
-                        />
-                        <label
-                          class="custom-control-label"
-                          for="customCheck2"
-                        ></label>
-                      </div>
-                    </td>
+                     <td>
+                        <div class="custom-control custom-checkbox">
+                          <input
+                            type="checkbox"
+                            value={item.isSelected}
+                            onChange={(e) => onSelectCustomer(e, item.faq_category_id)}
+                          />
+                          <label for="customCheck{item.id}"></label>
+                        </div>
+                      </td>
                     <td>{item.category_name}</td>
-                    <td>{item.status === 0 ? "inactive" : "active"}</td>
+                    <td>
+                        <button
+                          type="button"
+                          onClick={() =>
+                            handleClick(item.faq_category_id, item.status)
+                          }
+                        >
+                          {item.status === "0" ? "inactive" : "active"}
+                        </button>
+                      </td>
                     <td><Link to={`/mastermanagement/faq/category/edit/${item.faq_category_id}`}><i class="fas fa-edit" style={{ fontSize: "24px" }}></i></Link></td>
                     
                   </tr>
@@ -119,16 +202,17 @@ export default function Faq_AddCategoryList() {
 
           <div class="text-left">
             <div className="row">
-              <div className="col-md-2">
-                {/* <label for="exampleFormControlSelect1">Action</label> */}
+            <div className="col-md-2">
                 <select
                   class="form-control"
                   id="exampleFormControlSelect1"
                   placeholder="Action"
+                  onChange={(e) => setSelectedStatus(e.target.value)}
                 >
                   <option selected>Action</option>
-                  <option>Active</option>
-                  <option>Inactive</option>
+                  <option value={"1"}>Active</option>
+                  <option value={"0"}>Inactive</option>
+                  <option value={"2"}>Delete</option>
                 </select>
               </div>
               <div className="col-md-4">
@@ -136,6 +220,7 @@ export default function Faq_AddCategoryList() {
                   type="button"
                   class="btn btn-light"
                   style={{ width: "8rem" }}
+                  onClick={() => applyStatus()}
                 >
                   Apply
                 </button>

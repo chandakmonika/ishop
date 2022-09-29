@@ -1,5 +1,6 @@
-
-import React from "react";
+import React, { useEffect, useState } from "react";
+import axios from "axios";
+import { Link } from "react-router-dom";
 import Button from "react-bootstrap/Button";
 import Dropdown from "react-bootstrap/Dropdown";
 import Container from "react-bootstrap/Container";
@@ -7,6 +8,28 @@ import Nav from "react-bootstrap/Nav";
 import Navbar from "react-bootstrap/Navbar";
 import NavDropdown from "react-bootstrap/NavDropdown";
 export default function Master_NewsLetterSubscribtion() {
+  const [first, setFirst] = useState([]);
+  const [query, setQuery] = useState({ text: "" });
+
+  console.log(query);
+  const handleChange = (e) => {
+    setQuery({ text: e.target.value });
+  };
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    axios
+      .get(
+        `http://admin.ishop.sunhimlabs.com/api/v1/newsletter/subscribers/list/?q=${query.text}`
+      )
+      .then((res) => setFirst(res.data.data));
+  };
+  useEffect(() => {
+    axios
+      .get(
+        `http://admin.ishop.sunhimlabs.com/api/v1/newsletter/subscribers/list`
+      )
+      .then((res) => setFirst(res.data.data));
+  }, []);
   return (
     <div>
       <Navbar expand="lg">
@@ -26,21 +49,31 @@ export default function Master_NewsLetterSubscribtion() {
         <div class="card-body" style={{ width: "100%" }}>
           <div class="row">
             <div className="col-sm-3">
-              <div class="input-group">
-                <input type="text" class="form-control" placeholder="Search" />
-                <div class="input-group-append">
+              <form onSubmit={handleSubmit}>
+                <div class="input-group">
+                  <input
+                    type="text"
+                    name="search"
+                    className="form-control"
+                    id="exampleInputEmail1"
+                    aria-describedby="texthelp"
+                    placeholder="Search "
+                    onChange={handleChange}
+                  />
                   <Button variant="info" type="submit">
                     Search
                   </Button>
                 </div>
-              </div>
+              </form>
             </div>
           </div>
           <br />
           <table class="table table-bordered" style={{ width: "95%" }}>
             <thead style={{ backgroundColor: "#EBF1F3" }}>
               <tr>
-                <th scope="col"> <div class="custom-control custom-checkbox">
+                <th scope="col">
+                  {" "}
+                  <div class="custom-control custom-checkbox">
                     <input
                       type="checkbox"
                       class="custom-control-input"
@@ -51,15 +84,18 @@ export default function Master_NewsLetterSubscribtion() {
                       class="custom-control-label"
                       for="customCheck"
                     ></label>
-                  </div></th>
+                  </div>
+                </th>
                 <th scope="col">Email</th>
 
                 <th scope="col">Action</th>
               </tr>
             </thead>
             <tbody>
-              <tr>
-              <td>
+              {first.map((item) => {
+                return (
+                  <tr key={item.product_id}>
+                    <td>
                       <div class="custom-control custom-checkbox">
                         <input
                           type="checkbox"
@@ -72,50 +108,15 @@ export default function Master_NewsLetterSubscribtion() {
                         ></label>
                       </div>
                     </td>
-                <td>monika12@gmail.com</td>
-                <td>
-                  <i class="fas fa-edit" style={{ fontSize: "24px" }}></i>
-                </td>
-              </tr>
-              <tr>
-              <td>
-                      <div class="custom-control custom-checkbox">
-                        <input
-                          type="checkbox"
-                          class="custom-control-input"
-                          id="customCheck2"
-                        />
-                        <label
-                          class="custom-control-label"
-                          for="customCheck2"
-                        ></label>
-                      </div>
+
+                    <td>{item.email}</td>
+
+                    <td>
+                      <i class="fas fa-edit" style={{ fontSize: "24px" }}></i>
                     </td>
-                <td>sapana56@gmail.com</td>
-                <td>
-                  <i class="fas fa-edit" style={{ fontSize: "24px" }}></i>
-                </td>
-              </tr>
-              <tr>
-              <td>
-                      <div class="custom-control custom-checkbox">
-                        <input
-                          type="checkbox"
-                          class="custom-control-input"
-                          id="customCheck2"
-                        />
-                        <label
-                          class="custom-control-label"
-                          for="customCheck2"
-                        ></label>
-                      </div>
-                    </td>
-                <td>vipulb@gmail.com</td>
-                <td>
-                  <i class="fas fa-edit" style={{ fontSize: "24px" }}></i>
-                </td>
-              </tr>
-              
+                  </tr>
+                );
+              })}
             </tbody>
           </table>
           {/* <-------------------------TableEnd----------------------> */}
@@ -130,7 +131,7 @@ export default function Master_NewsLetterSubscribtion() {
                   placeholder="Action"
                 >
                   <option selected>Action</option>
-                  
+
                   <option>Delete</option>
                 </select>
               </div>

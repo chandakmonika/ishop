@@ -1,35 +1,98 @@
-import React,{useState} from 'react'
-import Master_CMSEditor from './Master_CMSEditor';
-
+import axios from "axios";
+import React, { useState, useEffect } from "react";
+import { useParams } from "react-router-dom";
+import Master_CMSEditor from "./Master_CMSEditor";
 
 const config = {
-    buttons: [
-      "bold",
-      "italic",
-      "underline",
-      "link",
-      "unlink",
-      "source",
-      "paragraph",
-      "image",
-      "video",
-      "table",
-      "search",
-      "file",
-      "preview",
-      "align",
-      "undo",
-      "redo",
-      "fullsize",
-      "dots",
-      "copyformat",
-      "hr",
-      "brush",
-      "fontsize",
-    ],
-  };
+  buttons: [
+    "bold",
+    "italic",
+    "underline",
+    "link",
+    "unlink",
+    "source",
+    "paragraph",
+    "image",
+    "video",
+    "table",
+    "search",
+    "file",
+    "preview",
+    "align",
+    "undo",
+    "redo",
+    "fullsize",
+    "dots",
+    "copyformat",
+    "hr",
+    "brush",
+    "fontsize",
+  ],
+};
 export default function M_CMSEditpage() {
-    const [value, setValue] = useState("");
+  const [value, setValue] = useState("");
+  const [page_title, setPage_title] = useState("");
+  const [page_description, setPage_description] = useState("");
+  const [seo_page_title, setSeo_page_title] = useState("");
+  const [seo_page_keywords, setSeo_page_keywords] = useState("");
+  const [seo_page_description, setSeo_page_description] = useState([]);
+  const [userdata, setUser_data] = useState({
+    page_title: "",
+    page_description: "",
+    seo_page_title: "",
+    seo_page_keywords: "",
+    seo_page_description: "",
+  });
+  const { page_id } = useParams();
+  useEffect(() => {
+    axios
+      .get(
+        `http://admin.ishop.sunhimlabs.com/api/v1/cmapages/details/${page_id}`
+      )
+      .then((res) => {
+        const getData = res.data.data;
+        console.log(getData);
+        setUser_data(getData);
+      });
+  }, []);
+
+  const handleChange = (e) => {
+    console.log(e.target);
+
+    setUser_data({
+      ...userdata,
+      [e.target.name]: e.target.value,
+    });
+  };
+
+  function customerUser() {
+    console.warn(
+      page_title,
+      page_description,
+      seo_page_title,
+      seo_page_keywords,
+      seo_page_description
+    );
+
+    fetch(
+      `http://admin.ishop.sunhimlabs.com/api/v1/cmapages/edit/`,
+      {
+        method: "POST",
+        headers: {
+          Accept: "application/json",
+          "Content-Type": "Application/json",
+        },
+        body: JSON.stringify(userdata),
+      }
+    ).then((result) => {
+      result.json().then((resps) => {
+        console.warn("resps", resps);
+      });
+    });
+  }
+  const submit = (e) => {
+    e.preventDefault();
+  };
   return (
     <div style={{ paddingLeft: "4rem" }}>
       <br />
@@ -37,51 +100,71 @@ export default function M_CMSEditpage() {
         <span>CMS Edit Page</span>
       </h4>
       <br />
-      <form style={{ Display: "float-right" }}>
-        <div className="card" style={{ paddingLeft: "1rem", width:'70rem' }}>
-          <br />
 
+      <div className="card" style={{ paddingLeft: "1rem", width: "70rem" }}>
+        <br />
+
+        <form onSubmit={submit} style={{ Display: "float-right" }}>
           <div
             className="form-group"
             controlId="formBasicFirstName"
-            style={{ width: "50%" }}
+            style={{ width: "60%" }}
           >
-           <label className="demo">Page Title</label>
+            <label className="demo">Page Title</label>
             <input
               type="text"
               className="form-control"
-              placeholder="Add Category"
-              name="add_question"
+              name="page_title"
+              placeholder="Enter Email Title"
+              value={userdata.page_title}
+              onChange={handleChange}
             />
-            <br />  
+            <br />
             <h6>Product Short Discription</h6>
-                <Master_CMSEditor setValue={setValue} config={config} />
-                <br />
-                
+            <Master_CMSEditor setValue={setValue} config={config} />
+            <br />
 
-                <label className="demo">Meta Tags</label>
+            <label className="demo">Meta Tags</label>
             <input
               type="text"
               className="form-control"
-              placeholder="Enter Meta Tags"
-              name="add_question"
+              name="seo_page_title"
+              placeholder="Enter Email Title"
+              value={userdata.seo_page_title}
+              onChange={handleChange}
             />
-            <br /> 
+            <br />
 
             <label className="demo">Description</label>
-            <textarea class="form-control" id="exampleFormControlTextarea1" placeholder="Enter Answer" rows="3"></textarea>
-            <br /> 
+            <textarea
+              class="form-control"
+              id="exampleFormControlTextarea1"
+              placeholder="Enter Answer"
+              name="seo_page_description"
+              value={userdata.seo_page_description}
+              onChange={handleChange}
+              rows="3"
+            ></textarea>
+            <br />
 
             <label className="demo">Keywords</label>
-            <textarea class="form-control" id="exampleFormControlTextarea1" placeholder="Enter Answer" rows="3"></textarea>
-            <br /> 
-
+            <textarea
+              class="form-control"
+              id="exampleFormControlTextarea1"
+              placeholder="Enter Answer"
+              name="seo_page_keywords"
+              value={userdata.seo_page_keywords}
+              onChange={handleChange}
+              rows="3"
+            ></textarea>
+            <br />
           </div>
-          </div><br/>
-          <button type="button" class="btn btn-info" style={{marginLeft:'60rem'}}>
-          Submit
-        </button>
-          </form>
-          </div>
-  )
+          <br />
+          <button type="button" class="btn btn-info" onClick={customerUser}>
+              Update
+            </button>
+        </form>
+      </div>
+    </div>
+  );
 }

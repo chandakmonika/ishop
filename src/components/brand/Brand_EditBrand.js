@@ -117,8 +117,8 @@ export default function Brand_EditBrand() {
                 value={userdata.status}
                 onChange={handleChange}
               >
-                <option>0</option>
-                <option>1</option>
+                <option value="0">Inactive</option>
+                <option value="1">Active</option>
               </select>
             </div>
 

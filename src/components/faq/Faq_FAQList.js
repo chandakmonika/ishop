@@ -12,7 +12,9 @@ export default function Faq_FAQList() {
 
   const [first, setFirst] = useState([]);
   const [query, setQuery] = useState({ text: "" });
-
+  const [faq_id, setFaq_id] = useState([]);
+  const [selectedcustomer, setSelectedcustomer] = useState([]);
+  const [selectedStatus, setSelectedStatus] = useState("0");
   console.log(query);
   const handleChange = (e) => {
     setQuery({ text: e.target.value });
@@ -26,11 +28,85 @@ export default function Faq_FAQList() {
       .then((res) => setFirst(res.data.data));
   };
 
-  useEffect(() => {
+
+
+  const getCustomerList = () => {
     axios
-      .get(`http://admin.ishop.sunhimlabs.com/api/v1/faq/list`)
+    .get(`http://admin.ishop.sunhimlabs.com/api/v1/faq/list`)
       .then((res) => setFirst(res.data.data));
+  };
+
+  useEffect(() => {
+    getCustomerList();
   }, []);
+
+  const statusChange = (apidata) => {
+    fetch("http://admin.ishop.sunhimlabs.com/api/v1/faq/changestatus", {
+      method: "POST",
+      headers: {
+        Accept: "application/json",
+        "Content-Type": "Application/json",
+      },
+      body: JSON.stringify(apidata),
+    }).then((result) => {
+      result.json().then((resps) => {
+        console.warn("resps", resps);
+        getCustomerList();
+        
+      });
+    });
+  };
+
+  function handleClick(faq_id, status) {
+    console.warn(faq_id, status);
+
+    let apidata = {
+      faq_id: faq_id,
+      status: status === "0" ? "1" : "0",
+    };
+    statusChange(apidata);
+  }
+
+  const onSelectCustomer = (e, faq_id) => {
+    const datas =
+      first.length > 0 &&
+      first.map((item) => {
+        if (item.faq_id === faq_id) {
+          return {
+            ...item,
+            isSelected: e.target.checked,
+          };
+        } else {
+          return {
+            ...item,
+          };
+        }
+      });
+    setFirst(datas);
+    console.log(e.target.checked, faq_id);
+    const selectedData = datas.filter((item) => item.isSelected === true);
+    console.log(selectedData, 10);
+    setSelectedcustomer(selectedData);
+
+    console.log(datas);
+  };
+
+  const applyStatus = () => {
+    console.log(3, selectedcustomer, selectedStatus);
+    const selectedId = selectedcustomer.map((id) => id.faq_id).join(",");
+    console.log(selectedId);
+    const apidata = {
+      faq_id: selectedId,
+      status: selectedStatus,
+    };
+    statusChange(apidata);
+  };
+
+  // useEffect(() => {
+  //   axios
+  //     .get(`http://admin.ishop.sunhimlabs.com/api/v1/faq/list`)
+  //     .then((res) => setFirst(res.data.data));
+  // }, []);
 
   
   return (
@@ -96,25 +172,33 @@ export default function Faq_FAQList() {
               </tr>
             </thead>
             <tbody>
-              {first.map((item) => {
+            {first &&
+                first.length > 0 &&
+              first.map((item) => {
                 return (
                   <tr key={item.product_id}>
                     <td>
-                      <div class="custom-control custom-checkbox">
-                        <input
-                          type="checkbox"
-                          class="custom-control-input"
-                          id="customCheck2"
-                        />
-                        <label
-                          class="custom-control-label"
-                          for="customCheck2"
-                        ></label>
-                      </div>
+                
+                        <div class="custom-control custom-checkbox">
+                          <input
+                            type="checkbox"
+                            value={item.isSelected}
+                            onChange={(e) => onSelectCustomer(e, item.faq_id)}
+                          />
+                          <label for="customCheck{item.id}"></label>
+                        </div>
+                     
                     </td>
                     <td>{item.category_name}</td>
                     <td>{item.question}</td>
-                    <td>{item.status === 0 ? "inactive" : "active"}</td>
+                    <td> <button
+                          type="button"
+                          onClick={() =>
+                            handleClick(item.faq_id, item.status)
+                          }
+                        >
+                          {item.status === "0" ? "inactive" : "active"}
+                        </button></td>
                     <td><Link to={`/faq/edit/${item.faq_id}`}><i class="fas fa-edit" style={{ fontSize: "24px" }}></i></Link></td>
                     
                   </tr>
@@ -127,16 +211,17 @@ export default function Faq_FAQList() {
 
           <div class="text-left">
             <div className="row">
-              <div className="col-md-2">
-                {/* <label for="exampleFormControlSelect1">Action</label> */}
+            <div className="col-md-2">
                 <select
                   class="form-control"
                   id="exampleFormControlSelect1"
                   placeholder="Action"
+                  onChange={(e) => setSelectedStatus(e.target.value)}
                 >
                   <option selected>Action</option>
-                  <option>Active</option>
-                  <option>Inactive</option>
+                  <option value={"1"}>Active</option>
+                  <option value={"0"}>Inactive</option>
+                  <option value={"2"}>Delete</option>
                 </select>
               </div>
               <div className="col-md-4">
@@ -144,6 +229,7 @@ export default function Faq_FAQList() {
                   type="button"
                   class="btn btn-light"
                   style={{ width: "8rem" }}
+                  onClick={() => applyStatus()}
                 >
                   Apply
                 </button>

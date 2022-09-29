@@ -4,7 +4,7 @@ import { Link } from 'react-router-dom'
 export default function ForgetPassword() {
   return (
    
-      <div style={{ textAlign: "center", paddingLeft: "30rem" }}>
+      <div style={{ textAlign: "center", paddingLeft: "30rem",marginTop:'10rem' }}>
       <div className="card" style={{ width: "30rem" }}>
         <div className="card-body" style={{ paddingRight: "200rm" }}>
           <p style={{ textAlign: "center" }}>You forgot your password? Here you can easily retrieve a new password.</p>

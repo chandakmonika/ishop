@@ -5,7 +5,8 @@ import "./Coupen_CoupenCode.css";
 
 export default function Coupen_CoupenCode() {
   return (
-    <div style={{ paddingLeft: "10rem" }}><br/>
+    <div style={{ paddingLeft: "10rem" }}>
+      <br />
       <h4 style={{ paddingLeft: "2rem" }}>Add Coupen Code</h4>
       <div className="card" style={{ width: "50rem" }}>
         <div className="ind">
@@ -22,12 +23,13 @@ export default function Coupen_CoupenCode() {
               <Form.Text className="text-muted"></Form.Text>
             </Form.Group>
             <h6>Select Discount</h6>
-            <span>Percent</span>&nbsp;&nbsp;&nbsp;
+            <span>Percent</span>
             <label class="switch">
-	<input class="switch-input" type="checkbox" />
-	<span class="switch-label" data-on="" data-off=""></span> 
-	<span class="switch-handle"></span> 
-</label>&nbsp;&nbsp;&nbsp;<span>Flat</span>
+              <input class="switch-input" type="checkbox" />
+              <span class="switch-label" data-on="" data-off=""></span>
+              <span class="switch-handle"></span>
+            </label>
+         <span>Flat</span>
             <Form.Group
               className="mb-3"
               controlId="formBasicMobileNumber"
@@ -35,21 +37,27 @@ export default function Coupen_CoupenCode() {
             >
               <Form.Label>Sale Price</Form.Label>
               <Form.Control type="text" />
-
-
-
             </Form.Group>
             <div className="row">
-            <div className="col-md-3">
-            <label>Start Date</label><br/>
-            <input type="datetime-local" id="birthdaytime" name="birthdaytime"/>
+              <div className="col-md-3">
+                <label>Start Date</label>
+                <br />
+                <input
+                  type="datetime-local"
+                  id="birthdaytime"
+                  name="birthdaytime"
+                />
+              </div>
+              <div className="col-md-3">
+                <label>End Date</label>
+                <br />
+                <input
+                  type="datetime-local"
+                  id="birthdaytime"
+                  name="birthdaytime"
+                />
+              </div>
             </div>
-            <div className="col-md-3">
-            <label>End Date</label><br/>
-            <input type="datetime-local" id="birthdaytime" name="birthdaytime"/>
-            </div>
-            </div>
-            
           </Form>
           <br />
         </div>

@@ -3,7 +3,7 @@ import {Link } from "react-router-dom";
 
 export default function Login() {
   return (
-    <div style={{ textAlign: "center", paddingLeft: "30rem" }}>
+    <div style={{ textAlign: "center", paddingLeft: "30rem", marginTop:'10rem' }}>
       <div className="card" style={{ width: "30rem" }}>
         <div className="card-body" style={{ paddingRight: "200rm" }}>
           <p style={{ textAlign: "center" }}>Sign in to start your session</p>
@@ -43,7 +43,7 @@ export default function Login() {
                 <Link to="/forgetpassword">Forgot password?</Link>
               </div>
             </div>
-            <Link to="/storedetails" >
+            <Link to="/routing" >
             <button type="submit" class="btn btn-primary btn-block">
               Sign in
             </button>

@@ -149,7 +149,6 @@ export default function Customer_Customerlist() {
       <Navbar expand="lg">
         <Container fluid>
           <Navbar.Brand href="#">Customer List</Navbar.Brand>
-          {/* <Navbar.Toggle aria-controls="navbarScroll" /> */}
           <Navbar.Collapse id="navbarScroll">
             <Nav
               className="ml-auto my-4 my-lg-0"
@@ -196,11 +195,10 @@ export default function Customer_Customerlist() {
                   <div class="custom-control custom-checkbox">
                     <input
                       type="checkbox"
-                      // class="custom-control-input"
-                      // id="customCheck"
+                     
                     />
                     <label
-                      // class="custom-control-label"
+                     
                       for="customCheck"
                     ></label>
                   </div>
@@ -211,7 +209,7 @@ export default function Customer_Customerlist() {
                   <i class="fas fa-arrow-up" onClick={update}></i>
                 </th>
                 <th scope="col">
-                  Mobile Number&nbsp;{" "}
+                  Mobile Number&nbsp;
                   <i class="fas fa-arrow-down" onClick={update}></i>
                   <i class="fas fa-arrow-up" onClick={update}></i>
                 </th>
@@ -236,13 +234,10 @@ export default function Customer_Customerlist() {
                         <div class="custom-control custom-checkbox">
                           <input
                             type="checkbox"
-                            // class="custom-control-input"
-                            // id="customCheck{item.id}"
                             value={item.isSelected}
                             onChange={(e) => onSelectCustomer(e, item.user_id)}
                           />
                           <label
-                            // class="custom-control-label"
                             for="customCheck{item.id}"
                           ></label>
                         </div>

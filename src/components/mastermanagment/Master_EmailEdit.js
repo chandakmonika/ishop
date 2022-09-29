@@ -1,4 +1,6 @@
-import React,{useState} from 'react'
+import axios from "axios";
+import React, { useState, useEffect } from "react";
+import { useParams } from "react-router-dom";
 import Master_CMSEditor from './Master_CMSEditor';
 const config = {
     buttons: [
@@ -28,28 +30,90 @@ const config = {
   };
 export default function Master_EmailEdit() {
     const [value, setValue] = useState("");
+    const [email_title, setEmail_title] = useState("");
+    const [from_name, setFrom_name] = useState("");
+    const [from_email, setFrom_email] = useState("");
+    const [email_subject, setEmail_subject] = useState("");
+    const [email_content, setEmail_content] = useState([]);
+   const [userdata, setUser_data] = useState({
+    email_title: "",
+      from_name: "",
+      from_email: "",
+      email_subject: "",
+      email_content: "",
+    });
+    const { template_id } = useParams();
+    useEffect(() => {
+      axios
+        .get(
+          `http://admin.ishop.sunhimlabs.com/api/v1/emailtemplates/details/${template_id}`
+        )
+        .then((res) => {
+          const getData = res.data.data;
+          console.log(getData);
+          setUser_data(getData);
+        });
+    }, []);
+  
+    const handleChange = (e) => {
+      console.log(e.target);
+  
+      setUser_data({
+        ...userdata,
+        [e.target.name]: e.target.value,
+      });
+    };
+  
+    function customerUser() {
+      console.warn(email_title, from_name, from_email,email_subject,email_content);
+  
+      fetch(`http://admin.ishop.sunhimlabs.com/api/v1/emailtemplates/edit/`, {
+        method: "POST",
+        headers: {
+          Accept: "application/json",
+          "Content-Type": "Application/json",
+        },
+        body: JSON.stringify(userdata),
+      }).then((result) => {
+        result.json().then((resps) => {
+          console.warn("resps", resps);
+        });
+      });
+    }
+    const submit = (e) => {
+      e.preventDefault();
+    };
   return (
+    
     <div style={{ paddingLeft: "4rem" }}>
       <br />
       <h4 style={{ paddingLeft: "2rem" }}>
         <span>Edit Email</span>
       </h4>
       <br />
-      <form style={{ Display: "float-right" }}>
+    
         <div className="card" style={{ paddingLeft: "1rem", width:'70rem' }}>
           <br />
-
-          <div
-            className="form-group"
-            controlId="formBasicFirstName"
-            style={{ width: "50%" }}
+          <div className="ind">
+          <br />
+          <form
+            onSubmit={submit}
+            style={{ Display: "float-right",  }}
           >
+            <div
+              className="form-group"
+              controlId="formBasicFirstName"
+              style={{ width: "60%" }}
+            >
+          
            <label className="demo">Title</label>
             <input
               type="text"
               className="form-control"
-              placeholder="Add Category"
-              name="add_question"
+              name="email_title"
+                placeholder="Enter Email Title"
+                value={userdata.email_title}
+                onChange={handleChange}
             />
             <br />  
 
@@ -57,8 +121,10 @@ export default function Master_EmailEdit() {
             <input
               type="text"
               className="form-control"
-              placeholder="Add From Name"
-              name="add_question"
+              name="from_name"
+                placeholder="Enter From Name"
+                value={userdata.from_name}
+                onChange={handleChange}
             />
             <br /> 
 
@@ -66,8 +132,10 @@ export default function Master_EmailEdit() {
             <input
               type="text"
               className="form-control"
-              placeholder="Add From Email"
-              name="add_question"
+              name="from_email"
+              placeholder="Enter From Email"
+                value={userdata.from_email}
+                onChange={handleChange}
             />
             <br /> 
 
@@ -75,21 +143,26 @@ export default function Master_EmailEdit() {
             <input
               type="text"
               className="form-control"
-              placeholder="Add Email Subject"
-              name="add_question"
+              name="email_subject"
+              placeholder="Enter From Name"
+                value={userdata.email_subject}
+                onChange={handleChange}
             />
             <br /> 
 
             <h6>Email Content</h6>
-                <Master_CMSEditor setValue={setValue} config={config} />
+                <Master_CMSEditor setValue={setValue}  config={config} />
                 <br />
                 
-          </div>
+         
           </div><br/>
-          <button type="button" class="btn btn-info" style={{marginLeft:'60rem'}}>
-          Submit
-        </button>
+          <button type="button" class="btn btn-info" onClick={customerUser}>
+              Update Email
+            </button>
           </form>
           </div>
+          </div>
+          </div>
+          
   )
 }

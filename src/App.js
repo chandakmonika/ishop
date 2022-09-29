@@ -1,17 +1,16 @@
-
-import { Route, Routes, Link } from "react-router-dom";
-
-import ForgetPassword from "./ForgetPassword";
+import React from "react";
 import Login from "./Login";
+import Rout from "./Rout";
 import Routing from "./Routing";
+
 
 
 function App() {
   return (
-    
-      <div className="App"> 
-        <Login/>
-      
+    <div className="App">
+     <Rout/>   
+     <Routing/>
+     
     </div>
   );
 }

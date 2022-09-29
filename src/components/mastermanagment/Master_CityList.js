@@ -251,6 +251,9 @@ export default function Master_CityList() {
   const [page, setPage] = useState([]);
   const [cpage, setCpage] = useState();
   const [rowsPerPage, setRowsPerPage] = useState(10);
+  const [city_id, setCity_id] = useState([]);
+  const [selectedcustomer, setSelectedcustomer] = useState([]);
+  const [selectedStatus, setSelectedStatus] = useState("0");
   console.log(page);
   const url = "http://admin.ishop.sunhimlabs.com/api/v1/";
   useEffect(() => {
@@ -309,6 +312,79 @@ export default function Master_CityList() {
       console.log(error);
     }
   };
+
+  const getCustomerList = () => {
+    axios
+    .get(`http://admin.ishop.sunhimlabs.com/api/v1/countries/list/`)
+      .then((res) => setFirst(res.data.data));
+  };
+
+  useEffect(() => {
+    getCustomerList();
+  }, []);
+
+  const statusChange = (apidata) => {
+    fetch("http://admin.ishop.sunhimlabs.com/api/v1/cities/changestatus", {
+      method: "POST",
+      headers: {
+        Accept: "application/json",
+        "Content-Type": "Application/json",
+      },
+      body: JSON.stringify(apidata),
+    }).then((result) => {
+      result.json().then((resps) => {
+        console.warn("resps", resps);
+        getCustomerList();
+        
+      });
+    });
+  };
+
+  function handleClick(city_id, status) {
+    console.warn(city_id, status);
+
+    let apidata = {
+      city_id: city_id,
+      status: status === "0" ? "1" : "0",
+    };
+    statusChange(apidata);
+  }
+
+  const onSelectCustomer = (e, city_id) => {
+    const datas =
+      first.length > 0 &&
+      first.map((item) => {
+        if (item.city_id === city_id) {
+          return {
+            ...item,
+            isSelected: e.target.checked,
+          };
+        } else {
+          return {
+            ...item,
+          };
+        }
+      });
+    setFirst(datas);
+    console.log(e.target.checked, city_id);
+    const selectedData = datas.filter((item) => item.isSelected === true);
+    console.log(selectedData, 10);
+    setSelectedcustomer(selectedData);
+
+    console.log(datas);
+  };
+
+  const applyStatus = () => {
+    console.log(3, selectedcustomer, selectedStatus);
+    const selectedId = selectedcustomer.map((id) => id.city_id).join(",");
+    console.log(selectedId);
+    const apidata = {
+      city_id: selectedId,
+      status: selectedStatus,
+    };
+    statusChange(apidata);
+  };
+
   return (
     <div>
       <Navbar expand="lg">
@@ -408,26 +484,34 @@ export default function Master_CityList() {
               </tr>
             </thead>
             <tbody>
-              {first.map((item) => {
+            {first &&
+                first.length > 0 &&
+              first.map((item) => {
                 return (
                   <tr key={item.product_id}>
-                    <td>
-                      <div class="custom-control custom-checkbox">
-                        <input
-                          type="checkbox"
-                          class="custom-control-input"
-                          id="customCheck2"
-                        />
-                        <label
-                          class="custom-control-label"
-                          for="customCheck2"
-                        ></label>
-                      </div>
-                    </td>
+                     <td>
+                
+                <div class="custom-control custom-checkbox">
+                  <input
+                    type="checkbox"
+                    value={item.isSelected}
+                    onChange={(e) => onSelectCustomer(e, item.city_id)}
+                  />
+                  <label for="customCheck{item.id}"></label>
+                </div>
+             
+            </td>
                     <td>{item.city_name}</td>
                     <td>{item.state_name}</td>
                     <td>{item.country_name}</td>
-                    <td>{item.status === 0 ? "inactive" : "active"}</td>
+                    <td><button
+                          type="button"
+                          onClick={() =>
+                            handleClick(item.city_id, item.status)
+                          }
+                        >
+                          {item.status === "0" ? "inactive" : "active"}
+                        </button></td>
                     <td>
                       <Link to={`/mastermanagement/city/edit/${item.city_id}`}>
                         <i class="fas fa-edit" style={{ fontSize: "24px" }}></i>
@@ -450,15 +534,17 @@ export default function Master_CityList() {
 
           <div class="text-left">
             <div className="row">
-              <div className="col-md-2">
+            <div className="col-md-2">
                 <select
                   class="form-control"
                   id="exampleFormControlSelect1"
                   placeholder="Action"
+                  onChange={(e) => setSelectedStatus(e.target.value)}
                 >
                   <option selected>Action</option>
-                  <option>Active</option>
-                  <option>Inactive</option>
+                  <option value={"1"}>Active</option>
+                  <option value={"0"}>Inactive</option>
+                  <option value={"2"}>Delete</option>
                 </select>
               </div>
               <div className="col-md-4">
@@ -466,6 +552,7 @@ export default function Master_CityList() {
                   type="button"
                   class="btn btn-light"
                   style={{ width: "8rem" }}
+                  onClick={() => applyStatus()}
                 >
                   Apply
                 </button>

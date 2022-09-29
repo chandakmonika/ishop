@@ -51,8 +51,7 @@ import FAQ_EditFAQ from "./components/faq/FAQ_EditFAQ";
 import Master_EditCity from "./components/mastermanagment/Master_EditCity";
 import Address_EditAddress from "./components/address/Address_EditAddress";
 import Faq_EditCategoryFaq from "./components/faq/Faq_EditCategoryFaq";
-import ForgetPassword from "./ForgetPassword";
-import Login from './Login';
+
 
 
 
@@ -60,6 +59,7 @@ import Login from './Login';
 export default function Routing() {
   return (
     <div>
+       
       <div className="wrapper">
           <div className="row">
             <Navbar className="nav" bg="light" expand="lg">
@@ -86,7 +86,8 @@ export default function Routing() {
                       <i className="fas fa-user-alt"></i>
                     </Nav.Link>
                     <NavDropdown title="User Name" id="navbarScrollingDropdown">
-                      <NavDropdown.Item href="#action3">Login</NavDropdown.Item>
+                      <NavDropdown.Item href="#action3">
+                      <Link to="/login">Login</Link></NavDropdown.Item>
                       <NavDropdown.Item>
                         <Link to="/dashboard">Setting</Link>
                       </NavDropdown.Item>
@@ -189,7 +190,7 @@ export default function Routing() {
                       <a href="/customer/addnewcustomer">Add New Customer</a>
                     </li>
                     <li>
-                      <a href="/customer/list">Customer List</a>
+                      <a href="/routing/customer/list">Customer List</a>
                     </li>
                   </ul>
                 </li>
@@ -249,7 +250,7 @@ export default function Routing() {
                   <ul class="submenu">
                     <li>
                       <a href="/mastermanagement/cms/listpage">CMS Pages</a>
-                      <a href="/mastermanagement/cms/editpage">CMS Edit Page</a>
+                      {/* <a href="/mastermanagement/cms/editpage">CMS Edit Page</a> */}
                     </li>
                     <li>
                       <a href="/mastermanagement/setting/list">Setting</a>
@@ -258,16 +259,16 @@ export default function Routing() {
                       <a href="/mastermanagement/email/list">
                         Email Template List
                       </a>
-                      <a href="/mastermanagement/email/edit">Edit Email</a>
+                      {/* <a href="/mastermanagement/email/edit">Edit Email</a> */}
                     </li>
                     <li>
                       <a href="/mastermanagement/newsletter/list">
                         NewsLetter List
                       </a>
                     
-                      <a href="/mastermanagement/sendnewsletter">
+                      {/* <a href="/mastermanagement/sendnewsletter">
                         Send NewsLetter
-                      </a>
+                      </a> */}
                       <a href="/mastermanagement/newslettersubscribtion">
                         NewsLetter Subscribtion
                       </a>
@@ -290,7 +291,7 @@ export default function Routing() {
                   element={<Customer_Addnewcustomer />}
                 />
                 <Route
-                  path="/customer/list"
+                  path="/routing/customer/list"
                   element={<Customer_Customerlist />}
                 />
                 <Route path="/product/list" element={<Prodct_Productlist />} />
@@ -354,7 +355,7 @@ export default function Routing() {
                   element={<Mastermange_CMSListpages />}
                 />
                 <Route
-                  path="/mastermanagement/cms/editpage"
+                  path="/mastermanagement/cms/edit:page_id"
                   element={<M_CMSEditpage />}
                 />
                 <Route
@@ -370,7 +371,7 @@ export default function Routing() {
                   element={<Master_EmailList />}
                 />
                 <Route
-                  path="/mastermanagement/email/edit"
+                  path="/mastermanagement/email/edit/:template_id"
                   element={<Master_EmailEdit />}
                 />
                 <Route
@@ -386,7 +387,7 @@ export default function Routing() {
                   element={<Master_NewsLetterSubscribtion />}
                 />
                 <Route
-                  path="/mastermanagement/sendnewsletter"
+                  path="/mastermanagement/sendnewsletter/:template_id"
                   element={<Master_SendNewsLetter />}
                 />
                 <Route
@@ -440,14 +441,21 @@ export default function Routing() {
 
                 <Route path="/storedetails" element={<StoreDetails />} />
                 <Route path="/account/subscrption" element={<Subscrption />} />
-                <Route path="/login" element={<Login />} />
+                {/* <Route path="/login" element={<Login />} />
 
-                <Route path="/forgetpassword" element={<ForgetPassword />} />
+                <Route path="/forgetpassword" element={<ForgetPassword />} /> */}
 
               </Routes>
             </div>
           </div>
           </div>
+          {/* <Login/>
+          <Routes>
+       
+          <Route path="/login" element={<Login />} />
+
+<Route path="/forgetpassword" element={<ForgetPassword />} />
+</Routes> */}
     </div>
   )
 }

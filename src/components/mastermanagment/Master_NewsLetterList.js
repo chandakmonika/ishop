@@ -1,13 +1,33 @@
-import React from 'react'
+import React, { useEffect, useState } from "react";
+import axios from "axios";
+import { Link } from "react-router-dom";
 import Button from "react-bootstrap/Button";
 import Dropdown from "react-bootstrap/Dropdown";
 import Container from "react-bootstrap/Container";
 import Nav from "react-bootstrap/Nav";
 import Navbar from "react-bootstrap/Navbar";
-import NavDropdown from "react-bootstrap/NavDropdown";
 export default function Master_NewsLetterList() {
+  const [first, setFirst] = useState([]);
+  const [query, setQuery] = useState({ text: "" });
+  console.log(query);
+  const handleChange = (e) => {
+    setQuery({ text: e.target.value });
+  };
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    axios
+      .get(
+        `http://admin.ishop.sunhimlabs.com/api/v1/newsletter/templates/list/?q=${query.text}`
+      )
+      .then((res) => setFirst(res.data.data));
+  };
+  useEffect(() => {
+    axios
+      .get(`http://admin.ishop.sunhimlabs.com/api/v1/newsletter/templates/list`)
+      .then((res) => setFirst(res.data.data));
+  }, []);
   return (
-    <div> 
+    <div>
       <Navbar expand="lg">
         <Container fluid>
           <Navbar.Brand href="#">Newsletter List</Navbar.Brand>
@@ -25,14 +45,22 @@ export default function Master_NewsLetterList() {
         <div class="card-body" style={{ width: "100%" }}>
           <div class="row">
             <div className="col-sm-3">
-              <div class="input-group">
-                <input type="text" class="form-control" placeholder="Search" />
-                <div class="input-group-append">
+              <form onSubmit={handleSubmit}>
+                <div class="input-group">
+                  <input
+                    type="text"
+                    name="search"
+                    className="form-control"
+                    id="exampleInputEmail1"
+                    aria-describedby="texthelp"
+                    placeholder="Search "
+                    onChange={handleChange}
+                  />
                   <Button variant="info" type="submit">
                     Search
                   </Button>
                 </div>
-              </div>
+              </form>
             </div>
           </div>
           <br />
@@ -41,39 +69,47 @@ export default function Master_NewsLetterList() {
               <tr>
                 <th scope="col">Sr No</th>
                 <th scope="col">Title</th>
-
                 <th scope="col">Action</th>
               </tr>
             </thead>
             <tbody>
-              <tr>
-                <td>1</td>
-                <td>Forget Password</td>
-                <td>
-                  <i class="fas fa-edit" style={{ fontSize: "24px" }}></i>
-                </td>
-              </tr>
-              <tr>
-                <td>2</td>
-                <td>Welcome</td>
-                <td>
-                  <i class="fas fa-edit" style={{ fontSize: "24px" }}></i>
-                </td>
-              </tr>
-              <tr>
-                <td>3</td>
-                <td>Order Placed</td>
-                <td>
-                  <i class="fas fa-edit" style={{ fontSize: "24px" }}></i>
-                </td>
-              </tr>
-              <tr>
-                <td>4</td>
-                <td>Payment Successful</td>
-                <td>
-                  <i class="fas fa-edit" style={{ fontSize: "24px" }}></i>
-                </td>
-              </tr>
+              {first.map((item) => {
+                return (
+                  <tr key={item.product_id}>
+                    <td>
+                      <div class="custom-control custom-checkbox">
+                        <input
+                          type="checkbox"
+                          class="custom-control-input"
+                          id="customCheck2"
+                        />
+                        <label
+                          class="custom-control-label"
+                          for="customCheck2"
+                        ></label>
+                      </div>
+                    </td>
+
+                    <td>{item.email_title}</td>
+                    <td>
+                      <Link
+                        to={`/mastermanagement/sendnewsletter/${item.template_id}`}
+                      >
+                        <i class="fas fa-edit" style={{ fontSize: "24px" }}></i>
+                      </Link>
+                      &nbsp;
+                      <Link
+                        to={`/mastermanagement/sendnewsletter/${item.template_id}`}
+                      >
+                        <i
+                          class="fa fa-paper-plane"
+                          style={{ fontSize: "24px" }}
+                        ></i>
+                      </Link>
+                    </td>
+                  </tr>
+                );
+              })}
             </tbody>
           </table>
           {/* <-------------------------TableEnd----------------------> */}
@@ -106,5 +142,5 @@ export default function Master_NewsLetterList() {
         </div>
       </div>
     </div>
-  )
+  );
 }
