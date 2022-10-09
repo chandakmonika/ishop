@@ -289,7 +289,7 @@ applyStatus();
                         </button>
                       </td>
                       <td>
-                        <Link to={`/customer/address/list/${item.user_id}`}>
+                        <Link to={`/customer/address/list`}>
                           <i
                             class="fa fa-address-book"
                             style={{ fontSize: "24px" }}
