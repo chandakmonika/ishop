@@ -8,6 +8,9 @@ import "./Customer_Customerlist.css";
 import { Link } from "react-router-dom";
 import { useParams } from "react-router-dom";
 import TablePagination from "@mui/material/TablePagination";
+import Box from '@mui/material/Box';
+import Typography from '@mui/material/Typography';
+import Modal from '@mui/material/Modal';
 
 export default function Customer_Customerlist() {
   const [index, setIndex] = useState([]);
@@ -18,7 +21,11 @@ export default function Customer_Customerlist() {
   const [selectedcustomer, setSelectedcustomer] = useState([]);
   const [selectedStatus, setSelectedStatus] = useState("0");
   const [page, setPage] = useState([]);
-
+const[changeStatusId, setChangeStatusId] = useState({
+  user_id:"",
+  status:""
+});
+const[isSingleStatusUpdate, setIsSingleStatusUpdate] = useState(true)
   const url = "http://admin.ishop.sunhimlabs.com/api/v1/customer/list";
 
   console.log(query);
@@ -37,7 +44,6 @@ export default function Customer_Customerlist() {
     try {
       const res = await axios.get(`${url}`);
       const { data, pages } = res.data;
-
       setIndex(data);
       setPage(pages);
     } catch (error) {
@@ -93,20 +99,27 @@ export default function Customer_Customerlist() {
     }).then((result) => {
       result.json().then((resps) => {
         console.warn("resps", resps);
+        handleClose();
         getCustomerList();
-        
       });
     });
   };
 
-  function handleClick(userId, status) {
-    console.warn(user_id, status);
-
+  function handleStatusChange(userId, status) {
+    if (
+      isSingleStatusUpdate
+      ){
+        console.warn(user_id, status);
     let apidata = {
-      user_id: userId,
-      status: status === "0" ? "1" : "0",
+      user_id: changeStatusId.user_id,
+      status: changeStatusId.status === "0" ? "1" : "0",
     };
     statusChange(apidata);
+      }
+      else{
+applyStatus();
+      }
+    
   }
 
   const onSelectCustomer = (e, user_id) => {
@@ -133,6 +146,8 @@ export default function Customer_Customerlist() {
     console.log(datas);
   };
 
+
+
   const applyStatus = () => {
     console.log(3, selectedcustomer, selectedStatus);
     const selectedId = selectedcustomer.map((id) => id.user_id).join(",");
@@ -143,6 +158,30 @@ export default function Customer_Customerlist() {
     };
     statusChange(apidata);
   };
+
+
+
+  const style = {
+    position: 'absolute',
+    top: '50%',
+    left: '50%',
+    transform: 'translate(-50%, -50%)',
+    width: 400,
+    bgcolor: 'background.paper',
+    border: '2px solid #000',
+    boxShadow: 24,
+    p: 4,
+  };
+
+  const [open, setOpen] = React.useState(false);
+  const handleOpen = (user_id,status,isSingleStatus) => {
+    setIsSingleStatusUpdate(isSingleStatus)
+    setChangeStatusId({
+      user_id,status
+    })
+    setOpen(true);
+  } 
+  const handleClose = () => setOpen(false);
 
   return (
     <div>
@@ -193,14 +232,8 @@ export default function Customer_Customerlist() {
               <tr>
                 <th scope="col">
                   <div class="custom-control custom-checkbox">
-                    <input
-                      type="checkbox"
-                     
-                    />
-                    <label
-                     
-                      for="customCheck"
-                    ></label>
+                    <input type="checkbox" />
+                    <label for="customCheck"></label>
                   </div>
                 </th>
                 <th scope="col">
@@ -221,7 +254,7 @@ export default function Customer_Customerlist() {
                 <th scope="col">Orders Place</th>
                 <th scope="col">Total Sales</th>
                 <th scope="col">Status</th>
-                <th scope="col">Address</th>
+                <th scope="col">Action</th>
               </tr>
             </thead>
             <tbody>
@@ -237,9 +270,7 @@ export default function Customer_Customerlist() {
                             value={item.isSelected}
                             onChange={(e) => onSelectCustomer(e, item.user_id)}
                           />
-                          <label
-                            for="customCheck{item.id}"
-                          ></label>
+                          <label for="customCheck{item.id}"></label>
                         </div>
                       </td>
                       <td>
@@ -252,13 +283,13 @@ export default function Customer_Customerlist() {
                       <td>
                         <button
                           type="button"
-                          onClick={() => handleClick(item.user_id, item.status)}
+                          onClick={() => handleOpen(item.user_id, item.status,true)}
                         >
                           {item.status === "0" ? "inactive" : "active"}
                         </button>
                       </td>
                       <td>
-                        <Link to="/customer/address/list">
+                        <Link to={`/customer/address/list/${item.user_id}`}>
                           <i
                             class="fa fa-address-book"
                             style={{ fontSize: "24px" }}
@@ -281,7 +312,7 @@ export default function Customer_Customerlist() {
           {/* <-------------------------TableEnd----------------------> */}
 
           <div class="text-left">
-          <div className="row">
+            <div className="row">
               <div className="col-md-2">
                 <select
                   class="form-control"
@@ -300,7 +331,7 @@ export default function Customer_Customerlist() {
                   type="button"
                   class="btn btn-light"
                   style={{ width: "8rem" }}
-                  onClick={() => applyStatus()}
+                  onClick={() => handleOpen(null,null,false)}
                 >
                   Apply
                 </button>
@@ -312,18 +343,40 @@ export default function Customer_Customerlist() {
                 <b style={{ color: "black" }}> {page.current}</b> /{" "}
                 {page.totalpages}{" "}
               </p>
+
+              <TablePagination
+                className="col-md-5"
+                component="div"
+                count={page.totalrecords}
+                page={page.current - 1}
+                onPageChange={handleChangePage}
+                rowsPerPage={page.records_per_page}
+              />
+
             </div>
-            <TablePagination
-              className="col-md-5"
-              component="div"
-              count={page.totalrecords}
-              page={page.current - 1}
-              onPageChange={handleChangePage}
-              rowsPerPage={page.records_per_page}
-            />
-          </div>
+          </div>  
         </div>
       </div>
+      {/* <Button onClick={handleOpen}>Open modal</Button> */}
+      <Modal
+        open={open}
+        onClose={handleClose}
+        aria-labelledby="modal-modal-title"
+        aria-describedby="modal-modal-description"
+      >
+        <Box sx={style}>
+          <Typography id="modal-modal-title" variant="h6" component="h2">
+
+         
+          </Typography>
+
+          <Typography id="modal-modal-description" sx={{ mt: 2 }}>
+           Are you sure want to change the status?
+          </Typography>
+          <Button onClick={() => handleClose()}> No </Button>&nbsp;&nbsp;
+          <Button onClick={() => handleStatusChange()}>Yes</Button>
+        </Box>
+      </Modal>
     </div>
   );
 }

@@ -1,6 +1,7 @@
-import React,{ useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { Link } from "react-router-dom";
+import { useParams } from "react-router-dom";
 
 import Button from "react-bootstrap/Button";
 import Dropdown from "react-bootstrap/Dropdown";
@@ -8,9 +9,12 @@ import Container from "react-bootstrap/Container";
 import Nav from "react-bootstrap/Nav";
 import Navbar from "react-bootstrap/Navbar";
 import NavDropdown from "react-bootstrap/NavDropdown";
+
 export default function Address_AddressList() {
   const [first, setFirst] = useState([]);
   const [query, setQuery] = useState({ text: "" });
+
+  const { user_id } = useParams();
 
   console.log(query);
   const handleChange = (e) => {
@@ -55,6 +59,7 @@ export default function Address_AddressList() {
                   class="form-control"
                   placeholder="Address Name"
                 />
+
                 <div class="input-group-append">
                   <Button variant="info" type="submit">
                     Search
@@ -62,12 +67,20 @@ export default function Address_AddressList() {
                 </div>
               </div>
             </div>
+            <div className="col-sm-9">
+              <Link to="/customer/address/add">
+                <Button variant="info" style={{ marginLeft: "40rem" }}>
+                  Add Address
+                </Button>
+              </Link>
+            </div>
           </div>
           <br />
           <table class="table table-bordered" style={{ width: "95%" }}>
             <thead style={{ backgroundColor: "#EBF1F3" }}>
               <tr>
-                <th scope="col"><div class="custom-control custom-checkbox">
+                <th scope="col">
+                  <div class="custom-control custom-checkbox">
                     <input
                       type="checkbox"
                       class="custom-control-input"
@@ -78,7 +91,8 @@ export default function Address_AddressList() {
                       class="custom-control-label"
                       for="customCheck1"
                     ></label>
-                    </div></th>
+                  </div>
+                </th>
                 <th scope="col">Name</th>
                 <th scope="col">Email</th>
                 <th scope="col">Address</th>
@@ -104,13 +118,24 @@ export default function Address_AddressList() {
                         ></label>
                       </div>
                     </td>
-                    <td>{item.first_name}{item.last_name}</td>
+                    <td>
+                      {item.first_name}
+                      {item.last_name}
+                    </td>
                     <td>{item.email}</td>
-                    <td>{item.addressline1}{item.addressline2}{item.city}{item.zipcode}</td>
+                    <td>
+                      {item.addressline1}
+                      {item.addressline2}
+                      {item.city}
+                      {item.zipcode}
+                    </td>
                     <td>{item.address_type}</td>
                     <td>{item.status === 0 ? "inactive" : "active"}</td>
-                    <td><Link to={`/customer/address/edit/${item.address_id}`}><i class="fas fa-edit" style={{ fontSize: "24px" }}></i></Link></td>
-                    
+                    <td>
+                      <Link to={`/customer/address/edit/${item.address_id}`}>
+                        <i class="fas fa-edit" style={{ fontSize: "24px" }}></i>
+                      </Link>
+                    </td>
                   </tr>
                 );
               })}
@@ -131,7 +156,6 @@ export default function Address_AddressList() {
                   <option>Active</option>
                   <option>Inactive</option>
                   <option>Delete</option>
-
                 </select>
               </div>
               <div className="col-md-4">

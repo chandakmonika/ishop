@@ -8,6 +8,7 @@ import { Link } from "react-router-dom";
 
 export default function Master_StateList() {
   const [first, setFirst] = useState([]);
+  const[stateData, setStateData] = useState([]);
   const [country, setCountry] = useState([]);
   const [states, setStates] = useState([]);
   const [country_id, setCountry_id] = useState("");
@@ -25,19 +26,21 @@ export default function Master_StateList() {
   useEffect(() => {
     axios.get(`${`http://admin.ishop.sunhimlabs.com/api/v1/`}/allcountries/`).then((res) => setCountry(res.data.data));
   }, []);
-  const handleChangePage = async (e, newPage) => {
-    setCpage(newPage);
-    try {
-      const res = await axios.get(
-        `${`http://admin.ishop.sunhimlabs.com/api/v1/`}/states/list/?country_id=${country_id}&q=${query.text}&page=${newPage}`
-      );
-      const { data, pages } = res.data;
-      setFirst(data);
-      setPage(pages);
-    } catch (error) {
-      console.log(error);
-    }
-  };
+
+
+  // const handleChangePage = async (e, newPage) => {
+  //   setCpage(newPage);
+  //   try {
+  //     const res = await axios.get(
+  //       `${`http://admin.ishop.sunhimlabs.com/api/v1/`}/states/list/?country_id=${country_id}&q=${query.text}&page=${newPage}`
+  //     );
+  //     const { data, pages } = res.data;
+  //     setStateData(data);
+  //     setPage(pages);
+  //   } catch (error) {
+  //     console.log(error);
+  //   }
+  // };
 
   useEffect(() => {
     axios
@@ -58,7 +61,7 @@ export default function Master_StateList() {
         `${url}/states/list/?country_id=${country_id}&q=${query.text}`
       );
       const { data, pages } = res.data;
-      setFirst(data);
+      setStateData(data);
       setPage(pages);
     } catch (error) {
       console.log(error);
@@ -68,7 +71,7 @@ export default function Master_StateList() {
   const getCustomerList = () => {
     axios
     .get(`http://admin.ishop.sunhimlabs.com/api/v1/countries/list/`)
-      .then((res) => setFirst(res.data.data));
+      .then((res) => setStateData(res.data.data));
   };
 
   useEffect(() => {
@@ -94,7 +97,6 @@ export default function Master_StateList() {
 
   function handleClick(state_id, status) {
     console.warn(state_id, status);
-
     let apidata = {
       state_id: state_id,
       status: status === "0" ? "1" : "0",
@@ -117,13 +119,12 @@ export default function Master_StateList() {
           };
         }
       });
-    setFirst(datas);
+      setStateData(datas);
     console.log(e.target.checked, state_id);
     const selectedData = datas.filter((item) => item.isSelected === true);
     console.log(selectedData, 10);
     setSelectedcustomer(selectedData);
-
-    console.log(datas);
+  console.log(datas);
   };
 
   const applyStatus = () => {
@@ -219,9 +220,9 @@ export default function Master_StateList() {
               </tr>
             </thead>
             <tbody>
-            {first &&
-                first.length > 0 &&
-              first.map((item) => {
+            {stateData &&
+                stateData.length > 0 &&
+                stateData.map((item) => {
                 return (
                   <tr key={item.product_id}>
                     <td>

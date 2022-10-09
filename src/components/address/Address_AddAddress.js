@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import axios from "axios";
 
 export default function Address_AddAddress() {
-  const [fist_name, setFist_name] = useState("");
+  const [first_name, setFirst_name] = useState("");
   const [last_name, setLast_name] = useState("");
   const [email, setEmail] = useState("");
   const [phone, setPhone] = useState("");
@@ -21,22 +21,24 @@ export default function Address_AddAddress() {
   const [city_id, setCity_id] = useState("");
   const [city_name, setCity_name] = useState("");
   const [city, setCity] = useState("");
+  const [user_id, setUser_id] = useState("");
   const [index, setIndex] = useState([]);
   const [indexs, setIndexs] = useState([]);
   const [indexss, setIndexss] = useState([]);
+
   console.log(indexs);
 
   useEffect(() => {
     axios
-      .get(`http://admin.ishop.sunhimlabs.com/api/v1/allstates/${country_id}`)
+      .get(`http://admin.ishop.sunhimlabs.com/api/v1/allstates/${country}`)
       .then((res) => setIndexs(res.data.data));
-  }, [country_id]);
+  }, [country]);
 
   useEffect(() => {
     axios
-      .get(`http://admin.ishop.sunhimlabs.com/api/v1/allcities/${state_id}`)
+      .get(`http://admin.ishop.sunhimlabs.com/api/v1/allcities/${state}`)
       .then((res) => setIndexss(res.data.data));
-  }, [state_id]);
+  }, [state]);
 
   useEffect(() => {
     axios
@@ -45,8 +47,8 @@ export default function Address_AddAddress() {
   }, []);
 
   function customerUser() {
-    console.warn(
-      fist_name,
+    console.log(
+      first_name,
       last_name,
       email,
       phone,
@@ -60,10 +62,11 @@ export default function Address_AddAddress() {
       state_name,
       country_id,
       state_id,
-      city_name
+      city_name,
+      user_id
     );
     let datas = {
-      fist_name,
+      first_name,
       last_name,
       email,
       phone,
@@ -75,11 +78,11 @@ export default function Address_AddAddress() {
       address_type,
       country,
       state,
-      country_id,
-      state_id,
       city,
+      user_id,
     };
-    fetch("https://admin.ishop.sunhimlabs.com/api/v1/customer/address/add", {
+
+    fetch("http://admin.ishop.sunhimlabs.com/api/v1/customer/address/add", {
       method: "POST",
       headers: {
         Accept: "application/json",
@@ -117,11 +120,11 @@ export default function Address_AddAddress() {
               type="text"
               className="form-control"
               placeholder="Enter First Name"
-              value={fist_name}
+              value={first_name}
               onChange={(e) => {
-                setFist_name(e.target.value);
+                setFirst_name(e.target.value);
               }}
-              name="fist_name"
+              name="first_name"
             />
             <br />
 
@@ -174,9 +177,9 @@ export default function Address_AddAddress() {
               }}
               name="gender"
             >
-              <option>Male</option>
-              <option>Female</option>
-              <option>Others</option>
+              <option value={"m"}>Male</option>
+              <option value={"f"}>Female</option>
+              <option value={"o"}>Others</option>
             </select>
             <br />
 
@@ -223,14 +226,16 @@ export default function Address_AddAddress() {
             <select
               class="form-control"
               id="exampleFormControlSelect1"
-              value={country_id}
+              value={country}
               onChange={(e) => {
-                setCountry_id(e.target.value);
+                setCountry(e.target.value);
               }}
-              name="country_id"
+              name="country"
             >
               {index.map((item) => {
-                return <option value={item.country_id}>{item.country_name}{item.country}</option>;
+                return (
+                  <option value={item.country_id}>{item.country_name}</option>
+                );
               })}
             </select>
             <br />
@@ -239,14 +244,14 @@ export default function Address_AddAddress() {
             <select
               class="form-control"
               id="exampleFormControlSelect1"
-              value={state_id}
+              value={state}
               onChange={(e) => {
-                setState_id(e.target.value);
+                setState(e.target.value);
               }}
-              name="state_id"
+              name="state"
             >
               {indexs.map((item) => {
-                return <option value={item.state_id}>{item.state_name}{item.state}</option>;
+                return <option value={item.state_id}>{item.state_name}</option>;
               })}
             </select>
             <br />
@@ -255,14 +260,14 @@ export default function Address_AddAddress() {
             <select
               class="form-control"
               id="exampleFormControlSelect1"
-              value={city_id}
+              value={city}
               onChange={(e) => {
-                setCity_id(e.target.value);
+                setCity(e.target.value);
               }}
-              name="city_id"
+              name="city"
             >
               {indexss.map((item) => {
-                return <option value={item.city_id}>{item.city_name}{item.city}</option>;
+                return <option value={item.city_id}>{item.city_name}</option>;
               })}
             </select>
             <br />
@@ -277,29 +282,40 @@ export default function Address_AddAddress() {
               }}
               name="address_type"
             >
-              <option>Home Address</option>
-              <option>Office Address</option>
+              <option value={"h"}>Home Address</option>
+              <option value={"o"}>Office Address</option>
             </select>
             <br />
 
-            <label
-              for="exampleFormControlSelect1"
+            <label for="exampleFormControlSelect1">Is Default?</label>
+            <select
               value={isdefault}
               onChange={(e) => {
                 setIsdefault(e.target.value);
               }}
               name="isdefault"
+              class="form-control"
+              id="exampleFormControlSelect1"
             >
-              Is Default?
-            </label>
-            <select class="form-control" id="exampleFormControlSelect1">
-              <option>Yes</option>
-              <option>No</option>
+              <option value={"y"}>Yes</option>
+              <option value={"n"}>No</option>
             </select>
+
+            <br/>
+
+            <label className="demo">User Id</label>
+            <input
+              type="text"
+              className="form-control"
+              placeholder="Enter User Id"
+              value={user_id}
+              onChange={(e) => {
+                setUser_id(e.target.value);
+              }}
+              name="user_id"
+            />
+            <br />
           </div>
-
-          <br />
-
           <button type="button" class="btn btn-info" onClick={customerUser}>
             Submit
           </button>

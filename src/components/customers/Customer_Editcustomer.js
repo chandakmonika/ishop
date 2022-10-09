@@ -1,6 +1,8 @@
 import axios from "axios";
 import React, { useState, useEffect } from "react";
 import { useParams } from "react-router-dom";
+import { Link } from "react-router-dom";
+
 export default function Customer_Editcustomer() {
   const [first_name, setFirst_name] = useState("");
   const [last_name, setLast_name] = useState("");
@@ -36,6 +38,7 @@ export default function Customer_Editcustomer() {
     });
   };
 
+
   function customerUser() {
     console.warn(first_name, last_name, email, phone, gender);
 
@@ -70,7 +73,8 @@ export default function Customer_Editcustomer() {
               className="form-group"
               controlId="formBasicFirstName"
               style={{ width: "40%" }}
-            >
+              >
+
               <label className="demo">First Name</label>
               <input
                 type="text"
@@ -103,7 +107,6 @@ export default function Customer_Editcustomer() {
 
               {/* <label className="demo">Password</label>
               <input
-              
                 className="form-control"
                 name="password"
                 placeholder="Enter Password"
@@ -134,12 +137,13 @@ export default function Customer_Editcustomer() {
                 <option value="o">Other</option>
               </select>
             </div>
+            <Link to="/routing/customer/list">
             <button type="button" class="btn btn-info" onClick={customerUser}>
-              Update Customer
+              Update 
             </button>
+            </Link>
             &nbsp;
           </form>
-
           <br />
         </div>
       </div>

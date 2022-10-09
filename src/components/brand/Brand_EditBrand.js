@@ -1,13 +1,15 @@
 import axios from "axios";
 import React, { useState, useEffect } from "react";
 import { useParams } from "react-router-dom";
+import { Link } from "react-router-dom";
+
 export default function Brand_EditBrand() {
   const [brand_name, setBrand_name] = useState("");
   const [product_category_id, setProduct_category_id] = useState("");
   const [brand_image, setBrand_image] = useState("");
   const [status, setStatus] = useState("");
   const [index, setIndex] = useState([]);
- const [userdata, setUser_data] = useState({
+  const [userdata, setUser_data] = useState({
     brand_name: "",
     product_category_id: "",
     brand_image: "",
@@ -36,7 +38,7 @@ export default function Brand_EditBrand() {
   };
 
   function customerUser() {
-    console.warn(brand_name, product_category_id, brand_image,status);
+    console.warn(brand_name, product_category_id, brand_image, status);
 
     fetch(`http://admin.ishop.sunhimlabs.com/api/v1/products/brands/edit/`, {
       method: "POST",
@@ -57,7 +59,7 @@ export default function Brand_EditBrand() {
 
   return (
     <div style={{ paddingLeft: "10rem" }}>
-     <h4 style={{ paddingLeft: "2rem" }}>
+      <h4 style={{ paddingLeft: "2rem" }}>
         <span>Edit Brand</span>
       </h4>
       <div className="card" style={{ width: "50rem" }}>
@@ -121,11 +123,12 @@ export default function Brand_EditBrand() {
                 <option value="1">Active</option>
               </select>
             </div>
-
-            <button type="button" class="btn btn-info" onClick={customerUser}>
-              Update Brand
-            </button>
-            &nbsp;
+            <Link to="/brand/list">
+              <button type="button" class="btn btn-info" onClick={customerUser}>
+                Update 
+              </button>
+              &nbsp;
+            </Link>
           </form>
 
           <br />

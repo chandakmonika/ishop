@@ -3,12 +3,10 @@ import Login from "./Login";
 import Rout from "./Rout";
 import Routing from "./Routing";
 
-
-
 function App() {
   return (
     <div className="App">
-     <Rout/>   
+     {/* <Rout/>    */}
      <Routing/>
      
     </div>
@@ -16,3 +14,17 @@ function App() {
 }
 
 export default App;
+
+
+
+// import Routing from "./Routing";
+
+// function App() {
+//   return (
+//     <div className="App">
+//       <Routing />
+//     </div>
+//   );
+// }
+
+// export default App;

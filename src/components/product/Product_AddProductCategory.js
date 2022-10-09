@@ -5,7 +5,7 @@ import "./Product_AddProductCategory.css";
 export default function Product_AddProductCategory() {
   const [parent_category_id, setParent_category_id] = useState("");
   const [category_name, setCategory_name] = useState("");
-  const [category_image, setCategory_image] = useState("");
+  const [category_image, setCategory_image] = useState(null);
   const [attributes_label, setAttributes_label] = useState("");
   const [attributes_name, setAttributes_name] = useState("");
   const [attributes_type, setAttributes_type] = useState("");
@@ -13,6 +13,7 @@ export default function Product_AddProductCategory() {
   const [is_variant_key, setIs_variant_key] = useState("");
   const [attributes_group_name, setAttributes_group_name] = useState("");
   const [index, setIndex] = useState([]);
+  // const [attributes, setAttributes] = useState([]);
 
   useEffect(() => {
     axios
@@ -33,24 +34,30 @@ export default function Product_AddProductCategory() {
       is_variant_key
     );
     let data = {
-      parent_category_id,
+      parent_category_id: Number(parent_category_id),
       category_name,
-      category_image,
-      attributes_group_name,
-      attributes_label,
-      attributes_name,
-      attributes_type,
-      attributes_value,
-      is_variant_key,
+      category_image: category_image?.logoFile ? category_image?.logoFile:"",
+      // attributes_group_name,
+      // attributes_label,
+      // attributes_name,
+      // attributes_type,
+      // attributes_value,
+      // is_variant_key,
+      attributes: formFields
     };
+    // const formData = new FormData()
+    // Object.keys(data).forEach((key)=>{
+    //   formData.append(key, data[key])
+    // })
     fetch("http://admin.ishop.sunhimlabs.com/api/v1/products/category/add", {
       method: "POST",
       headers: {
         Accept: "application/json",
-        "Content-Type": "Application/json",
+        // "Content-Type": "multipart/form-data",
+        "Content-Type": "application/json"
       },
-      body: JSON.stringify(data),
-      
+      // body: formData,
+      body: JSON.stringify(data)
     }).then((result) => {
       result.json().then((resp) => {
         console.warn("resp", resp);
@@ -60,7 +67,13 @@ export default function Product_AddProductCategory() {
 
   // <----------------Dynamic Form--------------->
   const [formFields, setFormFields] = useState([
-    { fieldlabel: "", fieldname: "", fieldtype: "", fieldvalue: "" },
+    { attributes_label:"",
+    attributes_name:"",
+    attributes_type:"",
+    attributes_value:"",
+    is_variant_key:"",
+    attributes_group_name:"", 
+  },
   ]);
 
   const handleFormChange = (e, index) => {
@@ -76,10 +89,12 @@ export default function Product_AddProductCategory() {
 
   const addFields = () => {
     let object = {
-      fieldlabel: "",
-      fieldname: "",
-      fieldtype: "",
-      fieldvalue: "",
+      attributes_label:"",
+    attributes_name:"",
+    attributes_type:"",
+    attributes_value:"",
+    is_variant_key:"",
+    attributes_group_name:"",
     };
     setFormFields([...formFields, object]);
   };
@@ -90,6 +105,35 @@ export default function Product_AddProductCategory() {
     setFormFields(data);
   };
 
+
+
+  const handleImageUpload = (event) => {
+    // setImgError('')
+    const reader = new FileReader()
+    const file = event.target.files
+    const fieSize = Number((file[0]?.size / 1024 / 1024)?.toFixed(2))
+    const extension = file[0]?.name?.substring(file[0]?.name?.lastIndexOf(".") + 1)?.toLowerCase()
+    if (extension === "png" || extension === "jpeg" || extension === "jpg") {
+        // if (fieSize <= (Number(process.env.ORGANIZATION_LOGO_MAX_SIZE) | imageSizeAccepted)) {
+        //     if (file[0] !== undefined) {
+                reader.onloadend = () => {
+                  console.log(fieSize,file,extension,file[0])
+                    setCategory_image({
+                        logoFile: file[0],
+                        imagePreviewUrl: reader.result
+                    })
+                }
+                reader.readAsDataURL(file[0])
+            // }
+            event.preventDefault()
+        //     setEditLogo(true)
+        // } else {
+        //     setImgError("Please check image size")
+        // }
+    } else {
+        // setImgError("Invalid image type")
+    }
+}
   return (
     <div>
       <h4>Add Product Category</h4>
@@ -136,14 +180,26 @@ export default function Product_AddProductCategory() {
               <div class="card-body">
                 <div className="container" style={{ paddingTop: "38px" }}>
                   <h6>Media</h6>
-
                   <input
                     type="file"
-                    name="category_image"
+                    // value={category_image}
                     onChange={(e) => {
-                      setCategory_image(e.target.value);
+                      // console.log(e?.target?.files[0])
+                      // setCategory_image(e?.target?.files[0]);
+
+                      handleImageUpload(e) 
+
                     }}
+
                   />
+                  {/* <input
+                    type="file"
+                    name="category_image"
+                    value={category_image}
+                    onChange={(e) => {
+                      console.log(e)
+                      setCategory_image(e.target.files[0]);
+                    }} */}
                 </div>
               </div>
             </div>
@@ -153,20 +209,19 @@ export default function Product_AddProductCategory() {
             <h6>Custom Attribute</h6>
             <div class="card" style={{ height: "auto", width: "60rem" }}>
               <div class="card-body">
+                {console.log(2,formFields)}
                 {formFields.map((form, index) => {
-                  return (
+                  return (   
                     <div key={index}>
                       <label className="demo" style={{ width: "29rem" }}>
                         Group Name
                       </label>
                       <input
                         name="attributes_group_name"
-                        // placeholder='Field Label'
-                        // onChange={(e) => handleFormChange(e, index)}
                         onChange={(e) => {
-                          setAttributes_group_name(e.target.value);
+                          handleFormChange(e,index);
                         }}
-                        // value={attributes_label}
+                      
                         style={{ width: "29rem" }}
                       />
                       <br />
@@ -178,7 +233,7 @@ export default function Product_AddProductCategory() {
                         // placeholder='Field Label'
                         // onChange={(e) => handleFormChange(e, index)}
                         onChange={(e) => {
-                          setAttributes_label(e.target.value);
+                          handleFormChange(e,index);
                         }}
                         // value={attributes_label}
                         style={{ width: "29rem" }}
@@ -190,7 +245,7 @@ export default function Product_AddProductCategory() {
                       <input
                         name="attributes_name"
                         onChange={(e) => {
-                          setAttributes_name(e.target.value);
+                          handleFormChange(e,index);
                         }}
                         // value={attributes_name}
                         style={{ width: "29rem" }}
@@ -202,7 +257,7 @@ export default function Product_AddProductCategory() {
                       <input
                         name="attributes_type"
                         onChange={(e) => {
-                          setAttributes_type(e.target.value);
+                          handleFormChange(e,index);
                         }}
                         // value={attributes_type}
                         style={{ width: "29rem" }}
@@ -214,7 +269,7 @@ export default function Product_AddProductCategory() {
                       <input
                         name="attributes_value"
                         onChange={(e) => {
-                          setAttributes_value(e.target.value);
+                          handleFormChange(e,index);
                         }}
                         // value={attributes_value}
                         style={{ width: "29rem" }}
@@ -228,7 +283,7 @@ export default function Product_AddProductCategory() {
                           type="radio"
                           name="is_variant_key"
                           onChange={(e) => {
-                            setIs_variant_key(e.target.value);
+                            handleFormChange(e,index);
                           }}
                           // value={is_variant_key}
                         />
@@ -237,7 +292,7 @@ export default function Product_AddProductCategory() {
                           type="radio"
                           name="is_variant_key"
                           onChange={(e) => {
-                            setIs_variant_key(e.target.value);
+                            handleFormChange(e,index);
                           }}
                           // value={is_variant_key}
                         />
@@ -245,13 +300,15 @@ export default function Product_AddProductCategory() {
                       </div>
                       <br />
                       <br />
-                      <button onClick={() => removeFields(index)}>
+                      <button
+                        onClick={() => removeFields(index)}
+                        disabled={index === 0}
+                      >
                         Remove
                       </button>
                       &nbsp;
                       <button onClick={addFields}>Add More..</button>
                       <br />
-                      
                     </div>
                   );
                 })}
@@ -270,4 +327,3 @@ export default function Product_AddProductCategory() {
     </div>
   );
 }
-

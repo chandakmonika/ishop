@@ -1,6 +1,8 @@
 import axios from "axios";
 import React, { useState, useEffect } from "react";
 import { useParams } from "react-router-dom";
+import { Link } from "react-router-dom";
+
 export default function FAQ_EditFAQ() {
   const [question, setQuestion] = useState("");
   const [answer, setAnswer] = useState("");
@@ -104,9 +106,13 @@ export default function FAQ_EditFAQ() {
               ></textarea>
               <br />
             </div>
+
+            <Link to="/mastermanagement/faq/list">
             <button type="button" class="btn btn-info" onClick={customerUser}>
-              Update Customer
+              Update 
             </button>
+            </Link>
+           
             &nbsp;
           </form>
 

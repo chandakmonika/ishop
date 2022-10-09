@@ -1,6 +1,8 @@
 import axios from "axios";
 import React, { useState, useEffect } from "react";
 import { useParams } from "react-router-dom";
+import { Link } from "react-router-dom";
+
 export default function Master_EditState() {
   const [state_name, setState_name] = useState("");
   const [country_id, setCountry_id] = useState("");
@@ -14,7 +16,7 @@ export default function Master_EditState() {
 
   const [userdata, setUserdata] = useState({
     state_name: "",
-    country_name:"",
+    country_name: "",
     country_id: "",
   });
   const { state_id } = useParams();
@@ -98,9 +100,11 @@ export default function Master_EditState() {
               />
             </div>
             <br />
-            <button type="button" class="btn btn-info" onClick={customerUser}>
-              Update State
-            </button>
+            <Link to="/mastermanagement/state/list">
+              <button type="button" class="btn btn-info" onClick={customerUser}>
+                Update State
+              </button>
+            </Link>
           </form>
           <br />
 

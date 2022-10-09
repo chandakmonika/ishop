@@ -263,6 +263,8 @@ export default function Brand_BrandList() {
                   Apply
                 </button>
               </div>
+
+              
             </div>
           </div>
         </div>

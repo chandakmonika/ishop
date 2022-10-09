@@ -24,7 +24,7 @@ export default function Coupen_CoupenCode() {
             </Form.Group>
             <h6>Select Discount</h6>
             <span>Percent</span>
-            <label class="switch">
+            <label class="switch" style={{marginLeft:'1rem'}}>
               <input class="switch-input" type="checkbox" />
               <span class="switch-label" data-on="" data-off=""></span>
               <span class="switch-handle"></span>

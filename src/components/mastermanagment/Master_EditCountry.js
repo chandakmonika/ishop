@@ -1,6 +1,8 @@
 import axios from "axios";
 import React, { useState, useEffect } from "react";
 import { useParams } from "react-router-dom";
+import { Link } from "react-router-dom";
+
 export default function Master_EditCountry() {
   const [country_name, setCountry_name] = useState("");
 
@@ -76,10 +78,12 @@ export default function Master_EditCountry() {
 
               <br />
             </div>
-
-            <button type="button" class="btn btn-info" onClick={customerUser}>
+<Link to = "/mastermanagement/country/list">
+<button type="button" class="btn btn-info" onClick={customerUser}>
               Update Country
             </button>
+</Link>
+            
           </form>
           <br />
           <br />

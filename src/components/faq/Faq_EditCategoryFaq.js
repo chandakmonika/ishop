@@ -1,9 +1,10 @@
 import axios from "axios";
 import React, { useState, useEffect } from "react";
 import { useParams } from "react-router-dom";
+import { Link } from "react-router-dom";
+
 export default function Faq_EditCategoryFaq() {
-  const [category_name, setCategory_name] = useState("");
-  
+  const [category_name, setCategory_name] = useState(""); 
   const [userdata, setUserdata] = useState({
     category_name: ""
     
@@ -74,13 +75,15 @@ export default function Faq_EditCategoryFaq() {
                 value={userdata.category_name}
                 onChange={handleChange}
               />
-
-              
+ 
             </div>
+            <Link to = "/mastermanagement/faq/category/list">
             <button type="button" class="btn btn-info" onClick={customerUser}>
-              Update Category
+              Update 
             </button>
             &nbsp;
+            </Link>
+            
           </form>
 
           <br />

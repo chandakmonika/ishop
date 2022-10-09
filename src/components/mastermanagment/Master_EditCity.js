@@ -1,12 +1,15 @@
 import axios from "axios";
 import React, { useState, useEffect } from "react";
 import { useParams } from "react-router-dom";
+import { Link } from "react-router-dom";
+
+
 export default function Master_EditCity() {
   const [city_name, setCity_name] = useState("");
   // const [city_id, setCity_id] = useState("");
   const [state_id, setState_id] = useState("");
   const [countryName, setCountryName] = useState("");
-  const [countryId, setCountryId] = useState("");
+  const [country_id, setCountry_id] = useState("");
   const [state_name, setState_name] = useState("");
   const [index, setIndex] = useState([]);
   const [indexs, setIndexs] = useState([]);
@@ -14,6 +17,7 @@ export default function Master_EditCity() {
     city_name: "",
     // city_id: "",
     state_id: "",
+    country_id :""
   });
   const { city_id } = useParams();
   useEffect(() => {
@@ -27,9 +31,9 @@ export default function Master_EditCity() {
   }, []);
   useEffect(() => {
     axios
-      .get(`http://admin.ishop.sunhimlabs.com/api/v1/allstates/${countryId}`)
+      .get(`http://admin.ishop.sunhimlabs.com/api/v1/allstates/${country_id}`)
       .then((res) => setIndexs(res.data.data));
-  }, [countryId]);
+  }, [country_id]);
 
   useEffect(() => {
     axios
@@ -85,7 +89,7 @@ export default function Master_EditCity() {
                 class="form-control"
                 id="exampleFormControlSelect1"
                 onChange={(e) => {
-                  setCountryId(e.target.value);
+                  setCountry_id(e.target.value);
                 }}
                 name="country_id"
               >
@@ -125,10 +129,13 @@ export default function Master_EditCity() {
                 onChange={handleChange}
               />
             </div>
+            <Link to = "/mastermanagement/city/list">
             <button type="button" class="btn btn-info" onClick={customerUser}>
-              Update Customer
+              Update
             </button>
             &nbsp;
+            </Link>
+            
           </form>
 
           <br />

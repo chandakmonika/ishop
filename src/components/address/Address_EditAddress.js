@@ -1,8 +1,6 @@
-
-
 import axios from "axios";
 import React, { useState, useEffect } from "react";
-import { useParams } from "react-router-dom";
+import { Link, useParams } from "react-router-dom";
 export default function Address_EditAddress() {
   const [first_name, setFirst_name] = useState("");
   const [last_name, setLast_name] = useState("");
@@ -17,7 +15,17 @@ export default function Address_EditAddress() {
   const [isdefault, setIsdefault] = useState("");
   const [address_type, setAddress_type] = useState("");
   const [gender, setGender] = useState("");
+  const [state_id, setState_id] = useState("");
+  const [country_id, setCountry_id] = useState("");
+  const [city_id, setCity_id] = useState("");
+  const [countryName, setCountryName] = useState("");
+  const [state_name, setState_name] = useState("");
+  const [city_name, setCity_name] = useState("");
+
   const [user_id, setUser_id] = useState("");
+  const [index, setIndex] = useState([]);
+  const [indexs, setIndexs] = useState([]);
+  const [indexss, setIndexss] = useState([]);
 
   const [userdata, setUser_data] = useState({
     first_name: "",
@@ -34,10 +42,27 @@ export default function Address_EditAddress() {
     isdefault: "",
     address_type: "",
     user_id: "",
-
-    
   });
-  const {address_id} = useParams();
+
+  useEffect(() => {
+    axios
+      .get(`http://admin.ishop.sunhimlabs.com/api/v1/allstates/${country}`)
+      .then((res) => setIndexs(res.data.data));
+  }, [country_id]);
+
+  useEffect(() => {
+    axios
+      .get(`http://admin.ishop.sunhimlabs.com/api/v1/allcities/${state}`)
+      .then((res) => setIndexss(res.data.data));
+  }, [state]);
+
+  useEffect(() => {
+    axios
+      .get(`http://admin.ishop.sunhimlabs.com/api/v1/allcountries/`)
+      .then((res) => setIndex(res.data.data));
+  }, );
+
+  const { address_id } = useParams();
   useEffect(() => {
     axios
       .get(
@@ -60,7 +85,22 @@ export default function Address_EditAddress() {
   };
 
   function customerUser() {
-    console.warn(first_name, last_name, email, phone, gender,addressline1,addressline2,country,state,city,zipcode,isdefault,address_type,user_id);
+    console.warn(
+      first_name,
+      last_name,
+      email,
+      phone,
+      gender,
+      addressline1,
+      addressline2,
+      country,
+      state,
+      city,
+      zipcode,
+      isdefault,
+      address_type,
+      user_id
+    );
 
     fetch(`http://admin.ishop.sunhimlabs.com/customer/address/edit/`, {
       method: "POST",
@@ -126,7 +166,6 @@ export default function Address_EditAddress() {
 
               <label className="demo">Mobile Number</label>
               <input
-              
                 type="phone"
                 className="form-control"
                 name="phone"
@@ -150,7 +189,6 @@ export default function Address_EditAddress() {
 
               <label className="demo">Address Line 1</label>
               <input
-              
                 type="text"
                 className="form-control"
                 name="addressline1"
@@ -159,9 +197,8 @@ export default function Address_EditAddress() {
                 onChange={handleChange}
               />
 
-             <label className="demo">Address Line 2</label>
+              <label className="demo">Address Line 2</label>
               <input
-              
                 type="text"
                 className="form-control"
                 name="addressline2"
@@ -170,9 +207,8 @@ export default function Address_EditAddress() {
                 onChange={handleChange}
               />
 
-          <label className="demo">Zip Code</label>
+              <label className="demo">Zip Code</label>
               <input
-              
                 type="text"
                 className="form-control"
                 name="zipcode"
@@ -181,42 +217,53 @@ export default function Address_EditAddress() {
                 onChange={handleChange}
               />
 
-<label className="demo">Country</label>
-              <input
-              
-                type="text"
-                className="form-control"
-                name="country"
-                placeholder="Enter Zip Code"
+              <label for="exampleFormControlSelect1">Country</label>
+
+              <select
+                class="form-control"
+                id="exampleFormControlSelect1"
                 value={userdata.country}
                 onChange={handleChange}
-              />
+                name="country"
+              >
+                {index.map((item) => {
+                  return (
+                    <option value={item.country_id}>{item.country_name}</option>
+                  );
+                })}
+              </select>
 
-<label className="demo">State</label>
-              <input
-              
-                type="text"
-                className="form-control"
-                name="state"
-                placeholder="Enter State"
+              <label for="exampleFormControlSelect1">State</label>
+
+              <select
+                class="form-control"
+                id="exampleFormControlSelect1"
                 value={userdata.state}
                 onChange={handleChange}
-              />
+                name="state"
+              >
+                {indexs.map((item) => {
+                  return (
+                    <option value={item.state_id}>{item.state_name}</option>
+                  );
+                })}
+              </select>
 
-<label className="demo">City</label>
-              <input
-              
-                type="text"
-                className="form-control"
-                name="city"
-                placeholder="Enter City"
+              <label for="exampleFormControlSelect1">City</label>
+
+              <select
+                class="form-control"
+                id="exampleFormControlSelect1"
                 value={userdata.city}
                 onChange={handleChange}
-              />
+                name="city"
+              >
+                {indexss.map((item) => {
+                  return <option value={item.city_id}>{item.city_name}</option>;
+                })}
+              </select>
 
-
-
-<label for="exampleFormControlSelect1">Address Type</label>
+              <label for="exampleFormControlSelect1">Address Type</label>
               <select
                 class="form-control"
                 id="exampleFormControlSelect1"
@@ -225,6 +272,7 @@ export default function Address_EditAddress() {
                 onChange={handleChange}
               >
                 <option>Home Address</option>
+
                 <option>Office Address</option>
               </select>
 
@@ -239,12 +287,13 @@ export default function Address_EditAddress() {
                 <option>Yes</option>
                 <option>No</option>
               </select>
-
             </div>
-            <button type="button" class="btn btn-info" onClick={customerUser}>
-              Update Address
-            </button>
-            &nbsp;
+            <Link to="/customer/address/list">
+              <button type="button" class="btn btn-info" onClick={customerUser}>
+                Update
+              </button>
+              &nbsp;
+            </Link>
           </form>
 
           <br />
