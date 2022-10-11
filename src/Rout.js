@@ -18,6 +18,7 @@
 //     </div>
 //   )
 // }
+
 import React from "react";
 import Button from "react-bootstrap/Button";
 import Container from "react-bootstrap/Container";
@@ -66,7 +67,9 @@ export default function DashboardPage() {
                       <Link to="/storedetails">Account</Link>
                     </NavDropdown.Item>
                     <NavDropdown.Divider />
-                    <NavDropdown.Item href="#action5">Logout</NavDropdown.Item>
+                    <NavDropdown.Item >
+                    <Link to="/">Logout</Link>
+                      </NavDropdown.Item>
                   </NavDropdown>
                 </Nav>
               </Navbar.Collapse>
@@ -180,14 +183,22 @@ export default function DashboardPage() {
                 </a>
               </li>
               <li>
-                <a href="themes">
+                <Link to="/">
                   <i className="fa fa-book"></i>&nbsp;Themes
-                </a>
+                </Link>
+                <ul class="submenu">
+                  <a href="/hometheme">Home Theme</a>
+                  <a href="/menutheme">Menu Theme</a>
+                </ul>
               </li>
               <li>
-                <Link to="/coupencode">
-                  <i className="fas fa-user-alt"></i>&nbsp;Coupen Code
+                <Link to="/">
+                  <i className="fa fa-map-pin"></i>&nbsp;Coupen Code
                 </Link>
+                <ul class="submenu">
+                  <a href="/coupencode/list">Coupen Code List</a>
+                  <a href="/coupencode/add">Add Coupen Code</a>
+                </ul>
               </li>
               <li>
                 <Link to="/paymentlist">

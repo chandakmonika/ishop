@@ -22,7 +22,6 @@ export default function Master_StateList() {
   console.log(page);
   const url = "http://admin.ishop.sunhimlabs.com/api/v1/";
  
-
   useEffect(() => {
     axios.get(`${`http://admin.ishop.sunhimlabs.com/api/v1/`}/allcountries/`).then((res) => setCountry(res.data.data));
   }, []);

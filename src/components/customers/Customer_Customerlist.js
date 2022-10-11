@@ -6,7 +6,7 @@ import Nav from "react-bootstrap/Nav";
 import Navbar from "react-bootstrap/Navbar";
 import "./Customer_Customerlist.css";
 import { Link } from "react-router-dom";
-import { useParams } from "react-router-dom";
+import { useParams, useNavigate } from "react-router-dom";
 import TablePagination from "@mui/material/TablePagination";
 import Box from '@mui/material/Box';
 import Typography from '@mui/material/Typography';
@@ -21,11 +21,12 @@ export default function Customer_Customerlist() {
   const [selectedcustomer, setSelectedcustomer] = useState([]);
   const [selectedStatus, setSelectedStatus] = useState("0");
   const [page, setPage] = useState([]);
-const[changeStatusId, setChangeStatusId] = useState({
-  user_id:"",
-  status:""
-});
-const[isSingleStatusUpdate, setIsSingleStatusUpdate] = useState(true)
+  const navigate = useNavigate()
+  const [changeStatusId, setChangeStatusId] = useState({
+    user_id: "",
+    status: ""
+  });
+  const [isSingleStatusUpdate, setIsSingleStatusUpdate] = useState(true)
   const url = "http://admin.ishop.sunhimlabs.com/api/v1/customer/list";
 
   console.log(query);
@@ -108,18 +109,18 @@ const[isSingleStatusUpdate, setIsSingleStatusUpdate] = useState(true)
   function handleStatusChange(userId, status) {
     if (
       isSingleStatusUpdate
-      ){
-        console.warn(user_id, status);
-    let apidata = {
-      user_id: changeStatusId.user_id,
-      status: changeStatusId.status === "0" ? "1" : "0",
-    };
-    statusChange(apidata);
-      }
-      else{
-applyStatus();
-      }
-    
+    ) {
+      console.warn(user_id, status);
+      let apidata = {
+        user_id: changeStatusId.user_id,
+        status: changeStatusId.status === "0" ? "1" : "0",
+      };
+      statusChange(apidata);
+    }
+    else {
+      applyStatus();
+    }
+
   }
 
   const onSelectCustomer = (e, user_id) => {
@@ -174,13 +175,13 @@ applyStatus();
   };
 
   const [open, setOpen] = React.useState(false);
-  const handleOpen = (user_id,status,isSingleStatus) => {
+  const handleOpen = (user_id, status, isSingleStatus) => {
     setIsSingleStatusUpdate(isSingleStatus)
     setChangeStatusId({
-      user_id,status
+      user_id, status
     })
     setOpen(true);
-  } 
+  }
   const handleClose = () => setOpen(false);
 
   return (
@@ -283,16 +284,17 @@ applyStatus();
                       <td>
                         <button
                           type="button"
-                          onClick={() => handleOpen(item.user_id, item.status,true)}
+                          onClick={() => handleOpen(item.user_id, item.status, true)}
                         >
                           {item.status === "0" ? "inactive" : "active"}
                         </button>
                       </td>
                       <td>
-                        <Link to={`/customer/address/list`}>
+                        <Link to={`/customer/address/list/${item.user_id}`}>
                           <i
-                            class="fa fa-address-book"
+                            class="fa fa-address-book address-icon"
                             style={{ fontSize: "24px" }}
+                            // onClick={() => navigate('/customer/address/list',{state:{userId: item.user_id}})}
                           ></i>
                         </Link>
                         &nbsp;&nbsp;
@@ -331,7 +333,7 @@ applyStatus();
                   type="button"
                   class="btn btn-light"
                   style={{ width: "8rem" }}
-                  onClick={() => handleOpen(null,null,false)}
+                  onClick={() => handleOpen(null, null, false)}
                 >
                   Apply
                 </button>
@@ -354,7 +356,7 @@ applyStatus();
               />
 
             </div>
-          </div>  
+          </div>
         </div>
       </div>
       {/* <Button onClick={handleOpen}>Open modal</Button> */}
@@ -367,16 +369,16 @@ applyStatus();
         <Box sx={style}>
           <Typography id="modal-modal-title" variant="h6" component="h2">
 
-         
+
           </Typography>
 
           <Typography id="modal-modal-description" sx={{ mt: 2 }}>
-           Are you sure want to change the status?
+            Are you sure want to change the status?
           </Typography>
           <Button onClick={() => handleClose()}> No </Button>&nbsp;&nbsp;
           <Button onClick={() => handleStatusChange()}>Yes</Button>
         </Box>
       </Modal>
-    </div>
+    </div >
   );
 }
