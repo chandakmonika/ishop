@@ -511,6 +511,7 @@ import Coupen_CoupenCodeList from "./components/coupencode/Coupen_CoupenCodeList
 import Theme_HomeTheme from "./components/themes/Theme_HomeTheme";
 import Theme_MenuTheme from "./components/themes/Theme_MenuTheme";
 import ForgetPassword from "./ForgetPassword";
+import Product_EditProduct from "./components/product/Product_EditProduct";
 
 
 export default function RoutingPage() {
@@ -534,6 +535,8 @@ export default function RoutingPage() {
           />
           <Route path="/product/list" element={<Prodct_Productlist />} />
           <Route path="/product/addproduct" element={<Product_AddProduct />} />
+          <Route path="/product/editproduct/:product_id" element={<Product_EditProduct />} />
+
           <Route
             path="/product/category/add"
             element={<Product_AddProductCategory />}
@@ -547,7 +550,9 @@ export default function RoutingPage() {
           <Route path="/brand/edit/:brand_id" element={<Brand_EditBrand />} />
 
           <Route path="/payment/list" element={<Payment_Payment />} />
-          <Route path="/coupencode" element={<Coupen_CoupenCode />} />
+          {/* <Route path="/coupencode" element={<Coupen_CoupenCode />} /> */}
+          <Route path="/coupencode/list" element={<Coupen_CoupenCodeList />} />
+          <Route path="/coupencode/add" element={<Coupen_CoupenCode />} />
           <Route
             path="/customer/address/list"
             element={<Address_AddressList />}

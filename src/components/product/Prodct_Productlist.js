@@ -5,7 +5,7 @@ import Dropdown from "react-bootstrap/Dropdown";
 import Container from "react-bootstrap/Container";
 import Nav from "react-bootstrap/Nav";
 import Navbar from "react-bootstrap/Navbar";
-import NavDropdown from "react-bootstrap/NavDropdown";
+import { Link } from "react-router-dom";
 //import "././Product_Productlist.css";
 
 export default function ProductsComponent() {
@@ -26,7 +26,6 @@ export default function ProductsComponent() {
       )
       .then((res) => setFirst(res.data.data));
   };
-
 
   const getCustomerList = () => {
     axios
@@ -49,15 +48,13 @@ export default function ProductsComponent() {
     }).then((result) => {
       result.json().then((resps) => {
         console.warn("resps", resps);
-        getCustomerList();
-        
+        getCustomerList(); 
       });
     });
   };
 
   function handleClick(product_id, status) {
     console.warn(product_id, status);
-
     let apidata = {
       product_id: product_id,
       status: status === "0" ? "1" : "0",
@@ -85,7 +82,6 @@ export default function ProductsComponent() {
     const selectedData = datas.filter((item) => item.isSelected === true);
     console.log(selectedData, 10);
     setSelectedcustomer(selectedData);
-
     console.log(datas);
   };
 
@@ -203,7 +199,6 @@ export default function ProductsComponent() {
                     ></label>
                   </div>
                 </th>
-
                 <th scope="col">Product </th>
                 <th scope="col">Category</th>
                 <th scope="col">Product Quantity</th>
@@ -227,7 +222,6 @@ export default function ProductsComponent() {
                   />
                   <label for="customCheck{item.id}"></label>
                 </div>
-             
             </td>
                     <td>{item.product_name}</td>
                     <td>{item.category_id}</td>
@@ -240,7 +234,7 @@ export default function ProductsComponent() {
                         >
                           {item.status === "0" ? "inactive" : "active"}
                         </button></td>
-                    <td><i class="fas fa-edit" style={{fontSize:'24px'}}></i></td>
+                    <td><Link to={`/product/editproduct/${item.product_id}`}><i class="fas fa-edit" style={{ fontSize: "24px" }}></i></Link></td>
                   </tr>
                 );
               })}

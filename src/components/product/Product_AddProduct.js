@@ -73,7 +73,6 @@ axios
       fieldtype: "",
       fieldvalue: "",
     };
-
     setFormFields([...formFields, object]);
   };
 
@@ -148,7 +147,7 @@ axios
 
           {/* <--------------------------------------Product Status From Start---------------------------------> */}
           <div class="col-lg-4 mb-4 mb-lg-0" style={{ paddingLeft: "25rem" }}>
-            <div class="card" style={{ height: "18rem", width: "24rem" }}>
+            <div class="card" style={{ height: "14rem", width: "24rem" }}>
               <div class="card-body">
                 <div
                   className="form-group"
@@ -160,11 +159,7 @@ axios
                     <option>Inactive</option>
                   </select>
                   <br />
-
-                  <p>
-                    Img elements must have an alt prop, either with meaningful
-                    text, or an empty string for decorative images
-                  </p>
+ 
                 </div>
               </div>
             </div>
@@ -173,7 +168,7 @@ axios
 
             {/* <-----------------------------------Product Organization From Start--------------------------------------> */}
 
-            <div class="card" style={{ height: "auto", width: "24rem" }}>
+            <div class="card" style={{ height: "76%", width: "24rem" }}>
               <div class="card-body">
                 <h5>Product Categorys</h5>
                 <br />
@@ -208,7 +203,7 @@ axios
                           name="vehicle1"
                           value="rtr"
                         />
-                        <label for="vehicle1"> Sub Category 1</label>
+                        <label for="vehicle2"> Sub Category 1</label>
                       </a>
                       <a
                         href="#"
@@ -221,7 +216,7 @@ axios
                           name="vehicle2"
                           value="sfg"
                         />
-                        <label for="vehicle1"> Sub Category 2</label>
+                        <label for="vehicle3"> Sub Category 2</label>
                       </a>
                       <a
                         href="#"
@@ -234,7 +229,7 @@ axios
                           name="vehicle3"
                           value="fgh"
                         />
-                        <label for="vehicle1"> Sub Category 3</label>
+                        <label for="vehicle4"> Sub Category 3</label>
                       </a>
                     </form>
                   </div>
@@ -247,11 +242,11 @@ axios
                     <form action="/action_page.php">
                       <input
                         type="checkbox"
-                        id="vehicle1"
-                        name="vehicle1"
+                        id="vehicle4"
+                        name="vehicle4"
                         value="Bike"
                       />
-                      <label for="vehicle1"> Category 2</label>
+                      <label for="vehicle5"> Category 2</label>
                     </form>
                   </a>
                   <div class="list-group" style={{ paddingLeft: "2rem" }}>
@@ -263,11 +258,11 @@ axios
                       >
                         <input
                           type="checkbox"
-                          id="vehicle1"
-                          name="vehicle1"
+                          id="vehicle5"
+                          name="vehicle5"
                           value="rtr"
                         />
-                        <label for="vehicle1"> Sub Category 1</label>
+                        <label for="vehicle6"> Sub Category 1</label>
                       </a>
                       <a
                         href="#"
@@ -276,11 +271,11 @@ axios
                       >
                         <input
                           type="checkbox"
-                          id="vehicle2"
-                          name="vehicle2"
+                          id="vehicle6"
+                          name="vehicle6"
                           value="sfg"
                         />
-                        <label for="vehicle1"> Sub Category 2</label>
+                        <label for="vehicle7"> Sub Category 2</label>
                       </a>
                       <a
                         href="#"
@@ -289,11 +284,11 @@ axios
                       >
                         <input
                           type="checkbox"
-                          id="vehicle3"
-                          name="vehicle3"
+                          id="vehicle7"
+                          name="vehicle7"
                           value="fgh"
                         />
-                        <label for="vehicle1"> Sub Category 3</label>
+                        <label for="vehicle8"> Sub Category 3</label>
                       </a>
                     </form>
                   </div>
@@ -306,11 +301,11 @@ axios
                     <form action="/action_page.php">
                       <input
                         type="checkbox"
-                        id="vehicle1"
-                        name="vehicle1"
+                        id="vehicle8"
+                        name="vehicle8"
                         value="Bike"
                       />
-                      <label for="vehicle1"> Category 3</label>
+                      <label for="vehicle9"> Category 3</label>
                     </form>
                   </a>
                   <div class="list-group" style={{ paddingLeft: "2rem" }}>
@@ -322,11 +317,11 @@ axios
                       >
                         <input
                           type="checkbox"
-                          id="vehicle1"
-                          name="vehicle1"
+                          id="vehicle9"
+                          name="vehicle9"
                           value="rtr"
                         />
-                        <label for="vehicle1"> Sub Category 1</label>
+                        <label for="vehicle10"> Sub Category 1</label>
                       </a>
                       <a
                         href="#"
@@ -335,11 +330,11 @@ axios
                       >
                         <input
                           type="checkbox"
-                          id="vehicle2"
-                          name="vehicle2"
+                          id="vehicle10"
+                          name="vehicle10"
                           value="sfg"
                         />
-                        <label for="vehicle1"> Sub Category 2</label>
+                        <label for="vehicle11"> Sub Category 2</label>
                       </a>
                       <a
                         href="#"
@@ -348,11 +343,11 @@ axios
                       >
                         <input
                           type="checkbox"
-                          id="vehicle3"
-                          name="vehicle3"
+                          id="vehicle11"
+                          name="vehicle11"
                           value="fgh"
                         />
-                        <label for="vehicle1"> Sub Category 3</label>
+                        <label for="vehicle12"> Sub Category 3</label>
                       </a>
                     </form>
                   </div>
@@ -796,8 +791,6 @@ axios
                         Remove
                       </button>
                     </tr>
-                   
-                  
                   
                 );
                 

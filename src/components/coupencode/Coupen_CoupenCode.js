@@ -54,19 +54,20 @@ export default function Coupen_CoupenCode() {
                 setCouponcode(e.target.value);
               }}
               name="couponcode"
-            />
+            /><br/>
             
             <label className="demo">Select Discount</label><br/>
             <span >Percent</span>
             <label class="switch" style={{marginLeft:'1rem'}}>
-              <input class="switch-input" type="checkbox" style={{paddingRight:'200rem'}} value={discount_type} onChange={(e) => {
-                setDiscount_type(e.target.value);
-                
+              <input class="switch-input" type="checkbox" style={{paddingRight:'200rem'}} name="discount_type" change={discount_type} 
+              onChange={(e) => {
+                setDiscount_type(e.target.change);  
               }} />
               <span class="switch-label" data-on="" data-off=""></span>
               <span class="switch-handle"></span>
             </label>
          <span>Flat</span><br/>
+         
          <label className="demo">Coupen Price</label>
             <input
               type="text"
@@ -77,21 +78,23 @@ export default function Coupen_CoupenCode() {
                 setCoupon_price(e.target.value);
               }}
               name="coupon_price"
-            />
+            /><br/>
+
             <div className="row">
-              <div className="col-md-8">
+              <div className="col-md-6">
                 <label>Start Date</label>
                 <br />
                 <input
                   type="datetime-local"
                   id="birthdaytime"
                   name="valid_to"
-                  // value={valid_to}
-                  // onSelect={(e) => {
-                  //   setValid_to(e.target.value);
-                  // }}
+                  value={valid_to}
+                  onChange={(e) => {
+                    setValid_to(e.target.value);
+                  }}
                 />
               </div>&nbsp;
+
               <div className="col-md-3">
                 <label>End Date</label>
                 <br />
@@ -99,17 +102,17 @@ export default function Coupen_CoupenCode() {
                   type="datetime-local"
                   id="birthdaytime"
                   name="valid_from"   
-                  // value={valid_from}
-                  // onSelect={(e) => {
-                  //   setValid_from(e.target.value);
-                  // }}
+                  value={valid_from}
+                  onChange={(e) => {
+                    setValid_from(e.target.value);
+                  }}
                 />
               </div>
             </div>
           </Form>
           <br />
         </div>
-        <button type="button" class="btn btn-info" onClick={customerUser} style={{marginLeft:'2rem'}}>
+        <button type="button" class="btn btn-info" onClick={customerUser} style={{marginLeft:'2rem', }}>
           Add 
         </button><br/><br/>
         </form>

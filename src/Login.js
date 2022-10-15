@@ -129,14 +129,14 @@ export default function LoginPage() {
               <label class="form-label" for="form1Example1">
                 Email address
               </label>
-              <input type="email" id="form1Example1" class="form-control" />
+              <input type="email" id="form1Example1" class="form-control" required/>
             </div>
 
             <div class="form-outline mb-4">
               <label class="form-label" for="form1Example2">
                 Password
               </label>
-              <input type="password" id="form1Example2" class="form-control" />
+              <input type="password" id="form1Example2" class="form-control" required/>
             </div>
 
             <div class="row mb-4">
@@ -172,7 +172,6 @@ export default function LoginPage() {
 
 // --------------------------------formik Code----------------------------------------
 
-// import React from 'react';
 // import { Formik } from 'formik';
 
 // const LoginPage = () => (
@@ -234,4 +233,4 @@ export default function LoginPage() {
 //   </div>
 // );
 
-// export default LoginPage;
+// export default LoginPage ;

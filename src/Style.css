@@ -1,5 +1,4 @@
 
-  /* define a fixed width for the entire menu */
   .sidenav {
     height: auto;
     width: 20%;
@@ -11,7 +10,7 @@
     padding-top: 30px;
     float: left;
     padding-left: 20px;
-  }
+  } 
   
   .sidenav a {
     padding: 6px 8px 6px 16px;
@@ -28,8 +27,8 @@
   }
   
   .main {
-    margin-left: 160px; /* Same as the width of the sidenav */
-    font-size: 20px; /* Increased text to enable scrolling */
+    margin-left: 160px; 
+    font-size: 20px; 
     padding: 0px 10px;
     position: fixed;
     height: 100%;
@@ -46,11 +45,10 @@
   .mainmenus a {
     display: block;
     text-decoration: none;
-    /* padding: 1px; */
+ 
     color: #000;
     height: 100%;
   }
-  /* reset our lists to remove bullet points and padding */
   .mainmenu,
   .submenu {
     list-style: none;
