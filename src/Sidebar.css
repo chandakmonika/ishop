@@ -1,0 +1,29 @@
+.sidebar-container{
+}
+
+.sidebar-container .nav li{
+    color: white;
+    width: 100%;   
+}
+
+.sidebar-container .nav li a {
+    color: white;
+}
+
+.sidebar-container .nav li a.collapsed{
+}
+
+.sidebar-container .nav li a .arrow-icon {
+    color: white;
+    margin-top: 10px;
+    /* float: right; */
+    transform: rotate(90deg);
+    transition: all 0.5s ease-out;
+}
+
+.sidebar-container .nav li a.collapsed .arrow-icon{
+    transform: rotate(0deg);
+}
+.min-vh-100 {
+    min-height: 300vh!important;
+}

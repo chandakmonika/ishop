@@ -147,8 +147,6 @@ export default function Customer_Customerlist() {
     console.log(datas);
   };
 
-
-
   const applyStatus = () => {
     console.log(3, selectedcustomer, selectedStatus);
     const selectedId = selectedcustomer.map((id) => id.user_id).join(",");
@@ -159,8 +157,6 @@ export default function Customer_Customerlist() {
     };
     statusChange(apidata);
   };
-
-
 
   const style = {
     position: 'absolute',
@@ -198,15 +194,15 @@ export default function Customer_Customerlist() {
               <div className="d-flex ml-auto my-2 my-lg-0">
                 <Button variant="light">Import Customer</Button>
                 &nbsp;&nbsp;&nbsp;
-                <Button variant="info">Add Customer</Button>&nbsp;&nbsp;&nbsp;
+                <Button variant="info"><Link to="/customer/address/add">Add Customer</Link></Button>&nbsp;&nbsp;&nbsp;
               </div>
               &nbsp;&nbsp;&nbsp;
             </Nav>
           </Navbar.Collapse>
         </Container>
       </Navbar>
-      <div class="card" style={{ width: "100%" }}>
-        <div class="card-body" style={{ width: "100%" }}>
+      <div class="card" style={{ width: "100%" , }}>
+        <div class="card-body" style={{ width: "100%",  }}>
           <div class="row">
             <div className="col-sm-3">
               <form onSubmit={handleSubmit}>

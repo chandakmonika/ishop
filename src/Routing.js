@@ -512,6 +512,9 @@ import Theme_HomeTheme from "./components/themes/Theme_HomeTheme";
 import Theme_MenuTheme from "./components/themes/Theme_MenuTheme";
 import ForgetPassword from "./ForgetPassword";
 import Product_EditProduct from "./components/product/Product_EditProduct";
+import Payment_getwayList from "./components/Payment_getwayList";
+import Payment_getwayEdit from "./components/Payment_getwayEdit";
+import Seo from "./components/Seo";
 
 
 export default function RoutingPage() {
@@ -550,11 +553,10 @@ export default function RoutingPage() {
           <Route path="/brand/edit/:brand_id" element={<Brand_EditBrand />} />
 
           <Route path="/payment/list" element={<Payment_Payment />} />
-          {/* <Route path="/coupencode" element={<Coupen_CoupenCode />} /> */}
           <Route path="/coupencode/list" element={<Coupen_CoupenCodeList />} />
           <Route path="/coupencode/add" element={<Coupen_CoupenCode />} />
           <Route
-            path="/customer/address/list"
+            path="/customer/address/list/:user_id"
             element={<Address_AddressList />}
           />
           <Route
@@ -668,6 +670,10 @@ export default function RoutingPage() {
 
           <Route path="/hometheme" element={<Theme_HomeTheme />} />
     <Route path="/menutheme" element={<Theme_MenuTheme />} />
+    <Route path="/paymentgetwaylist" element={<Payment_getwayList/>} />
+    <Route path="/paymentgetwayedit" element={<Payment_getwayEdit />} />
+    <Route path="/seo" element={<Seo />} />
+
         </Route>
       </Routes>
     </div>

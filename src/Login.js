@@ -122,7 +122,7 @@ export default function LoginPage() {
     >
       <div className="card" style={{ width: "30rem" }}>
         <div className="card-body" style={{ paddingRight: "200rm" }}>
-          <p style={{ textAlign: "center" }}>Sign in to start your session</p>
+          <p style={{ textAlign: "center" }}>Login From</p>
 
           <form onSubmit={loginFunction}>
             <div class="form-outline mb-4">

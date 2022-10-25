@@ -37,18 +37,10 @@ export default function Product_AddProductCategory() {
       parent_category_id: Number(parent_category_id),
       category_name,
       category_image: category_image?.logoFile ? category_image?.logoFile:"",
-      // attributes_group_name,
-      // attributes_label,
-      // attributes_name,
-      // attributes_type,
-      // attributes_value,
-      // is_variant_key,
+     
       attributes: formFields
     };
-    // const formData = new FormData()
-    // Object.keys(data).forEach((key)=>{
-    //   formData.append(key, data[key])
-    // })
+    
     fetch("http://admin.ishop.sunhimlabs.com/api/v1/products/category/add", {
       method: "POST",
       headers: {

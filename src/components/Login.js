@@ -1,26 +1,40 @@
+import './components/Login.css'
 import React from "react";
-import { Route, Routes, Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 
-export default function Login() {
+export default function LoginPage() {
+  const navigate = useNavigate();
+  const loginFunction = () => {
+    navigate("/home");
+  };
+  const loginContainer= {
+    margin: 'auto',
+    height: '100vh',
+    display: 'flex',
+    justifyContent: 'center',
+    alignItems: 'center'
+  }
   return (
-    <div style={{ textAlign: "center", paddingLeft: "30rem" }}>
+    <div
+      style={loginContainer}
+    >
       <div className="card" style={{ width: "30rem" }}>
         <div className="card-body" style={{ paddingRight: "200rm" }}>
-          <p style={{ textAlign: "center" }}>Sign in to start your session</p>
+          <p style={{ textAlign: "center" }}>Login From</p>
 
-          <form>
+          <form onSubmit={loginFunction}>
             <div class="form-outline mb-4">
               <label class="form-label" for="form1Example1">
                 Email address
               </label>
-              <input type="email" id="form1Example1" class="form-control" />
+              <input type="email" id="form1Example1" class="form-control" required/>
             </div>
 
             <div class="form-outline mb-4">
               <label class="form-label" for="form1Example2">
                 Password
               </label>
-              <input type="password" id="form1Example2" class="form-control" />
+              <input type="password" id="form1Example2" class="form-control" required/>
             </div>
 
             <div class="row mb-4">
@@ -40,7 +54,7 @@ export default function Login() {
               </div>
 
               <div class="col">
-                <Link to="/">Forgot password?</Link>
+                <Link to="/forgetpassword">Forgot password?</Link>
               </div>
             </div>
 
