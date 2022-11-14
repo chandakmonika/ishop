@@ -10,7 +10,6 @@ import Navbar from "react-bootstrap/Navbar";
 export default function Address_AddressList() {
   const [first, setFirst] = useState([]);
   const [query, setQuery] = useState({ text: "" });
-
   const { user_id } = useParams();
   // const location = useLocation();
 

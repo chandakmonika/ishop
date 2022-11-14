@@ -4,17 +4,36 @@ import Dropdown from "react-bootstrap/Dropdown";
 import Container from "react-bootstrap/Container";
 import Nav from "react-bootstrap/Nav";
 import Navbar from "react-bootstrap/Navbar";
-import NavDropdown from "react-bootstrap/NavDropdown";
 import { Link } from "react-router-dom";
 import axios from "axios";
+import { useParams, useNavigate } from "react-router-dom";
+import TablePagination from "@mui/material/TablePagination";
+import Box from '@mui/material/Box';
+import Typography from '@mui/material/Typography';
+import Modal from '@mui/material/Modal';
 
 export default function Faq_FAQList() {
 
   const [first, setFirst] = useState([]);
   const [query, setQuery] = useState({ text: "" });
+  const [order, setOrder] = useState("ASC");
   const [faq_id, setFaq_id] = useState([]);
   const [selectedcustomer, setSelectedcustomer] = useState([]);
   const [selectedStatus, setSelectedStatus] = useState("0");
+  const [status, setStatus] = useState([]);
+
+  const [page, setPage] = useState([]);
+
+  const navigate = useNavigate()
+  
+  const [changeStatusId, setChangeStatusId] = useState({
+    faq_id: "",
+    status: ""
+  });
+  
+  const [isSingleStatusUpdate, setIsSingleStatusUpdate] = useState(true)
+  const url = "http://admin.ishop.sunhimlabs.com/api/v1/faq/list";
+
   console.log(query);
   const handleChange = (e) => {
     setQuery({ text: e.target.value });
@@ -28,6 +47,31 @@ export default function Faq_FAQList() {
       .then((res) => setFirst(res.data.data));
   };
 
+  const getData = async () => {
+    try {
+      const res = await axios.get(`${url}`);
+      const { data, pages } = res.data;
+      setFirst(data);
+      setPage(pages);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+  useEffect(() => {
+    getData();
+  }, []);
+
+  const handleChangePage = async (e, newPage) => {
+    setPage(newPage);
+    try {
+      const res = await axios.get(`${url}?&page=${newPage + 1}`);
+      const { data, pages } = res.data;
+      setFirst(data);
+      setPage(pages);
+    } catch (error) {
+      console.log(error);
+    }
+  };
 
 
   const getCustomerList = () => {
@@ -40,6 +84,17 @@ export default function Faq_FAQList() {
     getCustomerList();
   }, []);
 
+
+  const update = (e) => {
+    e.preventDefault();
+    order === "ASC" ? setOrder("DESC") : setOrder("ASC");
+    axios
+      .get(
+        `http://admin.ishop.sunhimlabs.com/api/v1/faq/list?q=&per_page=12&page=1&sort_by=question&order_by=${order}`
+      )
+      .then((res) => setFirst(res.data.data));
+  };
+
   const statusChange = (apidata) => {
     fetch("http://admin.ishop.sunhimlabs.com/api/v1/faq/changestatus", {
       method: "POST",
@@ -51,21 +106,40 @@ export default function Faq_FAQList() {
     }).then((result) => {
       result.json().then((resps) => {
         console.warn("resps", resps);
+        handleClose();
         getCustomerList();
         
       });
     });
   };
 
-  function handleClick(faq_id, status) {
-    console.warn(faq_id, status);
+  // function handleClick(faq_id, status) {
+  //   console.warn(faq_id, status);
 
-    let apidata = {
-      faq_id: faq_id,
-      status: status === "0" ? "1" : "0",
-    };
-    statusChange(apidata);
+  //   let apidata = {
+  //     faq_id: faq_id,
+  //     status: status === "0" ? "1" : "0",
+  //   };
+  //   statusChange(apidata);
+  // }
+
+  function handleStatusChange(faqId, status) {
+    if (
+      isSingleStatusUpdate
+    ) {
+      console.warn(faq_id, status);
+      let apidata = {
+        faq_id: changeStatusId.faq_id,
+        status: changeStatusId.status === "0" ? "1" : "0",
+      };
+      statusChange(apidata);
+    }
+    else {
+      applyStatus();
+    }
+
   }
+
 
   const onSelectCustomer = (e, faq_id) => {
     const datas =
@@ -102,6 +176,32 @@ export default function Faq_FAQList() {
     statusChange(apidata);
   };
 
+
+  const style = {
+    position: 'absolute',
+    top: '50%',
+    left: '50%',
+    transform: 'translate(-50%, -50%)',
+    width: 400,
+    bgcolor: 'background.paper',
+    border: '2px solid #000',
+    boxShadow: 24,
+    p: 4,
+  };
+
+  const [open, setOpen] = React.useState(false);
+  const handleOpen = (faq_id, status, isSingleStatus) => {
+    setIsSingleStatusUpdate(isSingleStatus)
+    setChangeStatusId({
+      faq_id, status
+    })
+    setOpen(true);
+  }
+  const handleClose = () => setOpen(false);
+
+
+
+
   // useEffect(() => {
   //   axios
   //     .get(`http://admin.ishop.sunhimlabs.com/api/v1/faq/list`)
@@ -136,7 +236,7 @@ export default function Faq_FAQList() {
                     className="form-control"
                     id="exampleInputEmail1"
                     aria-describedby="texthelp"
-                    placeholder="Search this blog"
+                    placeholder="Search "
                     onChange={handleChange}
                   />
                 <div class="input-group-append">
@@ -154,19 +254,21 @@ export default function Faq_FAQList() {
               <tr>
                 <th scope="col"><div class="custom-control custom-checkbox">
                     <input
-                      type="checkbox"
-                      class="custom-control-input"
-                      id="customCheck1"
-                      checked
-                    />
+                      type="checkbox"/>
                     <label
-                      class="custom-control-label"
                       for="customCheck1"
                     ></label>
                     
                   </div></th>
-                <th scope="col">FAQ Category</th>
-                <th scope="col">Questions</th>
+                <th scope="col">
+                  FAQ Category
+                <i class="fas fa-arrow-down" onClick={update}></i>
+                  <i class="fas fa-arrow-up" onClick={update}></i>
+                  </th>
+                <th scope="col">Questions
+                <i class="fas fa-arrow-down" onClick={update}></i>
+                  <i class="fas fa-arrow-up" onClick={update}></i>
+                </th>
                 <th scope='col'>Status</th>
                 <th scope="col">Action</th>
               </tr>
@@ -176,7 +278,8 @@ export default function Faq_FAQList() {
                 first.length > 0 &&
               first.map((item) => {
                 return (
-                  <tr key={item.product_id}>
+                  <tr key={item.id}>
+
                     <td>
                 
                         <div class="custom-control custom-checkbox">
@@ -194,7 +297,7 @@ export default function Faq_FAQList() {
                     <td> <button
                           type="button"
                           onClick={() =>
-                            handleClick(item.faq_id, item.status)
+                            handleOpen(item.faq_id, item.status, true)
                           }
                         >
                           {item.status === "0" ? "inactive" : "active"}
@@ -229,15 +332,49 @@ export default function Faq_FAQList() {
                   type="button"
                   class="btn btn-light"
                   style={{ width: "8rem" }}
-                  onClick={() => applyStatus()}
+                  onClick={() => handleOpen(null, null, false)}
                 >
                   Apply
                 </button>
               </div>
+              <h6>Pages:</h6>
+              <p>
+                &nbsp;
+                <b style={{ color: "black" }}> {page.current}</b> /{" "}
+                {page.totalpages}{" "}
+              </p>
+
+              <TablePagination
+                className="col-md-5"
+                component="div"
+                count={page.totalrecords}
+                page={page.current - 1}
+                onPageChange={handleChangePage}
+                rowsPerPage={page.records_per_page}
+              />
             </div>
           </div>
         </div>
       </div>
+      <Modal
+        open={open}
+        onClose={handleClose}
+        aria-labelledby="modal-modal-title"
+        aria-describedby="modal-modal-description"
+      >
+        <Box sx={style}>
+          <Typography id="modal-modal-title" variant="h6" component="h2">
+
+
+          </Typography>
+
+          <Typography id="modal-modal-description" sx={{ mt: 2 }}>
+            Are you sure want to change the status?
+          </Typography>
+          <Button onClick={() => handleClose()}> No </Button>&nbsp;&nbsp;
+          <Button onClick={() => handleStatusChange()}>Yes</Button>
+        </Box>
+      </Modal>
     </div>
   )
 }

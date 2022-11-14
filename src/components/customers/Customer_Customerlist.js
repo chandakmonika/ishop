@@ -12,6 +12,7 @@ import Box from '@mui/material/Box';
 import Typography from '@mui/material/Typography';
 import Modal from '@mui/material/Modal';
 
+
 export default function Customer_Customerlist() {
   const [index, setIndex] = useState([]);
   const [query, setQuery] = useState({ text: "" });
@@ -21,11 +22,14 @@ export default function Customer_Customerlist() {
   const [selectedcustomer, setSelectedcustomer] = useState([]);
   const [selectedStatus, setSelectedStatus] = useState("0");
   const [page, setPage] = useState([]);
+
   const navigate = useNavigate()
+  
   const [changeStatusId, setChangeStatusId] = useState({
     user_id: "",
     status: ""
   });
+  
   const [isSingleStatusUpdate, setIsSingleStatusUpdate] = useState(true)
   const url = "http://admin.ishop.sunhimlabs.com/api/v1/customer/list";
 
@@ -194,7 +198,7 @@ export default function Customer_Customerlist() {
               <div className="d-flex ml-auto my-2 my-lg-0">
                 <Button variant="light">Import Customer</Button>
                 &nbsp;&nbsp;&nbsp;
-                <Button variant="info"><Link to="/customer/address/add">Add Customer</Link></Button>&nbsp;&nbsp;&nbsp;
+                <Button variant="info"><Link to="/customer/addnewcustomer">Add Customer</Link></Button>&nbsp;&nbsp;&nbsp;
               </div>
               &nbsp;&nbsp;&nbsp;
             </Nav>

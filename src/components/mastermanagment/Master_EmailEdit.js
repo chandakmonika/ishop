@@ -29,7 +29,7 @@ const config = {
     ],
   };
 export default function Master_EmailEdit() {
-    const [value, setValue] = useState("");
+    const [text, setText] = useState("");
     const [email_title, setEmail_title] = useState("");
     const [from_name, setFrom_name] = useState("");
     const [from_email, setFrom_email] = useState("");
@@ -41,6 +41,7 @@ export default function Master_EmailEdit() {
       from_email: "",
       email_subject: "",
       email_content: "",
+      
     });
     const { template_id } = useParams();
     useEffect(() => {
@@ -151,7 +152,8 @@ export default function Master_EmailEdit() {
             <br /> 
 
             <h6>Email Content</h6>
-                <Master_CMSEditor setValue={setValue}  config={config} />
+                <Master_CMSEditor setValue={setText}  config={config} value={userdata.email_content}
+                onChange={handleChange}/>
                 <br />
                 
          

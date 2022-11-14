@@ -2,23 +2,28 @@ import axios from "axios";
 import React, { useState, useEffect } from "react";
 import { useParams } from "react-router-dom";
 import { Link } from "react-router-dom";
+import Form from "react-bootstrap/Form";
 
 export default function Coupen_CoupenCodeEdit() {
-    const [question, setQuestion] = useState("");
-  const [answer, setAnswer] = useState("");
-  const [category_id, setCategory_id] = useState("");
+  const [couponcode, setCouponcode] = useState("");
+  const [discount_type, setDiscount_type] = useState("");
+  const [valid_from, setValid_from] = useState("");
+  const [valid_to, setValid_to] = useState("");
+  const [coupon_price, setCoupon_price] = useState("");
   
   const [userdata, setUser_data] = useState({
-    category_id: "",
-    question: "",
-    answer: "",
-    
+    couponcode: "",
+    discount_type: "",
+    valid_from: "",
+    valid_to: "",
+    coupon_price: "",
+   
   });
-  const { faq_id } = useParams();
+  const { coupon_id } = useParams();
   useEffect(() => {
     axios
       .get(
-        `http://admin.ishop.sunhimlabs.com/api/v1/faq/details/${faq_id}`
+        `http://admin.ishop.sunhimlabs.com/api/v1/coupons/details/${coupon_id}`
       )
       .then((res) => {
         const getData = res.data.data;
@@ -37,9 +42,9 @@ export default function Coupen_CoupenCodeEdit() {
   };
 
   function customerUser() {
-    console.warn(category_id,question, answer);
+    console.warn(couponcode,discount_type,valid_from,valid_to,coupon_price);
 
-    fetch(`http://admin.ishop.sunhimlabs.com/api/v1/faq/edit/`, {
+    fetch(`http://admin.ishop.sunhimlabs.com/api/v1/coupons/edit/`, {
       method: "POST",
       headers: {
         Accept: "application/json",
@@ -69,45 +74,74 @@ export default function Coupen_CoupenCodeEdit() {
           <div
             className="form-group"
             controlId="formBasicFirstName"
-            style={{ width: "40%" }}
+            style={{ width: "50%" }}
           >
-            <label for="exampleFormControlSelect1">FAQ Category</label>
-            <select
-              class="form-control"
-              id="exampleFormControlSelect1"
-              name="category_id"
-              value={userdata.category_id}
-              onChange={handleChange}
-            >
-              <option value="h">Home</option>
-              <option value="a">About</option>
-              
-            </select>
+          <br />
 
-            <label className="demo">Question</label>
+          <Form style={{ Display: "float-right", paddingLeft: "2rem" }}>
+          <label className="demo">Coupon Code</label>
             <input
               type="text"
               className="form-control"
-              name="question"
-              placeholder="Enter Last Name"
-              value={userdata.question}
+              placeholder="Enter Add Coupon Code"
+              value={userdata.couponcode}
               onChange={handleChange}
-            />
-
-            <label className="demo">Answer</label>
-            <textarea
-              class="form-control"
-              id="exampleFormControlTextarea1"
-              placeholder="Enter Answer"
-              rows="3"
-              value={userdata.answer}
+              name="couponcode"
+            /><br/>
+            
+            <label className="demo">Select Discount</label><br/>
+            <span >Percent</span>
+            <label class="switch" style={{marginLeft:'1rem'}}>
+              <input class="switch-input" type="checkbox" style={{paddingRight:'200rem'}} name="discount_type" value={userdata.discount_type}  
+              onChange={handleChange} />
+              { console.log(2,discount_type)}
+             
+              <span class="switch-label" data-on="" data-off=""></span>
+              <span class="switch-handle"></span>
+            </label>
+         <span>Flat</span><br/>
+         
+         <label className="demo">Coupon Price</label>
+            <input
+              type="text"
+              className="form-control"
+              placeholder="Enter Add Coupon Price"
+              value={userdata.coupon_price}
               onChange={handleChange}
-              name="answer"
-            ></textarea>
-            <br />
-          </div>
+              name="coupon_price"
+            /><br/>
 
-          <Link to="/mastermanagement/faq/list">
+            <div className="row">
+              <div className="col-md-6">
+                <label>Start Date</label>
+                <br />
+                <input
+                  type="datetime-local"
+                  id="birthdaytime"
+                  name="valid_to"
+                  value={userdata.valid_to}
+                  onChange={handleChange}
+                />
+              </div>&nbsp;
+
+              <div className="col-md-3">
+                <label>End Date</label>
+                <br />
+                <input
+                  type="datetime-local"
+                  id="birthdaytime"
+                  name="valid_from"   
+                  value={userdata.valid_from}
+                  onChange={handleChange}
+                />
+              </div>
+            </div>
+          </Form>
+          <br />
+        </div>
+        
+
+          <Link to="/coupencode/list">
           <button type="button" class="btn btn-info" onClick={customerUser}>
             Update 
           </button>

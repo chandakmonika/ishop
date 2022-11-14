@@ -1,18 +1,36 @@
 import React,{ useEffect, useState } from "react";
 import axios from "axios";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import Button from "react-bootstrap/Button";
 import Dropdown from "react-bootstrap/Dropdown";
 import Container from "react-bootstrap/Container";
 import Nav from "react-bootstrap/Nav";
 import Navbar from "react-bootstrap/Navbar";
 import NavDropdown from "react-bootstrap/NavDropdown";
+import TablePagination from "@mui/material/TablePagination";
+import Box from '@mui/material/Box';
+import Typography from '@mui/material/Typography';
+import Modal from '@mui/material/Modal';
 export default function Master_CountryList() {
   const [first, setFirst] = useState([]);
   const [query, setQuery] = useState({ text: "" });
+  const [order, setOrder] = useState("ASC");
   const [country_id, setCountry_id] = useState([]);
   const [selectedcustomer, setSelectedcustomer] = useState([]);
   const [selectedStatus, setSelectedStatus] = useState("0");
+  const [page, setPage] = useState([]);
+
+  const navigate = useNavigate()
+  
+  const [changeStatusId, setChangeStatusId] = useState({
+    state_id: "",
+    status: ""
+  });
+  const [isSingleStatusUpdate, setIsSingleStatusUpdate] = useState(true)
+  const url = "http://admin.ishop.sunhimlabs.com/api/v1/countries/list";
+
+
+
   console.log(query);
   const handleChange = (e) => {
     setQuery({ text: e.target.value });
@@ -26,6 +44,32 @@ export default function Master_CountryList() {
       .then((res) => setFirst(res.data.data));
   };
 
+ const getData = async () => {
+    try {
+      const res = await axios.get(`${url}`);
+      const { data, pages } = res.data;
+      setFirst(data);
+      setPage(pages);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+  useEffect(() => {
+    getData();
+  }, []);
+
+  const handleChangePage = async (e, newPage) => {
+    setPage(newPage);
+    try {
+      const res = await axios.get(`${url}?&page=${newPage + 1}`);
+      const { data, pages } = res.data;
+      setFirst(data);
+      setPage(pages);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
 
   const getCustomerList = () => {
     axios
@@ -36,6 +80,19 @@ export default function Master_CountryList() {
   useEffect(() => {
     getCustomerList();
   }, []);
+
+
+  const update = (e) => {
+    e.preventDefault();
+    order === "ASC" ? setOrder("DESC") : setOrder("ASC");
+    axios
+      .get(
+        `http://admin.ishop.sunhimlabs.com/api/v1/countries/list?q=&per_page=12&page=1&sort_by=country_name&order_by=${order}`
+      )
+      .then((res) => setFirst(res.data.data));
+  };
+
+
 
   const statusChange = (apidata) => {
     fetch("http://admin.ishop.sunhimlabs.com/api/v1/countries/changestatus", {
@@ -48,11 +105,29 @@ export default function Master_CountryList() {
     }).then((result) => {
       result.json().then((resps) => {
         console.warn("resps", resps);
+        handleClose();
         getCustomerList();
         
       });
     });
   };
+
+  function handleStatusChange(userId, status) {
+    if (
+      isSingleStatusUpdate
+    ) {
+      console.warn(country_id, status);
+      let apidata = {
+        user_id: changeStatusId.user_id,
+        status: changeStatusId.status === "0" ? "1" : "0",
+      };
+      statusChange(apidata);
+    }
+    else {
+      applyStatus();
+    }
+
+  }
 
   function handleClick(country_id, status) {
     console.warn(country_id, status);
@@ -98,7 +173,27 @@ export default function Master_CountryList() {
     };
     statusChange(apidata);
   };
+  const style = {
+    position: 'absolute',
+    top: '50%',
+    left: '50%',
+    transform: 'translate(-50%, -50%)',
+    width: 400,
+    bgcolor: 'background.paper',
+    border: '2px solid #000',
+    boxShadow: 24,
+    p: 4,
+  };
 
+  const [open, setOpen] = React.useState(false);
+  const handleOpen = (country_id, status, isSingleStatus) => {
+    setIsSingleStatusUpdate(isSingleStatus)
+    setChangeStatusId({
+      country_id, status
+    })
+    setOpen(true);
+  }
+  const handleClose = () => setOpen(false);
  
   return (
     <div>
@@ -156,7 +251,9 @@ export default function Master_CountryList() {
                     ></label>
                   </div>
                 </th>
-                <th scope="col">Country Name</th>
+                <th scope="col">Country Name&nbsp;
+                  <i class="fas fa-arrow-down" onClick={update}></i>
+                  <i class="fas fa-arrow-up" onClick={update}></i></th>
                 <th scope="col">Status</th>
                 <th scope="col">Action</th>
               </tr>
@@ -183,7 +280,7 @@ export default function Master_CountryList() {
                     <td><button
                           type="button"
                           onClick={() =>
-                            handleClick(item.country_id, item.status)
+                            handleOpen(item.country_id, item.status,true)
                           }
                         >
                           {item.status === "0" ? "inactive" : "active"}
@@ -218,15 +315,51 @@ export default function Master_CountryList() {
                   type="button"
                   class="btn btn-light"
                   style={{ width: "8rem" }}
-                  onClick={() => applyStatus()}
+                  onClick={() => handleOpen(null, null, false)}
                 >
                   Apply
                 </button>
               </div>
+
+              <h6>Pages:</h6>
+              <p>
+                &nbsp;
+                <b style={{ color: "black" }}> {page.current}</b> /{" "}
+                {page.totalpages}{" "}
+              </p>
+
+              <TablePagination
+                className="col-md-5"
+                component="div"
+                count={page.totalrecords}
+                page={page.current - 1}
+                onPageChange={handleChangePage}
+                rowsPerPage={page.records_per_page}
+              />
+
             </div>
           </div>
         </div>
       </div>
+      <Modal
+        open={open}
+        onClose={handleClose}
+        aria-labelledby="modal-modal-title"
+        aria-describedby="modal-modal-description"
+      >
+        <Box sx={style}>
+          <Typography id="modal-modal-title" variant="h6" component="h2">
+
+
+          </Typography>
+
+          <Typography id="modal-modal-description" sx={{ mt: 2 }}>
+            Are you sure want to change the status?
+          </Typography>
+          <Button onClick={() => handleClose()}> No </Button>&nbsp;&nbsp;
+          <Button onClick={() => handleStatusChange()}>Yes</Button>
+        </Box>
+      </Modal>
     </div>
   );
 }

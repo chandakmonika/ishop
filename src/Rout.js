@@ -343,9 +343,13 @@ import Form from "react-bootstrap/Form";
 import Nav from "react-bootstrap/Nav";
 import Navbar from "react-bootstrap/Navbar";
 import NavDropdown from "react-bootstrap/NavDropdown";
-import { Outlet, Link } from "react-router-dom";
+import { Outlet, Link,useNavigate } from "react-router-dom";
 import "./Sidebar.css";
+
 export default function DashboardPage() {
+  const navigate = useNavigate();
+  const userName = localStorage.getItem('USER_NAME')
+
   return (
     <div>
       <div className="wrapper">
@@ -360,7 +364,7 @@ export default function DashboardPage() {
                   style={{ maxHeight: "100px" }}
                   navbarScroll
                 >
-                  <Form className="d-flex ml-auto my-2 my-lg-0">
+                  {/* <Form className="d-flex ml-auto my-2 my-lg-0">
                     <Form.Control
                       type="search"
                       placeholder="Search"
@@ -368,15 +372,13 @@ export default function DashboardPage() {
                       aria-label="Search"
                     />
                     <Button variant="outline-success">Search</Button>
-                  </Form>
+                  </Form> */}
                   &nbsp;&nbsp;&nbsp;
                   <Nav.Link href="#action1">
                     <i className="fas fa-user-alt"></i>
                   </Nav.Link>
-                  <NavDropdown title="User Name" id="navbarScrollingDropdown">
-                    <NavDropdown.Item href="#action3">
-                      <Link to="/login">Login</Link>
-                    </NavDropdown.Item>
+                  <NavDropdown title={userName} id="navbarScrollingDropdown">
+                    
                     <NavDropdown.Item>
                       <Link to="/dashboard">Setting</Link>
                     </NavDropdown.Item>
@@ -385,7 +387,12 @@ export default function DashboardPage() {
                     </NavDropdown.Item>
                     <NavDropdown.Divider />
                     <NavDropdown.Item>
-                      <Link to="/">Logout</Link>
+                      
+                      <div onClick={()=>{
+                        localStorage.removeItem("ACCESS_TOKEN")
+                        localStorage.removeItem("USER_NAME")
+                        navigate("/")
+                      }}>Logout</div>
                     </NavDropdown.Item>
                   </NavDropdown>
                 </Nav>
@@ -469,8 +476,8 @@ export default function DashboardPage() {
                           <Link to="/product/category/list">
                             Product Category List
                           </Link>
-                          <br />
-                        </li>
+                         
+                        </li> <br />
                         <li>
                           <Link to="/product/wishlist">Product Wish List</Link>
                         </li>
@@ -528,9 +535,9 @@ export default function DashboardPage() {
                             Add New Customer
                           </Link>
                         </li><br/>
-                        <li>
+                        {/* <li>
                         <Link to="/customer/address/list">Address List</Link>
-                        </li>
+                        </li> */}
                       </ul>
                     </li>
 
@@ -636,6 +643,25 @@ export default function DashboardPage() {
                           </li><br/>
                           <li>
                             <a href="/seo">SEO</a>
+                          </li><br/>
+                          <li>
+                            <a href="/bloglist">Blog List</a>
+                          </li><br/>
+                          <li>
+                            <a href="/addblog">Add Blog</a>
+                          </li>
+                          <br/>
+                          <li>
+                            <a href="/mastermanagement/faq/list">FAQ List</a>
+                          </li><br/>
+                          <li>
+                            <a href="/mastermanagement/faq/add">FAQ Add</a>
+                          </li><br/>
+                          <li>
+                            <a href="/mastermanagement/faq/category/list">FAQ Category List</a>
+                          </li><br/>
+                          <li>
+                            <a href="/mastermanagement/faq/category/add">FAQ Category Add</a>
                           </li><br/>
                         </li>
                       </ul>

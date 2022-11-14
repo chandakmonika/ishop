@@ -27,7 +27,7 @@ export default function Order_OrderDetails() {
             <div className="col-md-2">
               <h6>Download Invoice</h6>
               <Button variant="info" type="submit">
-                Downloadu
+                Download
               </Button>
             </div>
           </div>

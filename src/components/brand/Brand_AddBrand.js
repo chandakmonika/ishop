@@ -1,6 +1,8 @@
-
 import React, { useState, useEffect } from "react";
 import axios from "axios";
+import { Link } from "react-router-dom";
+
+
 export default function Customer_Addnewcustomer() {
   const [product_category_id, setProduct_category_id] = useState("");
   const [brand_name, setBrand_name] = useState("");
@@ -14,9 +16,8 @@ export default function Customer_Addnewcustomer() {
       .then((res) => setIndex(res.data.data));
   }, []);
 
-  function customerUser() {
+  function brandrUser() {
     console.warn(product_category_id, brand_name, brand_image, status);
-
     let datas = {
       product_category_id,
       brand_name,
@@ -101,20 +102,25 @@ export default function Customer_Addnewcustomer() {
               />
 
               <label className="demo">Status</label>
-              <input
-                type="text"
-                className="form-control"
+              <select
+                class="form-control"
+                id="exampleFormControlSelect1"
+                name="status"
                 placeholder="Enter Status"
                 value={status}
                 onChange={(e) => {
                   setStatus(e.target.value);
                 }}
-                name="status"
-              />
+                >
+                <option value="0">Inactive</option>
+                <option value="1">Active</option>
+              </select>
             </div>
-            <button type="button" class="btn btn-info" onClick={customerUser}>
+            <Link to="/brand/list">
+            <button type="button" class="btn btn-info" onClick={brandrUser}>
               Add Brand
             </button>
+            </Link>
           </form>
           <br />
         </div>

@@ -5,16 +5,34 @@ import Dropdown from "react-bootstrap/Dropdown";
 import Container from "react-bootstrap/Container";
 import Nav from "react-bootstrap/Nav";
 import Navbar from "react-bootstrap/Navbar";
-import { Link } from "react-router-dom";
+import { Link,useNavigate } from "react-router-dom";
+import TablePagination from "@mui/material/TablePagination";
+import Box from '@mui/material/Box';
+import Typography from '@mui/material/Typography';
+import Modal from '@mui/material/Modal';
 //import "././Product_Productlist.css";
 
 export default function ProductsComponent() {
   const [first, setFirst] = useState([]);
   const [query, setQuery] = useState({ text: "" });
+  const [status, setStatus] = useState([]);
+  const [order, setOrder] = useState("ASC");
   const [product_id, setProduct_id] = useState([]);
   const [selectedcustomer, setSelectedcustomer] = useState([]);
   const [selectedStatus, setSelectedStatus] = useState("0");
+  const [page, setPage] = useState([]);
+
+  const navigate = useNavigate()
+  
+  const [changeStatusId, setChangeStatusId] = useState({
+    product_id: "",
+    status: ""
+  });
+  const [isSingleStatusUpdate, setIsSingleStatusUpdate] = useState(true)
+  const url = "http://admin.ishop.sunhimlabs.com/api/v1/products/list";
+
   console.log(query);
+
   const handleChange = (e) => {
     setQuery({ text: e.target.value });
   };
@@ -27,6 +45,33 @@ export default function ProductsComponent() {
       .then((res) => setFirst(res.data.data));
   };
 
+  const getData = async () => {
+    try {
+      const res = await axios.get(`${url}`);
+      const { data, pages } = res.data;
+      setFirst(data);
+      setPage(pages);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+  useEffect(() => {
+    getData();
+  }, []);
+
+  const handleChangePage = async (e, newPage) => {
+    setPage(newPage);
+    try {
+      const res = await axios.get(`${url}?&page=${newPage + 1}`);
+      const { data, pages } = res.data;
+      setFirst(data);
+      setPage(pages);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+
   const getCustomerList = () => {
     axios
     .get(`http://admin.ishop.sunhimlabs.com/api/v1/products/list`)
@@ -36,6 +81,16 @@ export default function ProductsComponent() {
   useEffect(() => {
     getCustomerList();
   }, []);
+
+  const update = (e) => {
+    e.preventDefault();
+    order === "ASC" ? setOrder("DESC") : setOrder("ASC");
+    axios
+      .get(
+        `http://admin.ishop.sunhimlabs.com/api/v1/products/list?q=&per_page=12&page=1&sort_by=product_name&order_by=${order}`
+      )
+      .then((res) => setFirst(res.data.data));
+  };
 
   const statusChange = (apidata) => {
     fetch("http://admin.ishop.sunhimlabs.com/api/v1/products/changestatus", {
@@ -48,10 +103,28 @@ export default function ProductsComponent() {
     }).then((result) => {
       result.json().then((resps) => {
         console.warn("resps", resps);
+        handleClose();
         getCustomerList(); 
       });
     });
   };
+
+  function handleStatusChange(userId, status) {
+    if (
+      isSingleStatusUpdate
+    ) {
+      console.warn(product_id, status);
+      let apidata = {
+        product_id: changeStatusId.product_id,
+        status: changeStatusId.status === "0" ? "1" : "0",
+      };
+      statusChange(apidata);
+    }
+    else {
+      applyStatus();
+    }
+
+  }
 
   function handleClick(product_id, status) {
     console.warn(product_id, status);
@@ -96,6 +169,27 @@ export default function ProductsComponent() {
     statusChange(apidata);
   };
 
+  const style = {
+    position: 'absolute',
+    top: '50%',
+    left: '50%',
+    transform: 'translate(-50%, -50%)',
+    width: 400,
+    bgcolor: 'background.paper',
+    border: '2px solid #000',
+    boxShadow: 24,
+    p: 4,
+  };
+
+  const [open, setOpen] = React.useState(false);
+  const handleOpen = (product_id, status, isSingleStatus) => {
+    setIsSingleStatusUpdate(isSingleStatus)
+    setChangeStatusId({
+      product_id, status
+    })
+    setOpen(true);
+  }
+  const handleClose = () => setOpen(false);
 
   return (
     <div>
@@ -112,7 +206,9 @@ export default function ProductsComponent() {
               <div className="d-flex ml-auto my-2 my-lg-0 float-right">
                 <Button variant="light">Export CSV</Button>&nbsp;&nbsp;&nbsp;
                 <Button variant="light">Import CSV</Button>&nbsp;&nbsp;&nbsp;
+                <Link to="/product/addproduct">
                 <Button variant="info">Add Product</Button>&nbsp;&nbsp;&nbsp;
+                </Link>
               </div>
               &nbsp;&nbsp;&nbsp;
             </Nav>
@@ -135,7 +231,7 @@ export default function ProductsComponent() {
                     className="form-control"
                     id="exampleInputEmail1"
                     aria-describedby="texthelp"
-                    placeholder="Search this blog"
+                    placeholder="Search "
                     onChange={handleChange}
                   />
                   &nbsp;&nbsp;&nbsp;&nbsp;
@@ -187,21 +283,19 @@ export default function ProductsComponent() {
               <tr>
                 <th scope="col">
                   <div class="custom-control custom-checkbox">
-                    <input
-                      type="checkbox"
-                      class="custom-control-input"
-                      id="customCheck"
-                      checked
-                    />
-                    <label
-                      class="custom-control-label"
-                      for="customCheck"
-                    ></label>
+                    <input type="checkbox" />
+                    <label for="customCheck"></label>
                   </div>
                 </th>
-                <th scope="col">Product </th>
-                <th scope="col">Category</th>
-                <th scope="col">Product Quantity</th>
+                <th scope="col">Product &nbsp;
+                  <i class="fas fa-arrow-down" onClick={update}></i>
+                  <i class="fas fa-arrow-up" onClick={update}></i></th>
+                <th scope="col">Category &nbsp;
+                  <i class="fas fa-arrow-down" onClick={update}></i>
+                  <i class="fas fa-arrow-up" onClick={update}></i></th>
+                <th scope="col">Product Quantity &nbsp;
+                  <i class="fas fa-arrow-down" onClick={update}></i>
+                  <i class="fas fa-arrow-up" onClick={update}></i></th>
                 <th scope="col">Status</th>
                 <th scope="col">Action</th>
               </tr>
@@ -228,9 +322,7 @@ export default function ProductsComponent() {
                     <td>{item.product_qty}</td>
                     <td><button
                           type="button"
-                          onClick={() =>
-                            handleClick(item.product_id, item.status)
-                          }
+                          onClick={() => handleOpen(item.user_id, item.status, true)}
                         >
                           {item.status === "0" ? "inactive" : "active"}
                         </button></td>
@@ -244,7 +336,7 @@ export default function ProductsComponent() {
 
           <div class="text-left">
             <div className="row">
-            <div className="col-md-2">
+              <div className="col-md-2">
                 <select
                   class="form-control"
                   id="exampleFormControlSelect1"
@@ -262,15 +354,51 @@ export default function ProductsComponent() {
                   type="button"
                   class="btn btn-light"
                   style={{ width: "8rem" }}
-                  onClick={() => applyStatus()}
+                  onClick={() => handleOpen(null, null, false)}
                 >
                   Apply
                 </button>
               </div>
+
+              <h6>Pages:</h6>
+              <p>
+                &nbsp;
+                <b style={{ color: "black" }}> {page.current}</b> /{" "}
+                {page.totalpages}{" "}
+              </p>
+
+              <TablePagination
+                className="col-md-5"
+                component="div"
+                count={page.totalrecords}
+                page={page.current - 1}
+                onPageChange={handleChangePage}
+                rowsPerPage={page.records_per_page}
+              />
+
             </div>
           </div>
         </div>
       </div>
+      <Modal
+        open={open}
+        onClose={handleClose}
+        aria-labelledby="modal-modal-title"
+        aria-describedby="modal-modal-description"
+      >
+        <Box sx={style}>
+          <Typography id="modal-modal-title" variant="h6" component="h2">
+
+
+          </Typography>
+
+          <Typography id="modal-modal-description" sx={{ mt: 2 }}>
+            Are you sure want to change the status?
+          </Typography>
+          <Button onClick={() => handleClose()}> No </Button>&nbsp;&nbsp;
+          <Button onClick={() => handleStatusChange()}>Yes</Button>
+        </Box>
+      </Modal>
     </div>
   );
 }

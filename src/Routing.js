@@ -451,14 +451,19 @@
 //           </div>
 //         </div>
 //       </div>
-      
+
 //     </div>
 //   );
 // }
 
-
-import React from "react";
-import { Route, Routes, Link } from "react-router-dom";
+import React, { useEffect, useState } from "react";
+import {
+  Route,
+  Routes,
+  Link,
+  useLocation,
+  useNavigate,
+} from "react-router-dom";
 import Prodct_Productlist from "./components/product/Prodct_Productlist";
 import Product_AddProduct from "./components/product/Product_AddProduct";
 import Customer_Addnewcustomer from "./components/customers/Customer_Addnewcustomer";
@@ -515,166 +520,241 @@ import Product_EditProduct from "./components/product/Product_EditProduct";
 import Payment_getwayList from "./components/Payment_getwayList";
 import Payment_getwayEdit from "./components/Payment_getwayEdit";
 import Seo from "./components/Seo";
-
+import PageNotFound from "./components/pagenotfound";
+import Blog_AddBlog from "./components/blogs/Blog_AddBlog";
+import Blog_BlogList from "./components/blogs/Blog_BlogList";
+import Blog_EditBlog from "./components/blogs/Blog_EditBlog";
+import Coupen_CoupenCodeEdit from "./components/coupencode/Coupen_CoupenCodeEdit";
 
 export default function RoutingPage() {
+  // const token = localStorage.getItem("ACCESS_TOKEN")
+  const location = useLocation();
+  const navigate = useNavigate();
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
+
+  useEffect(() => {
+    console.log(1, location);
+    // setTimeout(() => {
+    if (
+      localStorage.getItem("ACCESS_TOKEN") &&
+      localStorage.getItem("ACCESS_TOKEN").length > 0
+    ) {
+      setIsLoggedIn(true);
+    } else {
+      navigate("/");
+    }
+
+    // }, );
+  }, [location]);
+
   return (
     <div>
+      {/* {console.log(2,localStorage.getItem("ACCESS_TOKEN"),
+            localStorage.getItem("ACCESS_TOKEN").length > 0)} */}
       <Routes>
         <Route path="/" element={<LoginPage />} />
-        <Route path="forgetpassword" element={<ForgetPassword />}/>
+        <Route path="forgetpassword" element={<ForgetPassword />} />
 
-        <Route element={<DashboardPage />}>
-       
-      
-          <Route path="/home" element={<DashboardHome />} />
-          <Route
-            path="/customer/addnewcustomer"
-            element={<Customer_Addnewcustomer />}
-          />
-          <Route
-            path="/routing/customer/list"
-            element={<Customer_Customerlist />}
-          />
-          <Route path="/product/list" element={<Prodct_Productlist />} />
-          <Route path="/product/addproduct" element={<Product_AddProduct />} />
-          <Route path="/product/editproduct/:product_id" element={<Product_EditProduct />} />
+        {isLoggedIn && (
+          <Route element={<DashboardPage />}>
+            <Route path="/home" element={<DashboardHome />} />
+            <Route
+              path="/customer/addnewcustomer"
+              element={<Customer_Addnewcustomer />}
+            />
+            <Route
+              path="/routing/customer/list"
+              element={<Customer_Customerlist />}
+            />
+            <Route path="/product/list" element={<Prodct_Productlist />} />
+            <Route
+              path="/product/addproduct"
+              element={<Product_AddProduct />}
+            />
+            <Route
+              path="/product/editproduct/:product_id"
+              element={<Product_EditProduct />}
+            />
+            <Route
+              path="/product/category/add"
+              element={<Product_AddProductCategory />}
+            />
+            <Route
+              path="/product/category/list"
+              element={<Product_ProductCategoryList />}
+            />
+            <Route path="/brand/list" element={<Brand_BrandList />} />
 
-          <Route
-            path="/product/category/add"
-            element={<Product_AddProductCategory />}
-          />
-          <Route
-            path="/product/category/list"
-            element={<Product_ProductCategoryList />}
-          />
-          <Route path="/brand/list" element={<Brand_BrandList />} />
-          <Route path="/brand/add" element={<Brand_AddBrand />} />
-          <Route path="/brand/edit/:brand_id" element={<Brand_EditBrand />} />
+            <Route path="/brand/add" element={<Brand_AddBrand />} />
 
-          <Route path="/payment/list" element={<Payment_Payment />} />
-          <Route path="/coupencode/list" element={<Coupen_CoupenCodeList />} />
-          <Route path="/coupencode/add" element={<Coupen_CoupenCode />} />
-          <Route
-            path="/customer/address/list/:user_id"
-            element={<Address_AddressList />}
-          />
-          <Route
-            path="/customer/address/add"
-            element={<Address_AddAddress />}
-          />
-          <Route
-            path="/customer/address/edit/:address_id"
-            element={<Address_EditAddress />}
-          />
-          <Route path="/mastermanagement/faq/list" element={<Faq_FAQList />} />
-          <Route path="/faq/edit/:faq_id" element={<FAQ_EditFAQ />} />
-          <Route path="/mastermanagement/faq/add" element={<Faq_AddFAQ />} />
-          <Route
-            path="/mastermanagement/faq/category/add"
-            element={<Faq_AddCategoryListFAQ />}
-          />
+            <Route path="/brand/edit/:brand_id" element={<Brand_EditBrand />} />
 
-          <Route
-            path="/mastermanagement/faq/category/edit/:faq_category_id"
-            element={<Faq_EditCategoryFaq />}
-          />
-          <Route
-            path="/mastermanagement/faq/category/list"
-            element={<Faq_AddCategoryList />}
-          />
-          <Route
-            path="/mastermanagement/cms/listpage"
-            element={<Mastermange_CMSListpages />}
-          />
-          <Route
-            path="/mastermanagement/cms/edit:page_id"
-            element={<M_CMSEditpage />}
-          />
-          <Route
-            path="/mastermanagement/setting/list"
-            element={<Master_SettingList />}
-          />
-          <Route
-            path="/product/wishlist"
-            element={<Product_ProductWishList />}
-          />
-          <Route
-            path="/mastermanagement/email/list"
-            element={<Master_EmailList />}
-          />
-          <Route
-            path="/mastermanagement/email/edit/:template_id"
-            element={<Master_EmailEdit />}
-          />
-          <Route
-            path="/mastermanagement/newsletter/list"
-            element={<Master_NewsLetterList />}
-          />
-          <Route
-            path="/mastermanagement/newsletter/template"
-            element={<Master_EditNewsLetter />}
-          />
-          <Route
-            path="/mastermanagement/newslettersubscribtion"
-            element={<Master_NewsLetterSubscribtion />}
-          />
-          <Route
-            path="/mastermanagement/sendnewsletter/:template_id"
-            element={<Master_SendNewsLetter />}
-          />
-          <Route
-            path="/mastermanagement/country/list"
-            element={<Master_CountryList />}
-          />
-          <Route
-            path="/mastermanagment/country/edit/:country_id"
-            element={<Master_EditCountry />}
-          />
-          <Route
-            path="/mastermanagement/country/add"
-            element={<Master_Country />}
-          />
-          <Route
-            path="/mastermanagement/state/list"
-            element={<Master_StateList />}
-          />
-          <Route
-            path="/mastermanagement/state/add"
-            element={<Master_State />}
-          />
+            <Route path="/payment/list" element={<Payment_Payment />} />
 
-          <Route
-            path="/mastermanagement/state/edit/:state_id"
-            element={<Master_EditState />}
-          />
-          <Route
-            path="/mastermanagement/city/list"
-            element={<Master_CityList />}
-          />
-          <Route path="/mastermanagement/city/add" element={<Master_City />} />
+            <Route
+              path="/coupencode/list"
+              element={<Coupen_CoupenCodeList />}
+            />
 
-          <Route
-            path="/mastermanagement/city/edit/:city_id"
-            element={<Master_EditCity />}
-          />
-          <Route
-            path="/customer/edit/:user_id"
-            element={<Customer_Editcustomer />}
-          />
-          <Route path="/order/orderlist" element={<Order_OrderList />} />
-          <Route path="/order/orderdetails" element={<Order_OrderDetails />} />
+<Route
+              path="/coupencode/edit/:coupon_id"
+              element={<Coupen_CoupenCodeEdit />}
+            />
 
-          <Route path="/storedetails" element={<StoreDetails />} />
-          <Route path="/account/subscrption" element={<Subscrption />} />
+            <Route path="/coupencode/add" element={<Coupen_CoupenCode />} />
 
-          <Route path="/hometheme" element={<Theme_HomeTheme />} />
-    <Route path="/menutheme" element={<Theme_MenuTheme />} />
-    <Route path="/paymentgetwaylist" element={<Payment_getwayList/>} />
-    <Route path="/paymentgetwayedit" element={<Payment_getwayEdit />} />
-    <Route path="/seo" element={<Seo />} />
+            <Route
+              path="/customer/address/list/:user_id"
+              element={<Address_AddressList />}
+            />
+            <Route
+              path="/customer/address/add"
+              element={<Address_AddAddress />}
+            />
+            <Route
+              path="/customer/address/edit/:address_id"
+              element={<Address_EditAddress />}
+            />
+            <Route
+              path="/mastermanagement/faq/list"
+              element={<Faq_FAQList />}
+            />
 
-        </Route>
+            <Route path="/faq/edit/:faq_id" element={<FAQ_EditFAQ />} />
+
+            <Route path="/mastermanagement/faq/add" element={<Faq_AddFAQ />} />
+            <Route
+              path="/mastermanagement/faq/category/add"
+              element={<Faq_AddCategoryListFAQ />}
+            />
+            <Route
+              path="/mastermanagement/faq/category/edit/:faq_category_id"
+              element={<Faq_EditCategoryFaq />}
+            />
+            <Route
+              path="/mastermanagement/faq/category/list"
+              element={<Faq_AddCategoryList />}
+            />
+            <Route
+              path="/mastermanagement/cms/listpage"
+              element={<Mastermange_CMSListpages />}
+            />
+            <Route
+              path="/mastermanagement/cms/edit:page_id"
+              element={<M_CMSEditpage />}
+            />
+            <Route
+              path="/mastermanagement/setting/list"
+              element={<Master_SettingList />}
+            />
+            <Route
+              path="/product/wishlist"
+              element={<Product_ProductWishList />}
+            />
+            <Route
+              path="/mastermanagement/email/list"
+              element={<Master_EmailList />}
+            />
+            <Route
+              path="/mastermanagement/email/edit/:template_id"
+              element={<Master_EmailEdit />}
+            />
+
+            <Route
+              path="/mastermanagement/cms/listpage"
+              element={<Mastermange_CMSListpages />}
+            />
+
+            <Route
+              path="/mastermanagement/newsletter/list"
+              element={<Master_NewsLetterList />}
+            />
+            <Route
+              path="/mastermanagement/newsletter/template"
+              element={<Master_EditNewsLetter />}
+            />
+            <Route
+              path="/mastermanagement/newslettersubscribtion"
+              element={<Master_NewsLetterSubscribtion />}
+            />
+            <Route
+              path="/mastermanagement/sendnewsletter/:template_id"
+              element={<Master_SendNewsLetter />}
+            />
+            <Route
+              path="/mastermanagement/country/list"
+              element={<Master_CountryList />}
+            />
+            <Route
+              path="/mastermanagment/country/edit/:country_id"
+              element={<Master_EditCountry />}
+            />
+            <Route
+              path="/mastermanagement/country/add"
+              element={<Master_Country />}
+            />
+            <Route
+              path="/mastermanagement/state/list"
+              element={<Master_StateList />}
+            />
+            <Route
+              path="/mastermanagement/state/add"
+              element={<Master_State />}
+            />
+            <Route
+              path="/mastermanagement/state/edit/:state_id"
+              element={<Master_EditState />}
+            />
+            <Route
+              path="/mastermanagement/city/list"
+              element={<Master_CityList />}
+            />
+            <Route
+              path="/mastermanagement/city/add"
+              element={<Master_City />}
+            />
+            <Route
+              path="/mastermanagement/city/edit/:city_id"
+              element={<Master_EditCity />}
+            />
+
+            <Route
+              path="/customer/edit/:user_id"
+              element={<Customer_Editcustomer />}
+            />
+
+            <Route path="/order/orderlist" element={<Order_OrderList />} />
+
+            <Route
+              path="/order/orderdetails"
+              element={<Order_OrderDetails />}
+            />
+
+            <Route path="/storedetails" element={<StoreDetails />} />
+
+            <Route path="/account/subscrption" element={<Subscrption />} />
+
+            <Route path="/hometheme" element={<Theme_HomeTheme />} />
+
+            <Route path="/menutheme" element={<Theme_MenuTheme />} />
+
+            <Route path="/paymentgetwaylist" element={<Payment_getwayList />} />
+
+            <Route path="/paymentgetwayedit" element={<Payment_getwayEdit />} />
+
+            <Route path="/seo" element={<Seo />} />
+
+            <Route path="/bloglist" element={<Blog_BlogList />} />
+
+            <Route path="/addblog" element={<Blog_AddBlog />} />
+
+            <Route path="/editblog/:blog_id" element={<Blog_EditBlog />} />
+            <Route path="/hometheme" element={<Theme_HomeTheme />} />
+ <Route path="/menutheme" element={<Theme_MenuTheme />} />
+
+          </Route>
+        )}
+        {/* <Route path="*" element={<PageNotFound />} /> */}
       </Routes>
     </div>
   );

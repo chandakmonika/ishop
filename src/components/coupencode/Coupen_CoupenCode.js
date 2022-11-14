@@ -13,7 +13,15 @@ export default function Coupen_CoupenCode() {
 
   function customerUser() {
     console.warn(couponcode,discount_type,valid_from,valid_to,coupon_price);
-    let datas = { couponcode,discount_type,valid_from,valid_to,coupon_price };
+
+    let datas = { 
+      couponcode,
+      discount_type : discount_type ? "f" : "p" ,
+      valid_from,
+      valid_to,
+      coupon_price };
+
+
     fetch("http://admin.ishop.sunhimlabs.com/api/v1/coupons/add", {
       method: "POST",
       headers: {
@@ -44,7 +52,7 @@ export default function Coupen_CoupenCode() {
           <br />
 
           <Form style={{ Display: "float-right", paddingLeft: "2rem" }}>
-          <label className="demo">Coupen Code</label>
+          <label className="demo">Coupon Code</label>
             <input
               type="text"
               className="form-control"
@@ -59,16 +67,18 @@ export default function Coupen_CoupenCode() {
             <label className="demo">Select Discount</label><br/>
             <span >Percent</span>
             <label class="switch" style={{marginLeft:'1rem'}}>
-              <input class="switch-input" type="checkbox" style={{paddingRight:'200rem'}} name="discount_type" change={discount_type} 
+              <input class="switch-input" type="checkbox" style={{paddingRight:'200rem'}} name="discount_type" value={discount_type}  
               onChange={(e) => {
-                setDiscount_type(e.target.change);  
+                setDiscount_type(e.target.checked);  
               }} />
+              { console.log(2,discount_type)}
+             
               <span class="switch-label" data-on="" data-off=""></span>
               <span class="switch-handle"></span>
             </label>
          <span>Flat</span><br/>
          
-         <label className="demo">Coupen Price</label>
+         <label className="demo">Coupon Price</label>
             <input
               type="text"
               className="form-control"

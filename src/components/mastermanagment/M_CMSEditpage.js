@@ -51,8 +51,11 @@ export default function M_CMSEditpage() {
       )
       .then((res) => {
         const getData = res.data.data;
+        // const getSeo = res.data.seo;
         console.log(getData);
+        // console.log(getSeo);
         setUser_data(getData);
+        // setUser_data(getSeo);
       });
   }, []);
 
@@ -120,7 +123,7 @@ export default function M_CMSEditpage() {
               onChange={handleChange}
             />
             <br />
-            <h6>Product Short Discription</h6>
+            <h6> Short Discription</h6>
             <Master_CMSEditor setValue={setValue} config={config} />
             <br />
 
@@ -129,7 +132,7 @@ export default function M_CMSEditpage() {
               type="text"
               className="form-control"
               name="seo_page_title"
-              placeholder="Enter Email Title"
+              placeholder="Enter Meta Tags"
               value={userdata.seo_page_title}
               onChange={handleChange}
             />
@@ -139,7 +142,7 @@ export default function M_CMSEditpage() {
             <textarea
               class="form-control"
               id="exampleFormControlTextarea1"
-              placeholder="Enter Answer"
+              placeholder="Enter Description"
               name="seo_page_description"
               value={userdata.seo_page_description}
               onChange={handleChange}
@@ -151,7 +154,7 @@ export default function M_CMSEditpage() {
             <textarea
               class="form-control"
               id="exampleFormControlTextarea1"
-              placeholder="Enter Answer"
+              placeholder="Enter Keywords"
               name="seo_page_keywords"
               value={userdata.seo_page_keywords}
               onChange={handleChange}

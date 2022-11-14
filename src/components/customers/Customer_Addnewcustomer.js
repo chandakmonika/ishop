@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+import { Link } from "react-router-dom";
 
 export default function Customer_Addnewcustomer() {
   const [first_name, setFirst_name] = useState("");
@@ -96,9 +97,11 @@ export default function Customer_Addnewcustomer() {
                 name="phone"
               />
             </div>
-            <button type="button" class="btn btn-info" onClick={customerUser}>
+            <Link to="/routing/customer/list">
+            <button type="button" class="btn btn-info"  onClick={customerUser}>
               Add Customer
             </button>
+            </Link>
           </form>
           <br />
         </div>

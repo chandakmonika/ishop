@@ -99,7 +99,7 @@ export default function Order_OrderList() {
                     ></label>
                   </div>
                 </td>
-                <td>Order id-11022300</td>
+                <td>11022300</td>
                 <td>5-2-2021</td>
                 <td>6-9-2022</td>
                 <td>444709</td>
@@ -120,7 +120,7 @@ export default function Order_OrderList() {
                     ></label>
                   </div>
                 </td>
-                <td>Order id-11022400</td>
+                <td>11022400</td>
                 <td>15-4-2021</td>
                 <td>6-9-2022</td>
                 <td>422709</td>
@@ -141,7 +141,7 @@ export default function Order_OrderList() {
                     ></label>
                   </div>
                 </td>
-                <td>Order id-11022500</td>
+                <td>11022500</td>
                 <td>5-12-2020</td>
                 <td>16-7-2022</td>
                 <td>443709</td>
