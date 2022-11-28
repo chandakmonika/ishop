@@ -69,20 +69,7 @@ export default function Mastermange_CMSListpages() {
           <table class="table table-bordered" style={{ width: "95%" }}>
             <thead style={{ backgroundColor: "#EBF1F3" }}>
               <tr>
-                <th>
-                  <div class="custom-control custom-checkbox">
-                    <input
-                      type="checkbox"
-                      class="custom-control-input"
-                      id="customCheck1"
-                      checked
-                    />
-                    <label
-                      class="custom-control-label"
-                      for="customCheck1"
-                    ></label>
-                  </div>
-                </th>
+                
                 <th scope="col">Page Title</th>
                 <th scope="col">Action</th>
               </tr>
@@ -91,18 +78,7 @@ export default function Mastermange_CMSListpages() {
               {first.map((item) => {
                 return (
                   <tr key={item.product_id}>
-                    <td>
-                      <div class="custom-control custom-checkbox">
-                        <input
-                          type="checkbox"
-                          class="custom-control-input"
-                          id="customCheck2"
-                        />
-                        <label
-                          class="custom-control-label"
-                          for="customCheck2"></label>
-                      </div>
-                    </td>
+                   
                     <td>{item.page_title}</td>
                     <td>
                       <Link to={`/mastermanagement/cms/edit${item.page_id}`}>
@@ -117,10 +93,9 @@ export default function Mastermange_CMSListpages() {
 
           {/* <-------------------------TableEnd----------------------> */}
 
-          <div class="text-left">
+          {/* <div class="text-left">
             <div className="row">
               <div className="col-md-2">
-                {/* <label for="exampleFormControlSelect1">Action</label> */}
                 <select
                   class="form-control"
                   id="exampleFormControlSelect1"
@@ -141,7 +116,7 @@ export default function Mastermange_CMSListpages() {
                 </button>
               </div>
             </div>
-          </div>
+          </div> */}
         </div>
       </div>
     </div>

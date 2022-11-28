@@ -21,7 +21,7 @@ export default function Product_AddProductCategory() {
       .then((res) => setIndex(res.data.data));
   }, []);
 
-  function customerUser() {
+  function productcategoryUser() {
     console.warn(
       parent_category_id,
       category_name,
@@ -59,7 +59,8 @@ export default function Product_AddProductCategory() {
 
   // <----------------Dynamic Form--------------->
   const [formFields, setFormFields] = useState([
-    { attributes_label:"",
+    { 
+    attributes_label:"",
     attributes_name:"",
     attributes_type:"",
     attributes_value:"",
@@ -81,7 +82,7 @@ export default function Product_AddProductCategory() {
 
   const addFields = () => {
     let object = {
-      attributes_label:"",
+    attributes_label:"",
     attributes_name:"",
     attributes_type:"",
     attributes_value:"",
@@ -144,9 +145,14 @@ export default function Product_AddProductCategory() {
                 name="parent_category_id"
                 category
               >
+                <option value="">
+                      
+                     Select Category
+                    </option>
                 {index.map((item) => {
                   return (
                     <option value={item.category_id}>
+                      
                       {item.category_name}
                     </option>
                   );
@@ -246,14 +252,30 @@ export default function Product_AddProductCategory() {
                       <label className="demo" style={{ width: "29rem" }}>
                         Field Type
                       </label>
-                      <input
+                      {/* <input
                         name="attributes_type"
                         onChange={(e) => {
                           handleFormChange(e,index);
                         }}
                         // value={attributes_type}
                         style={{ width: "29rem" }}
-                      />
+                      /> */}
+                      <select
+                class="form-control"
+                id="exampleFormControlSelect1"
+              
+                onChange={(e) => {
+                  handleFormChange(e,index);
+                }}
+                name="attributes_type"
+                style={{ width: "29rem" }}
+               
+              >
+                <option disabled></option>
+                  <option>Select Box</option>
+                    <option>Text Box</option>
+                 
+              </select>
                       <br />
                       <label className="demo" style={{ width: "29rem" }}>
                         Field Value
@@ -309,7 +331,7 @@ export default function Product_AddProductCategory() {
             {/* <--------------------Dynamic Form end------------------> */}
             <br />
             <div style={{ paddingLeft: "55rem" }}>
-              <button type="submit" class="btn btn-info" onClick={customerUser}>
+              <button type="submit" class="btn btn-info" onClick={productcategoryUser}>
                 Submit
               </button>
             </div>

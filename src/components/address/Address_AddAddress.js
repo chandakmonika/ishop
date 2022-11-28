@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
+import { Link, useParams } from "react-router-dom";
 
 export default function Address_AddAddress() {
   const [first_name, setFirst_name] = useState("");
@@ -9,9 +10,9 @@ export default function Address_AddAddress() {
   const [addressline1, setAddressline1] = useState("");
   const [addressline2, setAddressline2] = useState("");
   const [zipcode, setZipcode] = useState("");
-  const [gender, setGender] = useState("");
-  const [isdefault, setIsdefault] = useState("");
-  const [address_type, setAddress_type] = useState("");
+  const [gender, setGender] = useState("m");
+  const [isdefault, setIsdefault] = useState("y");
+  const [address_type, setAddress_type] = useState("h");
   const [countryName, setCountryName] = useState("");
   const [country_id, setCountry_id] = useState("");
   const [country, setCountry] = useState("");
@@ -25,6 +26,7 @@ export default function Address_AddAddress() {
   const [index, setIndex] = useState([]);
   const [indexs, setIndexs] = useState([]);
   const [indexss, setIndexss] = useState([]);
+  const params= useParams()
 
   console.log(indexs);
 
@@ -44,6 +46,8 @@ export default function Address_AddAddress() {
     axios
       .get(`http://admin.ishop.sunhimlabs.com/api/v1/allcountries/`)
       .then((res) => setIndex(res.data.data));
+      console.log(2,params);
+      setUser_id(params.user_id);
   }, []);
 
   function customerUser() {
@@ -98,6 +102,9 @@ export default function Address_AddAddress() {
   const submit = (e) => {
     e.preventDefault();
   };
+
+  
+
 
   return (
     <div style={{ paddingLeft: "4rem" }}>
@@ -234,7 +241,7 @@ export default function Address_AddAddress() {
             >
               {index.map((item) => {
                 return (
-                  <option value={item.country_id}>{item.country_name}</option>
+                  <option key={item.country_id} value={item.country_id}>{item.country_name}</option>
                 );
               })}
             </select>
@@ -251,7 +258,7 @@ export default function Address_AddAddress() {
               name="state"
             >
               {indexs.map((item) => {
-                return <option value={item.state_id}>{item.state_name}</option>;
+                return <option key={item.state_id} value={item.state_id}>{item.state_name}</option>;
               })}
             </select>
             <br />
@@ -267,7 +274,7 @@ export default function Address_AddAddress() {
               name="city"
             >
               {indexss.map((item) => {
-                return <option value={item.city_id}>{item.city_name}</option>;
+                return <option key={item.city_id} value={item.city_id}>{item.city_name}</option>;
               })}
             </select>
             <br />
@@ -278,6 +285,7 @@ export default function Address_AddAddress() {
               id="exampleFormControlSelect1"
               value={address_type}
               onChange={(e) => {
+                console.log(e.target.value);
                 setAddress_type(e.target.value);
               }}
               name="address_type"
@@ -303,7 +311,7 @@ export default function Address_AddAddress() {
 
             <br/>
 
-            <label className="demo">User Id</label>
+            {/* <label className="demo">User Id</label>
             <input
               type="text"
               className="form-control"
@@ -313,12 +321,14 @@ export default function Address_AddAddress() {
                 setUser_id(e.target.value);
               }}
               name="user_id"
-            />
+            /> */}
             <br />
           </div>
+          <Link to="/customer/address/list/:user_id" >
           <button type="button" class="btn btn-info" onClick={customerUser}>
             Submit
           </button>
+          </Link>
         </form>
         <br />
       </div>

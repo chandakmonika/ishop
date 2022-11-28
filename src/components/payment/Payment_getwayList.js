@@ -10,15 +10,15 @@ import TablePagination from "@mui/material/TablePagination";
 import Box from '@mui/material/Box';
 import Typography from '@mui/material/Typography';
 import Modal from '@mui/material/Modal';
-
-export default function Order_OrderList() {
+import EmptyPage from '../emptypage';
+export default function Payment_getwayList() {
   const [first, setFirst] = useState([]);
   const [query, setQuery] = useState({ text: "" });
   const [selectedcustomer, setSelectedcustomer] = useState([]);
   const [selectedStatus, setSelectedStatus] = useState("0");
   const [order, setOrder] = useState("ASC");
   const [status, setStatus] = useState([]);
-  const [order_id, setOrder_id] = useState([]);
+  const [payment_gateway_id, setPayment_gateway_id] = useState([]);
 
   const [page, setPage] = useState({
     current: 0,
@@ -31,12 +31,12 @@ export default function Order_OrderList() {
   const navigate = useNavigate()
   
   const [changeStatusId, setChangeStatusId] = useState({
-    order_id: "",
+    payment_gateway_id: "",
     status: ""
   });
   
   const [isSingleStatusUpdate, setIsSingleStatusUpdate] = useState(true)
-  const url = "http://admin.ishop.sunhimlabs.com/api/v1/orders/list";
+  const url = "http://admin.ishop.sunhimlabs.com/api/v1/payments/list";
 
   const handleChange = (e) => {
     setQuery({ text: e.target.value });
@@ -46,7 +46,7 @@ export default function Order_OrderList() {
     e.preventDefault();
     axios
       .get(
-        `http://admin.ishop.sunhimlabs.com/api/v1/orders/list/?q=${query.text}`
+        `http://admin.ishop.sunhimlabs.com/api/v1/payments/list/?q=${query.text}`
       )
       .then((res) => setFirst(res.data.data));
   };
@@ -79,7 +79,7 @@ export default function Order_OrderList() {
 
   const getCustomerList = () => {
     axios
-      .get(`http://admin.ishop.sunhimlabs.com/api/v1/orders/list`)
+      .get(`http://admin.ishop.sunhimlabs.com/api/v1/payments/list`)
       .then((res) => setFirst(res.data.data));
   };
 
@@ -92,14 +92,14 @@ export default function Order_OrderList() {
     order === "ASC" ? setOrder("DESC") : setOrder("ASC");
     axios
       .get(
-        `http://admin.ishop.sunhimlabs.com/api/v1/orders/list?q=&per_page=12&page=1&sort_by=payment_gateway_name&order_by=${order}`
+        `http://admin.ishop.sunhimlabs.com/api/v1/payments/list?q=&per_page=12&page=1&sort_by=payment_gateway_name&order_by=${order}`
       )
       .then((res) => setFirst(res.data.data));
   };
 
   const statusChange = (apidata) => {
     fetch(
-      "http://admin.ishop.sunhimlabs.com/api/v1/orders/list/changestatus",
+      "http://admin.ishop.sunhimlabs.com/api/v1/payments/changestatus",
       {
         method: "POST",
         headers: {
@@ -127,11 +127,11 @@ export default function Order_OrderList() {
   //   statusChange(apidata);
   // }
 
-  function handleStatusChange(order_Id, status) {
+  function handleStatusChange(payment_gateway_ID, status) {
     if (isSingleStatusUpdate) {
-      console.warn(order_id, status);
+      console.warn(payment_gateway_id, status);
       let apidata = {
-        order_id: changeStatusId.order_id,
+        payment_gateway_id: changeStatusId.payment_gateway_id,
         status: changeStatusId.status === "0" ? "1" : "0",
       };
       statusChange(apidata);
@@ -140,11 +140,11 @@ export default function Order_OrderList() {
     }
   }
 
-  const onSelectCustomer = (e, order_id) => {
+  const onSelectCustomer = (e, payment_gateway_id) => {
     const datas =
       first.length > 0 &&
       first.map((item) => {
-        if (item.order_id === order_id) {
+        if (item.payment_gateway_id === payment_gateway_id) {
           return {
             ...item,
             isSelected: e.target.checked,
@@ -157,7 +157,7 @@ export default function Order_OrderList() {
       });
 
     setFirst(datas);
-    console.log(e.target.checked, order_id);
+    console.log(e.target.checked, payment_gateway_id);
     const selectedData = datas.filter((item) => item.isSelected === true);
     console.log(selectedData, 10);
     setSelectedcustomer(selectedData);
@@ -167,10 +167,10 @@ export default function Order_OrderList() {
   const applyStatus = () => {
     console.log(3, selectedcustomer, selectedStatus);
     const selectedData = first.filter((item) => item.isSelected === true);
-    const selectedId = selectedData.map((id) => id.order_id).join(",");
+    const selectedId = selectedData.map((id) => id.payment_gateway_id).join(",");
     console.log(selectedId);
     const apidata = {
-      order_id: selectedId,
+      payment_gateway_id: selectedId,
       status: selectedStatus,
     };
     statusChange(apidata);
@@ -189,10 +189,10 @@ export default function Order_OrderList() {
   };
 
   const [open, setOpen] = React.useState(false);
-  const handleOpen = (order_id, status, isSingleStatus) => {
+  const handleOpen = (payment_gateway_id, status, isSingleStatus) => {
     setIsSingleStatusUpdate(isSingleStatus);
     setChangeStatusId({
-      order_id,
+      payment_gateway_id,
       status,
     });
     setOpen(true);
@@ -233,59 +233,41 @@ const selectAllItems = (e) =>{
 
   return (
     <div>
-      <Navbar expand="lg">
-        <Container fluid>
-          <Navbar.Brand href="#">Order List</Navbar.Brand>
-          {/* <Navbar.Toggle aria-controls="navbarScroll" /> */}
-          <Navbar.Collapse id="navbarScroll">
-            <Nav
-              className="ml-auto my-4 my-lg-0"
-              style={{ maxHeight: "100px" }}
-              navbarScroll
-            ></Nav>
-          </Navbar.Collapse>
-        </Container>
-      </Navbar>
-      <div class="card" style={{ width: "100%" }}>
-        <div class="card-body" style={{ width: "100%" }}>
-          <div class="row">
-            <div className="col-sm-8">
-              <form onSubmit={handleSubmit}>
-              <div class="input-group">
-                <input type="text" class="form-control" placeholder="Search" />
-                &nbsp;&nbsp;&nbsp;
-                <span>
-                  {/* <label>To</label> */}
+    <Navbar expand="lg">
+      <Container fluid>
+        <Navbar.Brand href="#">Payment Getway List</Navbar.Brand>
+        {/* <Navbar.Toggle aria-controls="navbarScroll" /> */}
+        <Navbar.Collapse id="navbarScroll">
+          <Nav
+            className="ml-auto my-4 my-lg-0"
+            style={{ maxHeight: "100px" }}
+            navbarScroll
+          ></Nav>
+        </Navbar.Collapse>
+      </Container>
+    </Navbar>
+    <div class="card" style={{ width: "100%" }}>
+      <div class="card-body" style={{ width: "100%" }}>
+        <div class="row">
+          <div className="col-sm-3">
+          <form onSubmit={handleSubmit}>
+                <div class="input-group">
                   <input
-                    type="datetime-local"
+                    type="text"
                     class="form-control"
-                    id="birthdaytime"
-                    name="birthdaytime"
+                    placeholder="Search"
+                    onChange={handleChange}
                   />
-                </span>
-                &nbsp;&nbsp;&nbsp;&nbsp;
-                <span>
-                  {/* <label>From</label> */}
-                  <input
-                    type="datetime-local"
-                    class="form-control"
-                    id="birthdaytime"
-                    name="birthdaytime"
-                  />
-                </span>
-                &nbsp;&nbsp;&nbsp;
-                <div class="input-group-append">
                   <Button variant="info" type="submit">
                     Search
                   </Button>
                 </div>
-              </div>
               </form>
-            </div>
           </div>
-          <br />
-          <table class="table table-bordered" style={{ width: "95%" }}>
-          {console.log(
+        </div>
+        <br />
+        <table class="table table-bordered" style={{ width: "95%" }}>
+        {console.log(
               2,
               first
                 .map((select) => {
@@ -296,11 +278,11 @@ const selectAllItems = (e) =>{
                 })
                 .includes(false)
             )}
-            <thead style={{ backgroundColor: "#EBF1F3" }}>
-              <tr>
-                <th scope="col">
+          <thead style={{ backgroundColor: "#EBF1F3" }}>
+            <tr>
+            <th scope="col">
                   <div class="custom-control custom-checkbox">
-                  <input type="checkbox" 
+                    <input type="checkbox" 
                      checked={
                       !first
                         .map((select) => {
@@ -314,23 +296,19 @@ const selectAllItems = (e) =>{
                     onChange={(e) => selectAllItems(e)}
                     
                     />
-                    <label
-                      for="customCheck1"
-                    ></label>
+                    <label for="customCheck"></label>
                   </div>
                 </th>
-                <th scope="col">Order Id</th>
-                <th scope="col">Order Date</th>
-                <th scope="col">Zip Code</th>
-                <th scope="col">Price</th>
-                <th scope="col">Order Status</th>
-                <th scope="col">Status</th>
-                <th scope="col">Action</th>
-              </tr>
-            </thead>
-            <tbody>
+              <th scope="col">Payment Getway Name</th>
+              <th scope="col">Payment Getway Logo</th>
+              <th scope="col">Status</th>
+              <th scope='col'>Action</th>
+             
+            </tr>
+          </thead>
+          <tbody>
               {first &&
-                first.length > 0 &&
+                
               first.map((item) => {
                 return (
                   <tr key={item.product_id}>
@@ -340,7 +318,7 @@ const selectAllItems = (e) =>{
                           type="checkbox"
                           checked={item.isSelected}
                           onChange={(e) =>
-                            onSelectCustomer(e, item.order_id)
+                            onSelectCustomer(e, item.payment_gateway_id)
                           }
                         />
                         <label for="customCheck{item.id}">
@@ -348,22 +326,19 @@ const selectAllItems = (e) =>{
                           </label>
                       </div>
                     </td>
-                    <td>{item.order_number}</td>
-                    <td>{item.inserted_date}</td>
-                    <td>{item.subtotal_amount}</td>
-                    <td>{item.final_amount}</td>
-                    <td>{item.order_status}</td>
+                    <td>{item.payment_gateway_name}</td>
+                    <td>{item.payment_gateway_logo}</td>
                     <td> <button
                           type="button"
                           onClick={() =>
-                            handleOpen(item.order_id, item.status, true)
+                            handleOpen(item.payment_gateway_id, item.status, true)
                           }
                         >
                           {item.status === "0" ? "inactive" : "active"}
                         </button></td>
                     <td>
-                    <Link to={`/order/orderdetails/${item.order_id}`}>
-                      <i class="fa fa-eye" style={{ fontSize: "24px" }}></i>
+                    <Link to={`/paymentgetway/edit/${item.payment_gateway_id}`}>
+                      <i class="fas fa-edit" style={{ fontSize: "24px" }}></i>
                       </Link>
                       </td>
                     
@@ -371,10 +346,13 @@ const selectAllItems = (e) =>{
                 );
               })}
             </tbody>
-          </table>
-          {/* <-------------------------TableEnd----------------------> */}
+        </table>
+        {first.length <= 0 && <div>
+          <EmptyPage/>
+          </div>}
+        {/* <-------------------------TableEnd----------------------> */}
 
-          <div class="text-left">
+        <div class="text-left">
             <div className="row">
               <div className="col-md-2">
                 <select
@@ -431,5 +409,5 @@ const selectAllItems = (e) =>{
         </Box>
       </Modal>
     </div>
-  );
+  )
 }

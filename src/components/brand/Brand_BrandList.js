@@ -210,11 +210,7 @@ export default function Brand_BrandList() {
           ...item,
           isSelected: e.target.checked,
         };
-        // } else {
-        //   return {
-        //     ...item,
-        //   };
-        // }
+       
       });
     console.log(27, datas);
     setBrand(datas);

@@ -39,7 +39,7 @@ export default function Coupen_CoupenCodeList() {
     <div>
       <Navbar expand="lg">
         <Container fluid>
-          <Navbar.Brand href="#">Coupen Code List</Navbar.Brand>
+          <Navbar.Brand href="#">Coupon Code List</Navbar.Brand>
           {/* <Navbar.Toggle aria-controls="navbarScroll" /> */}
           <Navbar.Collapse id="navbarScroll">
             <Nav
@@ -79,10 +79,10 @@ export default function Coupen_CoupenCodeList() {
         <table class="table table-bordered" style={{ width: "95%" }}>
           <thead style={{ backgroundColor: "#EBF1F3" }}>
             <tr>
-              <th scope="col"> Coupen Code</th>
+              <th scope="col"> Coupon Code</th>
               <th scope="col">Start Date</th>
               <th scope="col"> End Date</th>
-              <th scope="col"> Coupen Value</th>
+              <th scope="col"> Coupon Value</th>
               <th scope="col">Action</th>
             </tr>
           </thead>

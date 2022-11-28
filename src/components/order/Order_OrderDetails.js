@@ -37,17 +37,20 @@ export default function Order_OrderDetails() {
       <div className="card">
         <div className="card-body">
           <div className="row">
-            <div className="col-md-3">
-              <p>Order Confirmed</p>
+            <div className="col-md-2">
+              <p>Order Place</p>
             </div>
-            <div className="col-md-3">
+            <div className="col-md-2">
+              <p>Confired</p>
+            </div>
+            <div className="col-md-2">
               <p>Shipped</p>
             </div>
-            <div className="col-md-3">
-              <p>Out Of Delivery</p>
-            </div>
-            <div className="col-md-3">
+            <div className="col-md-2">
               <p>Deliverd</p>
+            </div>
+            <div className="col-md-2">
+              <p>Return</p>
             </div>
           </div>
           <div class="progress">
@@ -61,21 +64,26 @@ export default function Order_OrderDetails() {
             ></div>
           </div>
           <div className="row">
-            <div className="col-md-3">
+            <div className="col-md-2">
               <p>3 Augest 2022</p>
               <p>10.00 AM</p>
+              
             </div>
-            <div className="col-md-3">
+            <div className="col-md-2">
               <p>5 Augest 2022</p>
               <p>7.15 PM</p>
             </div>
-            <div className="col-md-3">
+            <div className="col-md-2">
               <p>12 Augest 2022</p>
               <p>4.40 PM</p>
             </div>
-            <div className="col-md-3">
+            <div className="col-md-2">
               <p>15 Augest 2022</p>
               <p>10.00 AM</p>
+            </div>
+            <div className="col-md-2">
+              <p>17 Augest 2022</p>
+              <p>12.00 AM</p>
             </div>
           </div>
         </div>
@@ -87,12 +95,12 @@ export default function Order_OrderDetails() {
           <table class="table table-bordered">
             <thead style={{ backgroundColor: "#EBF1F3" }}>
               <tr>
-                <th scope="col">Item</th>
-                <th scope="col">Product Description</th>
-                <th scope="col">Price</th>
-                <th scope="col">Order Date</th>
-                <th scope="col">Delivery Date</th>
-                <th scope="col">Return Date</th>
+                <th scope="col">Product Name</th>
+               <th scope="col">Price</th>
+                <th scope="col">Quantity</th>
+                <th scope="col">SubTotal</th>
+                <th scope="col">Tax</th>
+                <th scope="col">Total</th>  
               </tr>
             </thead>
             <tbody>
@@ -100,28 +108,67 @@ export default function Order_OrderDetails() {
                 <td>Order </td>
                 <td>Blue color round neck shirt</td>
                 <td>788</td>
-                <td>5-8-2022</td>
-                <td>6-9-2022</td>
-                <td>NA</td>
+                <td></td>
+                <td></td>
+                
               </tr>
               <tr>
                 <td>Order </td>
                 <td>Blue color round neck shirt</td>
                 <td>788</td>
-                <td>5-8-2022</td>
-                <td>6-9-2022</td>
-                <td>NA</td>
+                <td></td>
+                <td></td>
+               
               </tr>
               <tr>
                 <td>Order </td>
                 <td>Blue color round neck shirt</td>
                 <td>788</td>
-                <td>5-8-2022</td>
-                <td>6-9-2022</td>
-                <td>NA</td>
+                <td></td>
+                <td></td>
+                
               </tr>
             </tbody>
           </table>
+
+          <table class="table table-bordered">
+            <thead style={{ backgroundColor: "#EBF1F3" }}>
+              <tr>
+                <th scope="col">Total</th>
+               <th scope="col">Tax</th>
+                <th scope="col">Shipping Charges</th>
+                <th scope="col">Coupon Code</th>
+                <th scope="col">Final Amount</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>Order </td>
+                <td>Blue color round neck shirt</td>
+                <td>788</td>
+                <td></td>
+               
+                
+              </tr>
+              <tr>
+                <td>Order </td>
+                <td>Blue color round neck shirt</td>
+                <td>788</td>
+                <td></td>
+               
+               
+              </tr>
+              <tr>
+                <td>Order </td>
+                <td>Blue color round neck shirt</td>
+                <td>788</td>
+                <td></td>
+                
+                
+              </tr>
+            </tbody>
+          </table>
+          
         </div>
       </div>
     </div>

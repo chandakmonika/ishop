@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useMemo} from "react";
 import axios from "axios";
 import Button from "react-bootstrap/Button";
 import Dropdown from "react-bootstrap/Dropdown";
@@ -11,7 +11,7 @@ import Box from '@mui/material/Box';
 import Typography from '@mui/material/Typography';
 import Modal from '@mui/material/Modal';
 //import "././Product_Productlist.css";
-
+import EmptyPage from "../emptypage";
 export default function ProductsComponent() {
   const [first, setFirst] = useState([]);
   const [query, setQuery] = useState({ text: "" });
@@ -20,7 +20,13 @@ export default function ProductsComponent() {
   const [product_id, setProduct_id] = useState([]);
   const [selectedcustomer, setSelectedcustomer] = useState([]);
   const [selectedStatus, setSelectedStatus] = useState("0");
-  const [page, setPage] = useState([]);
+  const [page, setPage] = useState({
+    current: 0,
+    previous: 0,
+    records_per_page: 0,
+    totalpages: 0,
+    totalrecords: 0,
+  });
 
   const navigate = useNavigate()
   
@@ -29,7 +35,8 @@ export default function ProductsComponent() {
     status: ""
   });
   const [isSingleStatusUpdate, setIsSingleStatusUpdate] = useState(true)
-  const url = "http://admin.ishop.sunhimlabs.com/api/v1/products/list";
+  
+  const url = `${process.env.REACT_APP_BACKEND_APIURL}api/v1/products/list`;
 
   console.log(query);
 
@@ -40,13 +47,14 @@ export default function ProductsComponent() {
     e.preventDefault();
     axios
       .get(
-        `http://admin.ishop.sunhimlabs.com/api/v1/products/list/?q=${query.text}`
+        `${process.env.REACT_APP_BACKEND_APIURL}api/v1/products/list/?q=${query.text}`
       )
       .then((res) => setFirst(res.data.data));
   };
 
   const getData = async () => {
     try {
+      console.log(20,process.env.REACT_APP_BACKEND_APIURL)
       const res = await axios.get(`${url}`);
       const { data, pages } = res.data;
       setFirst(data);
@@ -74,7 +82,7 @@ export default function ProductsComponent() {
 
   const getCustomerList = () => {
     axios
-    .get(`http://admin.ishop.sunhimlabs.com/api/v1/products/list`)
+    .get(`${process.env.REACT_APP_BACKEND_APIURL}api/v1/products/list`)
       .then((res) => setFirst(res.data.data));
   };
 
@@ -87,13 +95,13 @@ export default function ProductsComponent() {
     order === "ASC" ? setOrder("DESC") : setOrder("ASC");
     axios
       .get(
-        `http://admin.ishop.sunhimlabs.com/api/v1/products/list?q=&per_page=12&page=1&sort_by=product_name&order_by=${order}`
+        `${process.env.REACT_APP_BACKEND_APIURL}api/v1/products/list?q=&per_page=12&page=1&sort_by=product_name&order_by=${order}`
       )
       .then((res) => setFirst(res.data.data));
   };
 
   const statusChange = (apidata) => {
-    fetch("http://admin.ishop.sunhimlabs.com/api/v1/products/changestatus", {
+    fetch(`${process.env.REACT_APP_BACKEND_APIURL}api/v1/products/changestatus`, {
       method: "POST",
       headers: {
         Accept: "application/json",
@@ -109,7 +117,7 @@ export default function ProductsComponent() {
     });
   };
 
-  function handleStatusChange(userId, status) {
+  function handleStatusChange(productId, status) {
     if (
       isSingleStatusUpdate
     ) {
@@ -126,14 +134,14 @@ export default function ProductsComponent() {
 
   }
 
-  function handleClick(product_id, status) {
-    console.warn(product_id, status);
-    let apidata = {
-      product_id: product_id,
-      status: status === "0" ? "1" : "0",
-    };
-    statusChange(apidata);
-  }
+  // function handleClick(product_id, status) {
+  //   console.warn(product_id, status);
+  //   let apidata = {
+  //     product_id: product_id,
+  //     status: status === "0" ? "1" : "0",
+  //   };
+  //   statusChange(apidata);
+  // }
 
   const onSelectCustomer = (e, product_id) => {
     const datas =
@@ -160,7 +168,8 @@ export default function ProductsComponent() {
 
   const applyStatus = () => {
     console.log(3, selectedcustomer, selectedStatus);
-    const selectedId = selectedcustomer.map((id) => id.product_id).join(",");
+    const selectedData = first.filter((item) => item.isSelected === true);
+    const selectedId = selectedData.map((id) => id.product_id).join(",");
     console.log(selectedId);
     const apidata = {
       product_id: selectedId,
@@ -185,15 +194,48 @@ export default function ProductsComponent() {
   const handleOpen = (product_id, status, isSingleStatus) => {
     setIsSingleStatusUpdate(isSingleStatus)
     setChangeStatusId({
-      product_id, status
+      product_id, 
+      status
     })
     setOpen(true);
   }
   const handleClose = () => setOpen(false);
 
+  const selectAllItems = (e) =>{
+    console.log(1, e.target.checked);
+    const datas =
+        first.length > 0 &&
+        first.map((item) => {
+         
+            return {
+              ...item,
+              isSelected: e.target.checked,
+            };
+         
+        });
+        console.log(27, datas);
+        setFirst(datas);
+  }
+
+  const paginationFunction = useMemo(
+    () => (
+      <TablePagination
+        className="col-md-7"
+        rowsPerPageOptions={[12]}
+        component="div"
+        count={page.totalrecords || 0}
+        page={page.current - 1 || 0}
+        onPageChange={handleChangePage}
+        rowsPerPage={page.records_per_page || 0}
+      />
+    ),
+    [page]
+  );
+
   return (
     <div>
       {/* <---------------Navbar Start----------------> */}
+
       <Navbar expand="lg">
         <Container fluid>
           <Navbar.Brand href="#">Product</Navbar.Brand>
@@ -215,12 +257,15 @@ export default function ProductsComponent() {
           </Navbar.Collapse>
         </Container>
       </Navbar>
+
       {/* <------------------Navbar End-----------------------> */}
 
       {/* <---------------main-------------------> */}
 
       <div class="card" style={{ width: "100%" }}>
+        
         <div class="card-body">
+          
           <div class="row">
             <div className="col-sm-6">
               <form onSubmit={handleSubmit}>
@@ -279,11 +324,35 @@ export default function ProductsComponent() {
 
           {/* <--------------------TableStart-------------------------> */}
           <table class="table table-bordered" style={{ width: "95%" }}>
+          {console.log(
+              2,
+              first
+                .map((select) => {
+                  if (select.isSelected === true) {
+                    return true;
+                  }
+                  return false;
+                })
+                .includes(false)
+            )}
             <thead style={{ backgroundColor: "#EBF1F3" }}>
               <tr>
-                <th scope="col">
+              <th scope="col">
                   <div class="custom-control custom-checkbox">
-                    <input type="checkbox" />
+                    <input type="checkbox" 
+                     checked={
+                      !first
+                        .map((select) => {
+                          if (select.isSelected === true) {
+                            return true;
+                          }
+                          return false;
+                        })
+                        .includes(false)
+                    }
+                    onChange={(e) => selectAllItems(e)}
+                    
+                    />
                     <label for="customCheck"></label>
                   </div>
                 </th>
@@ -300,6 +369,7 @@ export default function ProductsComponent() {
                 <th scope="col">Action</th>
               </tr>
             </thead>
+           
             <tbody>
             {first &&
                 first.length > 0 &&
@@ -314,7 +384,7 @@ export default function ProductsComponent() {
                     value={item.isSelected}
                     onChange={(e) => onSelectCustomer(e, item.product_id)}
                   />
-                  <label for="customCheck{item.id}"></label>
+                  <label for="customCheck{item.id}">{item.isSelected}</label>
                 </div>
             </td>
                     <td>{item.product_name}</td>
@@ -322,7 +392,7 @@ export default function ProductsComponent() {
                     <td>{item.product_qty}</td>
                     <td><button
                           type="button"
-                          onClick={() => handleOpen(item.user_id, item.status, true)}
+                          onClick={() => handleOpen(item.product_id, item.status, true)}
                         >
                           {item.status === "0" ? "inactive" : "active"}
                         </button></td>
@@ -331,7 +401,11 @@ export default function ProductsComponent() {
                 );
               })}
             </tbody>
+
           </table>
+          {first.length <= 0 && <div>
+            <EmptyPage/>
+            </div>}
           {/* <-------------------------TableEnd----------------------> */}
 
           <div class="text-left">
@@ -349,10 +423,10 @@ export default function ProductsComponent() {
                   <option value={"2"}>Delete</option>
                 </select>
               </div>
-              <div className="col-md-4">
+              <div className="row">
                 <button
                   type="button"
-                  class="btn btn-light"
+                  class="btn btn-light col-md-2"
                   style={{ width: "8rem" }}
                   onClick={() => handleOpen(null, null, false)}
                 >
@@ -360,21 +434,13 @@ export default function ProductsComponent() {
                 </button>
               </div>
 
-              <h6>Pages:</h6>
-              <p>
-                &nbsp;
-                <b style={{ color: "black" }}> {page.current}</b> /{" "}
-                {page.totalpages}{" "}
-              </p>
+              <p className="col-md-3">
+                  &nbsp; Pages:
+                  <b style={{ color: "black" }}> {page.current}</b> /{" "}
+                  {page.totalpages}{" "}
+                </p>
 
-              <TablePagination
-                className="col-md-5"
-                component="div"
-                count={page.totalrecords}
-                page={page.current - 1}
-                onPageChange={handleChangePage}
-                rowsPerPage={page.records_per_page}
-              />
+                {paginationFunction}
 
             </div>
           </div>
@@ -388,8 +454,6 @@ export default function ProductsComponent() {
       >
         <Box sx={style}>
           <Typography id="modal-modal-title" variant="h6" component="h2">
-
-
           </Typography>
 
           <Typography id="modal-modal-description" sx={{ mt: 2 }}>

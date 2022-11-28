@@ -66,7 +66,7 @@ export default function Address_AddressList() {
               </div>
             </div>
             <div className="col-sm-3">
-              <Link to="/customer/address/add">
+              <Link to={`/customer/address/add/${user_id}`}>
                 <Button variant="info">
                   Add Address
                 </Button>

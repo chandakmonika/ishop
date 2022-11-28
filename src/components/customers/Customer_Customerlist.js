@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useMemo } from "react";
 import axios from "axios";
 import Button from "react-bootstrap/Button";
 import Container from "react-bootstrap/Container";
@@ -11,6 +11,7 @@ import TablePagination from "@mui/material/TablePagination";
 import Box from '@mui/material/Box';
 import Typography from '@mui/material/Typography';
 import Modal from '@mui/material/Modal';
+import { toast } from 'react-toastify';
 
 
 export default function Customer_Customerlist() {
@@ -21,7 +22,13 @@ export default function Customer_Customerlist() {
   const [user_id, setUser_id] = useState([]);
   const [selectedcustomer, setSelectedcustomer] = useState([]);
   const [selectedStatus, setSelectedStatus] = useState("0");
-  const [page, setPage] = useState([]);
+  const [page, setPage] = useState({
+    current: 0,
+    previous: 0,
+    records_per_page: 0,
+    totalpages: 0,
+    totalrecords: 0,
+  });
 
   const navigate = useNavigate()
   
@@ -45,19 +52,20 @@ export default function Customer_Customerlist() {
       )
       .then((res) => setIndex(res.data.data));
   };
-  const getData = async () => {
-    try {
-      const res = await axios.get(`${url}`);
-      const { data, pages } = res.data;
-      setIndex(data);
-      setPage(pages);
-    } catch (error) {
-      console.log(error);
-    }
-  };
-  useEffect(() => {
-    getData();
-  }, []);
+  // const getData = async () => {
+  //   try {
+  //     const res = await axios.get(`${url}`);
+  //     const { data, pages } = res.data;
+  //     setIndex(data);
+  //     setPage(pages);
+  //   } catch (error) {
+  //     console.log(error);
+  //   }
+  // };
+  // useEffect(() => {
+  //   getData();
+    
+  // }, []);
 
   const handleChangePage = async (e, newPage) => {
     setPage(newPage);
@@ -153,7 +161,8 @@ export default function Customer_Customerlist() {
 
   const applyStatus = () => {
     console.log(3, selectedcustomer, selectedStatus);
-    const selectedId = selectedcustomer.map((id) => id.user_id).join(",");
+    const selectedData = index.filter((item) => item.isSelected === true);
+    const selectedId = selectedData.map((id) => id.user_id).join(",");
     console.log(selectedId);
     const apidata = {
       user_id: selectedId,
@@ -178,14 +187,46 @@ export default function Customer_Customerlist() {
   const handleOpen = (user_id, status, isSingleStatus) => {
     setIsSingleStatusUpdate(isSingleStatus)
     setChangeStatusId({
-      user_id, status
-    })
+      user_id, 
+      status,
+    });
     setOpen(true);
   }
   const handleClose = () => setOpen(false);
 
+const selectAllItems = (e) =>{
+  console.log(1,e.target.checked);
+  const datas= 
+  index.length > 0 &&
+  index.map((item) =>{
+    return{
+      ...item,
+      isSelected: e.target.checked,
+    };
+    
+  })
+  console.log(27,datas);
+  setIndex(datas);
+}
+
+  const paginationFunction = useMemo(
+    () => (
+      <TablePagination
+        className="col-md-7"
+        rowsPerPageOptions={[12]}
+        component="div"
+        count={page.totalrecords || 0}
+        page={page.current - 1 || 0}
+        onPageChange={handleChangePage}
+        rowsPerPage={page.records_per_page || 0}
+      />
+    ),
+    [page]
+  );
+
   return (
     <div>
+       {/* <ToastContainer /> */}
       <Navbar expand="lg">
         <Container fluid>
           <Navbar.Brand href="#">Customer List</Navbar.Brand>
@@ -229,11 +270,35 @@ export default function Customer_Customerlist() {
           </div>
           <br />
           <table class="table table-bordered" style={{ width: "95%" }}>
+          {console.log(
+              2,
+              index
+                .map((select) => {
+                  if (select.isSelected === true) {
+                    return true;
+                  }
+                  return false;
+                })
+                .includes(false)
+            )}
             <thead style={{ backgroundColor: "#EBF1F3" }}>
               <tr>
                 <th scope="col">
                   <div class="custom-control custom-checkbox">
-                    <input type="checkbox" />
+                  <input type="checkbox" 
+                     checked={
+                      !index
+                        .map((select) => {
+                          if (select.isSelected === true) {
+                            return true;
+                          }
+                          return false;
+                        })
+                        .includes(false)
+                    }
+                    onChange={(e) => selectAllItems(e)}
+                    
+                    />
                     <label for="customCheck"></label>
                   </div>
                 </th>
@@ -266,12 +331,15 @@ export default function Customer_Customerlist() {
                     <tr key={item.id}>
                       <td>
                         <div class="custom-control custom-checkbox">
-                          <input
-                            type="checkbox"
-                            value={item.isSelected}
-                            onChange={(e) => onSelectCustomer(e, item.user_id)}
-                          />
-                          <label for="customCheck{item.id}"></label>
+                        <input
+                          type="checkbox"
+                          checked={item.isSelected}
+                          onChange={(e) =>
+                            onSelectCustomer(e, item.user_id)
+                          }
+                        />
+                          
+                          <label for="customCheck{item.id}">  {item.isSelected}</label>
                         </div>
                       </td>
                       <td>
@@ -328,38 +396,28 @@ export default function Customer_Customerlist() {
                   <option value={"2"}>Delete</option>
                 </select>
               </div>
-              <div className="col-md-4">
+              <div className="row">
                 <button
-                  type="button"
-                  class="btn btn-light"
+                  type="button "
+                  class="btn btn-light col-md-2"
                   style={{ width: "8rem" }}
                   onClick={() => handleOpen(null, null, false)}
                 >
                   Apply
                 </button>
+
+                <p className="col-md-3">
+                  &nbsp; Pages:
+                  <b style={{ color: "black" }}> {page.current}</b> /{" "}
+                  {page.totalpages}{" "}
+                </p>
+
+                {paginationFunction}
               </div>
-
-              <h6>Pages:</h6>
-              <p>
-                &nbsp;
-                <b style={{ color: "black" }}> {page.current}</b> /{" "}
-                {page.totalpages}{" "}
-              </p>
-
-              <TablePagination
-                className="col-md-5"
-                component="div"
-                count={page.totalrecords}
-                page={page.current - 1}
-                onPageChange={handleChangePage}
-                rowsPerPage={page.records_per_page}
-              />
-
             </div>
           </div>
         </div>
       </div>
-      {/* <Button onClick={handleOpen}>Open modal</Button> */}
       <Modal
         open={open}
         onClose={handleClose}
@@ -367,11 +425,11 @@ export default function Customer_Customerlist() {
         aria-describedby="modal-modal-description"
       >
         <Box sx={style}>
-          <Typography id="modal-modal-title" variant="h6" component="h2">
-
-
-          </Typography>
-
+          <Typography
+            id="modal-modal-title"
+            variant="h6"
+            component="h2"
+          ></Typography>
           <Typography id="modal-modal-description" sx={{ mt: 2 }}>
             Are you sure want to change the status?
           </Typography>
@@ -379,6 +437,6 @@ export default function Customer_Customerlist() {
           <Button onClick={() => handleStatusChange()}>Yes</Button>
         </Box>
       </Modal>
-    </div >
+    </div>
   );
 }

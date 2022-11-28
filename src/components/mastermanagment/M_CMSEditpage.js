@@ -140,6 +140,7 @@ export default function M_CMSEditpage() {
 
             <label className="demo">Description</label>
             <textarea
+             type="text"
               class="form-control"
               id="exampleFormControlTextarea1"
               placeholder="Enter Description"
@@ -152,6 +153,7 @@ export default function M_CMSEditpage() {
 
             <label className="demo">Keywords</label>
             <textarea
+             type="text"
               class="form-control"
               id="exampleFormControlTextarea1"
               placeholder="Enter Keywords"

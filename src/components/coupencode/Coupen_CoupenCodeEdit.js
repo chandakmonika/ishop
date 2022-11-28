@@ -13,7 +13,7 @@ export default function Coupen_CoupenCodeEdit() {
   
   const [userdata, setUser_data] = useState({
     couponcode: "",
-    discount_type: "",
+    discount_type: "p",
     valid_from: "",
     valid_to: "",
     coupon_price: "",
@@ -27,18 +27,31 @@ export default function Coupen_CoupenCodeEdit() {
       )
       .then((res) => {
         const getData = res.data.data;
-        console.log(getData);
-        setUser_data(getData);
+        console.log(20,getData);
+        setUser_data({
+          ...getData,
+          valid_from: getData.valid_from.toString().substring(0,16),
+          valid_to: getData.valid_to.toString().substring(0,16)
+        });
       });
   }, []);
 
   const handleChange = (e) => {
     console.log(e.target);
+if(e.target.name==="discount_type")
+{
+  console.log(1,e.target.checked)
+  setUser_data({
+    ...userdata,
+    [e.target.name]: e.target.checked ? "f" : "p",
+  });
+}
+else{
+  setUser_data({
+  ...userdata,
+  [e.target.name]: e.target.value,
+});}
 
-    setUser_data({
-      ...userdata,
-      [e.target.name]: e.target.value,
-    });
   };
 
   function customerUser() {
@@ -50,7 +63,12 @@ export default function Coupen_CoupenCodeEdit() {
         Accept: "application/json",
         "Content-Type": "Application/json",
       },
-      body: JSON.stringify(userdata),
+      body: JSON.stringify({
+        ...userdata,
+        valid_from: new Date(userdata.valid_from),
+        valid_to: new Date(userdata.valid_to)
+
+      }),
     }).then((result) => {
       result.json().then((resps) => {
         console.warn("resps", resps);
@@ -63,7 +81,8 @@ export default function Coupen_CoupenCodeEdit() {
 
   return (
     <div style={{ paddingLeft: "10rem" }}>
-    <h5 style={{ paddingLeft: "2rem" }}>FAQ Details</h5>
+      {console.log(27,userdata)}
+    <h5 style={{ paddingLeft: "2rem" }}>Coupon Edit</h5>
     <div className="card" style={{ width: "50rem" }}>
       <div className="ind">
         <br />
@@ -92,8 +111,8 @@ export default function Coupen_CoupenCodeEdit() {
             <label className="demo">Select Discount</label><br/>
             <span >Percent</span>
             <label class="switch" style={{marginLeft:'1rem'}}>
-              <input class="switch-input" type="checkbox" style={{paddingRight:'200rem'}} name="discount_type" value={userdata.discount_type}  
-              onChange={handleChange} />
+              <input class="switch-input" type="checkbox" style={{paddingRight:'200rem'}} name="discount_type" checked={userdata.discount_type === "f"}   
+              onChange={handleChange} /> 
               { console.log(2,discount_type)}
              
               <span class="switch-label" data-on="" data-off=""></span>

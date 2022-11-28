@@ -41,7 +41,7 @@ export default function Coupen_CoupenCode() {
   return (
     <div style={{ paddingLeft: "10rem" }}>
       <br />
-      <h4 style={{ paddingLeft: "2rem" }}>Add Coupen Code</h4>
+      <h4 style={{ paddingLeft: "2rem" }}>Add Coupon Code</h4>
       <div className="card" style={{ width: "50rem" }}>
       <form onSubmit={submit} style={{ Display: "float-right" }}>
           <div

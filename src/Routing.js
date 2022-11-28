@@ -517,14 +517,16 @@ import Theme_HomeTheme from "./components/themes/Theme_HomeTheme";
 import Theme_MenuTheme from "./components/themes/Theme_MenuTheme";
 import ForgetPassword from "./ForgetPassword";
 import Product_EditProduct from "./components/product/Product_EditProduct";
-import Payment_getwayList from "./components/Payment_getwayList";
-import Payment_getwayEdit from "./components/Payment_getwayEdit";
+import Payment_getwayList from "./components/payment/Payment_getwayList";
+import Payment_getwayEdit from "./components/payment/Payment_getwayEdit";
 import Seo from "./components/Seo";
 import PageNotFound from "./components/pagenotfound";
 import Blog_AddBlog from "./components/blogs/Blog_AddBlog";
 import Blog_BlogList from "./components/blogs/Blog_BlogList";
 import Blog_EditBlog from "./components/blogs/Blog_EditBlog";
 import Coupen_CoupenCodeEdit from "./components/coupencode/Coupen_CoupenCodeEdit";
+import Master_AddCMS from "./components/mastermanagment/Master_AddCMS";
+import Payment_PaymentGetwayAdd from "./components/payment/Payment_PaymentGetwayAdd";
 
 export default function RoutingPage() {
   // const token = localStorage.getItem("ACCESS_TOKEN")
@@ -596,7 +598,7 @@ export default function RoutingPage() {
               element={<Coupen_CoupenCodeList />}
             />
 
-<Route
+            <Route
               path="/coupencode/edit/:coupon_id"
               element={<Coupen_CoupenCodeEdit />}
             />
@@ -608,7 +610,7 @@ export default function RoutingPage() {
               element={<Address_AddressList />}
             />
             <Route
-              path="/customer/address/add"
+              path="/customer/address/add/:user_id"
               element={<Address_AddAddress />}
             />
             <Route
@@ -636,7 +638,7 @@ export default function RoutingPage() {
               element={<Faq_AddCategoryList />}
             />
             <Route
-              path="/mastermanagement/cms/listpage"
+              path="/mastermanagement/cms/list"
               element={<Mastermange_CMSListpages />}
             />
             <Route
@@ -661,10 +663,14 @@ export default function RoutingPage() {
             />
 
             <Route
-              path="/mastermanagement/cms/listpage"
+              path="/mastermanagement/cms/list"
               element={<Mastermange_CMSListpages />}
             />
 
+           <Route
+              path="/mastermanagement/cms/addpage"
+              element={<Master_AddCMS />}
+            />
             <Route
               path="/mastermanagement/newsletter/list"
               element={<Master_NewsLetterList />}
@@ -726,7 +732,7 @@ export default function RoutingPage() {
             <Route path="/order/orderlist" element={<Order_OrderList />} />
 
             <Route
-              path="/order/orderdetails"
+              path="/order/orderdetails/:order_id"
               element={<Order_OrderDetails />}
             />
 
@@ -738,9 +744,11 @@ export default function RoutingPage() {
 
             <Route path="/menutheme" element={<Theme_MenuTheme />} />
 
-            <Route path="/paymentgetwaylist" element={<Payment_getwayList />} />
-
-            <Route path="/paymentgetwayedit" element={<Payment_getwayEdit />} />
+            <Route path="/paymentgetway/list" element={<Payment_getwayList />} />
+            
+            <Route path="/paymentgetway/add" element={<Payment_PaymentGetwayAdd />} />
+            
+            <Route path="/paymentgetway/edit/:payment_gateway_id" element={<Payment_getwayEdit />} />
 
             <Route path="/seo" element={<Seo />} />
 

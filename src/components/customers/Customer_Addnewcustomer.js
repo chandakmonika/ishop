@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
+import { toast } from 'react-toastify';
 
 export default function Customer_Addnewcustomer() {
   const [first_name, setFirst_name] = useState("");
@@ -24,6 +25,16 @@ export default function Customer_Addnewcustomer() {
     }).then((result) => {
       result.json().then((resps) => {
         console.warn("resps", resps);
+        toast.success(' Customer Added Successfully!', {
+          position: "bottom-right",
+          autoClose: 5000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+          theme: "colored",
+          });
       });
     });
   }

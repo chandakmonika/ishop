@@ -18,11 +18,14 @@
 
 
 import Routing from "./Routing";
+import 'react-toastify/dist/ReactToastify.css';
+import { ToastContainer  } from 'react-toastify';
 
 function App() {
   return (
     <div className="App">
       <Routing />
+      <ToastContainer />
     </div>
   );
 }

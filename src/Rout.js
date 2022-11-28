@@ -364,15 +364,7 @@ export default function DashboardPage() {
                   style={{ maxHeight: "100px" }}
                   navbarScroll
                 >
-                  {/* <Form className="d-flex ml-auto my-2 my-lg-0">
-                    <Form.Control
-                      type="search"
-                      placeholder="Search"
-                      className="me-2"
-                      aria-label="Search"
-                    />
-                    <Button variant="outline-success">Search</Button>
-                  </Form> */}
+                 
                   &nbsp;&nbsp;&nbsp;
                   <Nav.Link href="#action1">
                     <i className="fas fa-user-alt"></i>
@@ -433,7 +425,7 @@ export default function DashboardPage() {
                         data-bs-parent="#menu"
                       >
                         <li>
-                          <Link to="/order/orderlist">Add Order</Link>
+                          <Link to="/order/orderlist">Order List</Link>
                         </li>
                         <br />
                         <li>
@@ -558,14 +550,14 @@ export default function DashboardPage() {
                       >
                         <li class="w-100">
                           <li>
-                            <a href="/mastermanagement/cms/listpage">
+                            <a href="/mastermanagement/cms/list">
                               CMS Pages
                             </a>
                           </li>
                           <br />
                           <li>
-                            <a href="/mastermanagement/cms/editpage">
-                              CMS Edit Page
+                            <a href="/mastermanagement/cms/addpage">
+                              CMS Add Page
                             </a>
                           </li>
                           <br />
@@ -636,10 +628,10 @@ export default function DashboardPage() {
                           </li>
                           <br />
                           <li>
-                            <a href="/paymentgetwaylist">Payment Getway List</a>
+                            <a href="/paymentgetway/list">Payment Getway List</a>
                           </li><br/>
                           <li>
-                            <a href="/paymentgetwayedit">Payment Getway Edit</a>
+                            <a href="/paymentgetway/add">Payment Getway Add</a>
                           </li><br/>
                           <li>
                             <a href="/seo">SEO</a>
@@ -672,7 +664,7 @@ export default function DashboardPage() {
                         data-bs-toggle="collapse"
                         class="nav-link px-0 align-middle "
                       >
-                        <i className="fa fa-home"></i>&nbsp;Coupen Code
+                        <i className="fa fa-home"></i>&nbsp;Coupon Code
                         &nbsp;&nbsp;&nbsp;
                         <i className="fa fa-chevron-right arrow-icon"></i>
                       </a>
@@ -683,12 +675,12 @@ export default function DashboardPage() {
                         data-bs-parent="#menu"
                       >
                         <li>
-                        <a href="/coupencode/list">Coupen Code List</a>
+                        <a href="/coupencode/list">Coupon Code List</a>
               
                         </li>
                         <br />
                         <li>
-                        <a href="/coupencode/add">Add Coupen Code</a>
+                        <a href="/coupencode/add">Add Coupon Code</a>
                            
                         </li>
                       </ul>

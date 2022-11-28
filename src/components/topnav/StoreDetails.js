@@ -1,10 +1,12 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
+import axios from "axios";
 import Button from "react-bootstrap/Button";
 import { Link } from "react-router-dom";
 
 export default function StoreDetails() {
   const [file, setFile] = useState();
 
+  
   function handleChange(event) {
     setFile(event.target.files[0]);
   }
@@ -61,61 +63,61 @@ export default function StoreDetails() {
                       type="email"
                       class="form-control"
                       id="inputEmail4"
-                      placeholder="Email"
+                      placeholder="Enter Link"
                     />
                   </div>
                   <div class="form-group col-md-6">
                     <label for="inputPassword4">Bussiness Name</label>
                     <input
-                      type="password"
+                      type="text"
                       class="form-control"
                       id="inputPassword4"
-                      placeholder="Password"
+                      placeholder="Enter Bussiness Name"
                     />
                   </div>
                   <div class="form-group col-md-6">
                     <label for="inputPassword4">Bussiness Category</label>
                     <input
-                      type="password"
+                      type="text"
                       class="form-control"
                       id="inputPassword4"
-                      placeholder="Password"
+                      placeholder="Enter Bussiness Category"
                     />
                   </div>
                   <div class="form-group col-md-6">
                     <label for="inputPassword4">Mobile Number</label>
                     <input
-                      type="password"
+                      type="text"
                       class="form-control"
                       id="inputPassword4"
-                      placeholder="Password"
+                      placeholder="Enter Mobile Number"
                     />
                   </div>
                   <div class="form-group col-md-6">
                     <label for="inputPassword4">Email Address</label>
                     <input
-                      type="password"
+                      type="email"
                       class="form-control"
                       id="inputPassword4"
-                      placeholder="Password"
+                      placeholder="Enter Email Address"
                     />
                   </div>
                   <div class="form-group col-md-6">
                     <label for="inputPassword4">Country</label>
                     <input
-                      type="password"
+                      type="text"
                       class="form-control"
                       id="inputPassword4"
-                      placeholder="Password"
+                      placeholder="Enter Country"
                     />
                   </div>
                   <div class="form-group col-md-6">
                     <label for="inputPassword4">FSSAI Number</label>
                     <input
-                      type="password"
+                      type="number"
                       class="form-control"
                       id="inputPassword4"
-                      placeholder="Password"
+                      placeholder="Enter FSSAI Number"
                     />
                   </div><br/>
                   <div class="form-group col-md-12">
