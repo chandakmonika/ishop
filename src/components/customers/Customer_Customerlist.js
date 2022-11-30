@@ -8,11 +8,10 @@ import "./Customer_Customerlist.css";
 import { Link } from "react-router-dom";
 import { useParams, useNavigate } from "react-router-dom";
 import TablePagination from "@mui/material/TablePagination";
-import Box from '@mui/material/Box';
-import Typography from '@mui/material/Typography';
-import Modal from '@mui/material/Modal';
-import { toast } from 'react-toastify';
-
+import Box from "@mui/material/Box";
+import Typography from "@mui/material/Typography";
+import Modal from "@mui/material/Modal";
+import { toast } from "react-toastify";
 
 export default function Customer_Customerlist() {
   const [index, setIndex] = useState([]);
@@ -30,14 +29,14 @@ export default function Customer_Customerlist() {
     totalrecords: 0,
   });
 
-  const navigate = useNavigate()
-  
+  const navigate = useNavigate();
+
   const [changeStatusId, setChangeStatusId] = useState({
     user_id: "",
-    status: ""
+    status: "",
   });
-  
-  const [isSingleStatusUpdate, setIsSingleStatusUpdate] = useState(true)
+
+  const [isSingleStatusUpdate, setIsSingleStatusUpdate] = useState(true);
   const url = "http://admin.ishop.sunhimlabs.com/api/v1/customer/list";
 
   console.log(query);
@@ -64,7 +63,7 @@ export default function Customer_Customerlist() {
   // };
   // useEffect(() => {
   //   getData();
-    
+
   // }, []);
 
   const handleChangePage = async (e, newPage) => {
@@ -119,20 +118,16 @@ export default function Customer_Customerlist() {
   };
 
   function handleStatusChange(userId, status) {
-    if (
-      isSingleStatusUpdate
-    ) {
+    if (isSingleStatusUpdate) {
       console.warn(user_id, status);
       let apidata = {
         user_id: changeStatusId.user_id,
         status: changeStatusId.status === "0" ? "1" : "0",
       };
       statusChange(apidata);
-    }
-    else {
+    } else {
       applyStatus();
     }
-
   }
 
   const onSelectCustomer = (e, user_id) => {
@@ -172,42 +167,41 @@ export default function Customer_Customerlist() {
   };
 
   const style = {
-    position: 'absolute',
-    top: '50%',
-    left: '50%',
-    transform: 'translate(-50%, -50%)',
+    position: "absolute",
+    top: "50%",
+    left: "50%",
+    transform: "translate(-50%, -50%)",
     width: 400,
-    bgcolor: 'background.paper',
-    border: '2px solid #000',
+    bgcolor: "background.paper",
+    border: "2px solid #000",
     boxShadow: 24,
     p: 4,
   };
 
   const [open, setOpen] = React.useState(false);
   const handleOpen = (user_id, status, isSingleStatus) => {
-    setIsSingleStatusUpdate(isSingleStatus)
+    setIsSingleStatusUpdate(isSingleStatus);
     setChangeStatusId({
-      user_id, 
+      user_id,
       status,
     });
     setOpen(true);
-  }
+  };
   const handleClose = () => setOpen(false);
 
-const selectAllItems = (e) =>{
-  console.log(1,e.target.checked);
-  const datas= 
-  index.length > 0 &&
-  index.map((item) =>{
-    return{
-      ...item,
-      isSelected: e.target.checked,
-    };
-    
-  })
-  console.log(27,datas);
-  setIndex(datas);
-}
+  const selectAllItems = (e) => {
+    console.log(1, e.target.checked);
+    const datas =
+      index.length > 0 &&
+      index.map((item) => {
+        return {
+          ...item,
+          isSelected: e.target.checked,
+        };
+      });
+    console.log(27, datas);
+    setIndex(datas);
+  };
 
   const paginationFunction = useMemo(
     () => (
@@ -226,7 +220,7 @@ const selectAllItems = (e) =>{
 
   return (
     <div>
-       {/* <ToastContainer /> */}
+      {/* <ToastContainer /> */}
       <Navbar expand="lg">
         <Container fluid>
           <Navbar.Brand href="#">Customer List</Navbar.Brand>
@@ -239,15 +233,19 @@ const selectAllItems = (e) =>{
               <div className="d-flex ml-auto my-2 my-lg-0">
                 <Button variant="light">Import Customer</Button>
                 &nbsp;&nbsp;&nbsp;
-                <Button variant="info"><Link to="/customer/addnewcustomer">Add Customer</Link></Button>&nbsp;&nbsp;&nbsp;
+                <Button variant="info">
+                  <Link to="/customer/addnewcustomer">Add Customer</Link>
+                </Button>
+                &nbsp;&nbsp;&nbsp;
               </div>
               &nbsp;&nbsp;&nbsp;
             </Nav>
           </Navbar.Collapse>
         </Container>
       </Navbar>
-      <div class="card" style={{ width: "100%" , }}>
-        <div class="card-body" style={{ width: "100%",  }}>
+      
+      <div class="card" style={{ width: "100%" }}>
+        <div class="card-body" style={{ width: "100%" }}>
           <div class="row">
             <div className="col-sm-3">
               <form onSubmit={handleSubmit}>
@@ -270,7 +268,7 @@ const selectAllItems = (e) =>{
           </div>
           <br />
           <table class="table table-bordered" style={{ width: "95%" }}>
-          {console.log(
+            {console.log(
               2,
               index
                 .map((select) => {
@@ -285,19 +283,19 @@ const selectAllItems = (e) =>{
               <tr>
                 <th scope="col">
                   <div class="custom-control custom-checkbox">
-                  <input type="checkbox" 
-                     checked={
-                      !index
-                        .map((select) => {
-                          if (select.isSelected === true) {
-                            return true;
-                          }
-                          return false;
-                        })
-                        .includes(false)
-                    }
-                    onChange={(e) => selectAllItems(e)}
-                    
+                    <input
+                      type="checkbox"
+                      checked={
+                        !index
+                          .map((select) => {
+                            if (select.isSelected === true) {
+                              return true;
+                            }
+                            return false;
+                          })
+                          .includes(false)
+                      }
+                      onChange={(e) => selectAllItems(e)}
                     />
                     <label for="customCheck"></label>
                   </div>
@@ -317,7 +315,7 @@ const selectAllItems = (e) =>{
                   <i class="fas fa-arrow-down" onClick={update}></i>
                   <i class="fas fa-arrow-up" onClick={update}></i>
                 </th>
-                <th scope="col">Orders Place</th>
+                <th scope="col">Orders Placed</th>
                 <th scope="col">Total Sales</th>
                 <th scope="col">Status</th>
                 <th scope="col">Action</th>
@@ -331,15 +329,16 @@ const selectAllItems = (e) =>{
                     <tr key={item.id}>
                       <td>
                         <div class="custom-control custom-checkbox">
-                        <input
-                          type="checkbox"
-                          checked={item.isSelected}
-                          onChange={(e) =>
-                            onSelectCustomer(e, item.user_id)
-                          }
-                        />
-                          
-                          <label for="customCheck{item.id}">  {item.isSelected}</label>
+                          <input
+                            type="checkbox"
+                            checked={item.isSelected}
+                            onChange={(e) => onSelectCustomer(e, item.user_id)}
+                          />
+
+                          <label for="customCheck{item.id}">
+                            {" "}
+                            {item.isSelected}
+                          </label>
                         </div>
                       </td>
                       <td>
@@ -352,7 +351,9 @@ const selectAllItems = (e) =>{
                       <td>
                         <button
                           type="button"
-                          onClick={() => handleOpen(item.user_id, item.status, true)}
+                          onClick={() =>
+                            handleOpen(item.user_id, item.status, true)
+                          }
                         >
                           {item.status === "0" ? "inactive" : "active"}
                         </button>

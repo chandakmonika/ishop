@@ -61,7 +61,7 @@ export default function Product_AddProduct() {
 
   useEffect(() => {
     axios
-      .get(`${process.env.BACKEND_API_URL}api/v1/payments/add`)
+      .get(`${process.env.REACT_APP_BACKEND_APIURL}api/v1/product/add`)
       .then((res) => setIndex(res.data.data));
   }, []);
 
@@ -121,7 +121,7 @@ export default function Product_AddProduct() {
   useEffect(() => {
     axios
       .get(
-        `${process.env.BACKEND_API_URL}api/v1/products/categorieswithsubcategories`
+        `${process.env.REACT_APP_BACKEND_APIURL}api/v1/products/categorieswithsubcategories`
       )
       .then((res) => {
         setCategoryData(res.data.data);
@@ -188,7 +188,7 @@ return item;
     console.log(e.target.value);
     axios
       .get(
-        `${process.env.BACKEND_API_URL}api/v1/products/category/attributeswithbrand?category_id=${e.target.value}`
+        `${process.env.REACT_APP_BACKEND_APIURL}api/v1/products/category/attributeswithbrand?category_id=${e.target.value}`
       )
       .then((res) => {
         console.log(27, res.data);

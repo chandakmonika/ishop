@@ -343,12 +343,12 @@ import Form from "react-bootstrap/Form";
 import Nav from "react-bootstrap/Nav";
 import Navbar from "react-bootstrap/Navbar";
 import NavDropdown from "react-bootstrap/NavDropdown";
-import { Outlet, Link,useNavigate } from "react-router-dom";
+import { Outlet, Link, useNavigate } from "react-router-dom";
 import "./Sidebar.css";
 
 export default function DashboardPage() {
   const navigate = useNavigate();
-  const userName = localStorage.getItem('USER_NAME')
+  const userName = localStorage.getItem("USER_NAME");
 
   return (
     <div>
@@ -364,27 +364,28 @@ export default function DashboardPage() {
                   style={{ maxHeight: "100px" }}
                   navbarScroll
                 >
-                 
                   &nbsp;&nbsp;&nbsp;
                   <Nav.Link href="#action1">
                     <i className="fas fa-user-alt"></i>
                   </Nav.Link>
                   <NavDropdown title={userName} id="navbarScrollingDropdown">
-                    
                     <NavDropdown.Item>
-                      <Link to="/dashboard">Setting</Link>
+                      <Link to="/mastermanagement/setting/list">Setting</Link>
                     </NavDropdown.Item>
                     <NavDropdown.Item>
                       <Link to="/storedetails">Account</Link>
                     </NavDropdown.Item>
                     <NavDropdown.Divider />
                     <NavDropdown.Item>
-                      
-                      <div onClick={()=>{
-                        localStorage.removeItem("ACCESS_TOKEN")
-                        localStorage.removeItem("USER_NAME")
-                        navigate("/")
-                      }}>Logout</div>
+                      <div
+                        onClick={() => {
+                          localStorage.removeItem("ACCESS_TOKEN");
+                          localStorage.removeItem("USER_NAME");
+                          navigate("/");
+                        }}
+                      >
+                        Logout
+                      </div>
                     </NavDropdown.Item>
                   </NavDropdown>
                 </Nav>
@@ -395,9 +396,11 @@ export default function DashboardPage() {
         <div className="row sidebar-container">
           <div class="col-md-3">
             <div class="">
-              <div class="px-sm-2" style={{backgroundColor:'gray', width:'70%', }}>
+              <div
+                class="px-sm-2"
+                style={{ backgroundColor: "gray", width: "70%" }}
+              >
                 <div class="d-flex flex-column align-items-center align-items-sm-start pt-2 text-white min-vh-100">
-                 
                   <ul
                     class="nav nav-pills flex-column mb-sm-auto mb-0 align-items-center align-items-sm-start"
                     id="menu"
@@ -453,7 +456,6 @@ export default function DashboardPage() {
                           <Link to="/product/list">Product List</Link>
                         </li>
                         <br />
-
                         <li>
                           <Link to="/product/addproduct">Add Product</Link>
                         </li>
@@ -468,8 +470,8 @@ export default function DashboardPage() {
                           <Link to="/product/category/list">
                             Product Category List
                           </Link>
-                         
-                        </li> <br />
+                        </li>{" "}
+                        <br />
                         <li>
                           <Link to="/product/wishlist">Product Wish List</Link>
                         </li>
@@ -526,7 +528,8 @@ export default function DashboardPage() {
                           <Link to="/customer/addnewcustomer">
                             Add New Customer
                           </Link>
-                        </li><br/>
+                        </li>
+                        <br />
                         {/* <li>
                         <Link to="/customer/address/list">Address List</Link>
                         </li> */}
@@ -550,9 +553,7 @@ export default function DashboardPage() {
                       >
                         <li class="w-100">
                           <li>
-                            <a href="/mastermanagement/cms/list">
-                              CMS Pages
-                            </a>
+                            <a href="/mastermanagement/cms/list">CMS Pages</a>
                           </li>
                           <br />
                           <li>
@@ -628,33 +629,47 @@ export default function DashboardPage() {
                           </li>
                           <br />
                           <li>
-                            <a href="/paymentgetway/list">Payment Getway List</a>
-                          </li><br/>
+                            <a href="/paymentgetway/list">
+                              Payment Getway List
+                            </a>
+                          </li>
+                          <br />
                           <li>
                             <a href="/paymentgetway/add">Payment Getway Add</a>
-                          </li><br/>
+                          </li>
+                          <br />
                           <li>
                             <a href="/seo">SEO</a>
-                          </li><br/>
+                          </li>
+                          <br />
                           <li>
                             <a href="/bloglist">Blog List</a>
-                          </li><br/>
+                          </li>
+                          <br />
                           <li>
                             <a href="/addblog">Add Blog</a>
                           </li>
-                          <br/>
+                          <br />
                           <li>
                             <a href="/mastermanagement/faq/list">FAQ List</a>
-                          </li><br/>
+                          </li>
+                          <br />
                           <li>
                             <a href="/mastermanagement/faq/add">FAQ Add</a>
-                          </li><br/>
+                          </li>
+                          <br />
                           <li>
-                            <a href="/mastermanagement/faq/category/list">FAQ Category List</a>
-                          </li><br/>
+                            <a href="/mastermanagement/faq/category/list">
+                              FAQ Category List
+                            </a>
+                          </li>
+                          <br />
                           <li>
-                            <a href="/mastermanagement/faq/category/add">FAQ Category Add</a>
-                          </li><br/>
+                            <a href="/mastermanagement/faq/category/add">
+                              FAQ Category Add
+                            </a>
+                          </li>
+                          <br />
                         </li>
                       </ul>
                     </li>
@@ -669,19 +684,16 @@ export default function DashboardPage() {
                         <i className="fa fa-chevron-right arrow-icon"></i>
                       </a>
                       <ul
-
                         class="collapse nav flex-column ms-1"
                         id="submenu6"
                         data-bs-parent="#menu"
                       >
                         <li>
-                        <a href="/coupencode/list">Coupon Code List</a>
-              
+                          <a href="/coupencode/list">Coupon Code List</a>
                         </li>
                         <br />
                         <li>
-                        <a href="/coupencode/add">Add Coupon Code</a>
-                           
+                          <a href="/coupencode/add">Add Coupon Code</a>
                         </li>
                       </ul>
                     </li>

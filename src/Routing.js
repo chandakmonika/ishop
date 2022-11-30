@@ -527,6 +527,7 @@ import Blog_EditBlog from "./components/blogs/Blog_EditBlog";
 import Coupen_CoupenCodeEdit from "./components/coupencode/Coupen_CoupenCodeEdit";
 import Master_AddCMS from "./components/mastermanagment/Master_AddCMS";
 import Payment_PaymentGetwayAdd from "./components/payment/Payment_PaymentGetwayAdd";
+import Master_EditSetting from "./components/mastermanagment/Master_EditSetting";
 
 export default function RoutingPage() {
   // const token = localStorage.getItem("ACCESS_TOKEN")
@@ -648,6 +649,10 @@ export default function RoutingPage() {
             <Route
               path="/mastermanagement/setting/list"
               element={<Master_SettingList />}
+            />
+             <Route
+              path="/mastermanagement/setting/edit"
+              element={<Master_EditSetting />}
             />
             <Route
               path="/product/wishlist"

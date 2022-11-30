@@ -58,7 +58,7 @@ export default function LoginPage() {
           <form>
             <div class="form-outline mb-4">
               <label class="form-label" for="form1Example1">
-                Email address
+                User Name
               </label>
               <input
                 type="email"

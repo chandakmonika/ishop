@@ -1,4 +1,4 @@
-import React,{ useEffect, useState } from "react";
+import React,{ useEffect, useState,  useMemo  } from "react";
 import axios from "axios";
 import Button from "react-bootstrap/Button";
 import Container from "react-bootstrap/Container";
@@ -20,7 +20,13 @@ export default function Faq_AddCategoryList() {
   const [selectedcustomer, setSelectedcustomer] = useState([]);
   const [selectedStatus, setSelectedStatus] = useState("0");
   const [status, setStatus] = useState([]);
-  const [page, setPage] = useState([]);
+  const [page, setPage] = useState({
+    current: 0,
+    previous: 0,
+    records_per_page: 0,
+    totalpages: 0,
+    totalrecords: 0,
+  });
   const navigate = useNavigate()
   
   const [changeStatusId, setChangeStatusId] = useState({
@@ -198,6 +204,34 @@ export default function Faq_AddCategoryList() {
   }
   const handleClose = () => setOpen(false);
 
+  const selectAllItems = (e) => {
+    console.log(1, e.target.checked);
+    const datas =
+      index.length > 0 &&
+      index.map((item) => {
+        return {
+          ...item,
+          isSelected: e.target.checked,
+        };
+      });
+    console.log(27, datas);
+    setIndex(datas);
+  };
+
+  const paginationFunction = useMemo(
+    () => (
+      <TablePagination
+        className="col-md-7"
+        rowsPerPageOptions={[12]}
+        component="div"
+        count={page.totalrecords || 0}
+        page={page.current - 1 || 0}
+        onPageChange={handleChangePage}
+        rowsPerPage={page.records_per_page || 0}
+      />
+    ),
+    [page]
+  );
 
   // useEffect(() => {
   //   axios
@@ -314,7 +348,7 @@ export default function Faq_AddCategoryList() {
                   <option value={"2"}>Delete</option>
                 </select>
               </div>
-              <div className="col-md-4">
+              <div className="row">
                 <button
                   type="button"
                   class="btn btn-light"
@@ -323,22 +357,17 @@ export default function Faq_AddCategoryList() {
                 >
                   Apply
                 </button>
-              </div>
-              <h6>Pages:</h6>
-              <p>
-                &nbsp;
-                <b style={{ color: "black" }}> {page.current}</b> /{" "}
-                {page.totalpages}{" "}
-              </p>
+                <p className="col-md-3">
+                  &nbsp; Pages:
+                  <b style={{ color: "black" }}> {page.current}</b> /{" "}
+                  {page.totalpages}{" "}
+                </p>
 
-              <TablePagination
-                className="col-md-5"
-                component="div"
-                count={page.totalrecords}
-                page={page.current - 1}
-                onPageChange={handleChangePage}
-                rowsPerPage={page.records_per_page}
-              />
+                {paginationFunction}
+              </div>
+              
+
+             
             </div>
           </div>
         </div>
