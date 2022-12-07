@@ -3,7 +3,6 @@ import Button from "react-bootstrap/Button";
 import Form from "react-bootstrap/Form";
 import Product_Editor from "./Product_Editor";
 import axios from "axios";
-
 import "./Product_AddProduct.css";
 const config = {
   buttons: [
@@ -39,7 +38,7 @@ export default function Product_AddProduct() {
   const [product_name, setProduct_name] = useState("");
   const [category_id, setCategory_id] = useState("");
   const [brand, setBrand] = useState("");
-  const[variants,setVariants] = useState("");
+  const [variants, setVariants] = useState("");
   const [model_number, setModel_number] = useState("");
   const [product_short_desc, setProduct_short_desc] = useState("");
   const [product_long_desc, setProduct_long_desc] = useState("");
@@ -57,11 +56,33 @@ export default function Product_AddProduct() {
   const [index, setIndex] = useState([]);
   const [selectSubCatData, setSelectSubCatData] = useState([]);
   const [prodAttributeInput, setProdAttributeInput] = useState([]);
-  const[prodVarientInput, setProdVarientInput] = useState([]);
+  const [prodVarientInput, setProdVarientInput] = useState([]);
 
+  const [productInputData, setProductInputData] = useState({
+    product_name: "",
+    category_id: "",
+    brand: "",
+    model_number: "",
+    product_short_desc: "",
+    product_long_desc: "",
+    product_image: "",
+    product_status: "",
+    product_other_images: "",
+    product_qty: "",
+    attributes: [],
+    faq: [],
+    sku: "",
+    price_base: "",
+    price_sell: "",
+    price_mrp: "",
+    product_tags: "",
+    product_seo_title: "",
+    product_seo_description: "",
+    product_seo_keywords: "",
+  });
   useEffect(() => {
     axios
-      .get(`${process.env.REACT_APP_BACKEND_APIURL}api/v1/product/add`)
+      .post(`${process.env.REACT_APP_BACKEND_APIURL}api/v1/product/add`)
       .then((res) => setIndex(res.data.data));
   }, []);
 
@@ -104,13 +125,13 @@ export default function Product_AddProduct() {
       product_seo_description,
       product_seo_keywords,
     };
-    fetch(`${process.env.BACKEND_API_URL}api/v1/products/add`, {
+    fetch(`${process.env.REACT_APP_BACKEND_APIURL}api/v1/products/add`, {
       method: "POST",
       headers: {
         Accept: "application/json",
         "content-Type": "Application/json",
       },
-      body: JSON.stringify(datas),
+      body: JSON.stringify(productInputData),
     }).then((result) => {
       result.json().then((response) => {
         console.warn("response", response);
@@ -132,32 +153,50 @@ export default function Product_AddProduct() {
     console.log(e.target.files);
     setFile(URL.createObjectURL(e.target.files[0]));
   }
-
+  const productInputChange = (e, inputField, inputName) => {
+    if (inputField === "editor") {
+      setProductInputData({
+        ...productInputData,
+        [inputName]: e,
+      });
+    } else if (inputField === "cat_id") {
+      setProductInputData({
+        ...productInputData,
+        [inputName]: e,
+      });
+    } else {
+      setProductInputData({
+        ...productInputData,
+        [e.target.name]: e.target.value,
+      });
+    }
+  };
   // <----------------Dynamic Form--------------->
   const [varientFormFields, setFormFields] = useState([
     { fieldlabel: "", fieldname: "", fieldtype: "", fieldvalue: "" },
   ]);
 
-  const handleFormChange = (e, index,itemIndex) => {
-    console.log(e.target.value,index);
-    const data = varientFormFields.map(( item,i) => {
-if(i === index){
-  console.log(2,itemIndex,item);
- const varData = selectSubCatData.variants_fields.map((varient,varIndex)=>{
-    if(varIndex === itemIndex){
-      varient.attributes_value = e.target.value;
+  const handleFormChange = (e, index, itemIndex) => {
+    console.log(e.target.value, index);
+    const data = varientFormFields.map((item, i) => {
+      if (i === index) {
+        console.log(2, itemIndex, item);
+        const varData = selectSubCatData.variants_fields.map(
+          (varient, varIndex) => {
+            if (varIndex === itemIndex) {
+              varient.attributes_value = e.target.value;
+            }
 
-    }
-    
-    return varient;
-  })
-  console.log(29,varData)
-  return varData;
-}
+            return varient;
+          }
+        );
+        console.log(29, varData);
+        return varData;
+      }
 
-return item;
-    })
-    console.log(19,data)
+      return item;
+    });
+    console.log(19, data);
     // let data = [...varientFormFields];
     // data[index][e.target.name] = e.target.value;
     // setFormFields(data);
@@ -193,7 +232,7 @@ return item;
       .then((res) => {
         console.log(27, res.data);
         setProdAttributeInput(res.data.category_attrbutes);
-        setProdAttributeInput(res.data.variants_fields);
+        // setProdAttributeInput(res.data.variants_fields);
         setSelectSubCatData(res.data);
       });
   };
@@ -201,61 +240,27 @@ return item;
   const handleAttributeInputChange = (e) => {
     const prodAttrData = prodAttributeInput.map((attr) => {
       if (e.target.name === attr.attributes_label) {
-          attr.value = e.target.value
+        attr.value = e.target.value;
       }
-      return attr
+      return attr;
     });
+    console.log(2122, prodAttrData);
     setProdAttributeInput(prodAttrData);
+    const attrDatas = prodAttrData.map((attr) => {
+      console.log(7890, attr);
+      return {
+        attributes_id: attr.attribute_id,
+        attributes_value: attr.value,
+      };
+    });
+
+    setProductInputData({
+      ...productInputData,
+      
+      attributes: attrDatas,
+    });
   };
-  // const CategoryDataList = () => {
-  // categoryData && categoryData.length > 0 &&
-  // categoryData.map((cat) => {
-  // return (
-  // <div key={cat.category_name}>
-  // <a
-  // href="#"
-  // class="list-group-item"
-  // style={{ border: "none" }}
-  // >
-  // <form action="/action_page.php">
-  // <input
-  // type="checkbox"
-  // id="vehicle1"
-  // name="vehicle1"
-  // value="Bike"
-  // />
-  // <label for="vehicle1">{cat.category_name}</label>
-  // </form>
-  // </a>
-  // <div class="list-group" style={{ paddingLeft: "2rem" }}>
-  // <form action="/action_page.php">
-  // {
-  // cat.subcategories.map((subCat) => {
-  // return (
-  // <div key={subCat.category_name}>
-  // <a
-  // href="#"
-  // class="list-group-item"
-  // style={{ border: "none" }}
-  // >
-  // <input
-  // type="checkbox"
-  // id="vehicle1"
-  // name="vehicle1"
-  // value="rtr"
-  // />
-  // <label for="vehicle2">{subCat.category_name}</label>
-  // </a>
-  // </div>
-  // )
-  // })
-  // }
-  // </form>
-  // </div>
-  // </div>
-  // )
-  // })
-  // }
+
 
   return (
     <div>
@@ -298,26 +303,36 @@ return item;
                     className="form-control"
                     id="exampleInputEmail1"
                     aria-describedby="emailHelp"
-                    value={product_name}
+                    value={productInputData.product_name}
                     onChange={(e) => {
-                      setProduct_name(e.target.value);
+                      productInputChange(e);
                     }}
                     name="product_name"
                   />
                 </div>
                 <h6>Product Short Discription</h6>
-                <Product_Editor setValue={setValue} config={config} />
+                <Product_Editor
+                  setValue={(e) =>
+                    productInputChange(e, "editor", "product_short_desc")
+                  }
+                  config={config}
+                />
                 <br />
                 <div></div>
                 <h6>Product Long Discription</h6>
-                <Product_Editor setValue={setValue} config={config} />
+                <Product_Editor
+                  setValue={(e) =>
+                    productInputChange(e, "editor", "product_long_desc")
+                  }
+                  config={config}
+                />
               </div>
             </div>
             <br />
             {/* <---------------------------------Title From End------------------------------------------> */}
 
             {/* <---------------------------------Media From----------------------------------> */}
-
+            {console.log(4545, productInputData)}
             <div class="card" style={{ height: "24rem", width: "50rem" }}>
               <div class="card-body">
                 <div className="container" style={{ paddingTop: "38px" }}>
@@ -341,9 +356,15 @@ return item;
                   style={{ Float: "left", width: "20rem" }}
                 >
                   <label for="exampleFormControlSelect1">Product Status</label>
-                  <select class="form-control" id="exampleFormControlSelect1">
-                    <option>Active</option>
-                    <option>Inactive</option>
+                  <select
+                    class="form-control"
+                    id="exampleFormControlSelect1"
+                    name="product_status"
+                    value={productInputData.product_status}
+                    onChange={(e) => productInputChange(e)}
+                  >
+                    <option value="active">Active</option>
+                    <option value="inactive">Inactive</option>
                   </select>
                   <br />
                 </div>
@@ -370,11 +391,18 @@ return item;
                             <input
                               type="checkbox"
                               id={cat.category_slug}
-                              name={cat.category_slug}
+                              name="category_id"
+                              value={productInputData.category_id}
                               checked={cat.isChecked ? "checked" : false}
                               onChange={(e) => {
+                                productInputChange(e);
                                 const checkedData = categoryData.map((d) => {
                                   if (d.category_id === cat.category_id) {
+                                    productInputChange(
+                                      cat.category_id,
+                                      "cat_id",
+                                      "category_id"
+                                    );
                                     return {
                                       ...d,
                                       isChecked: e.target.checked,
@@ -402,17 +430,13 @@ return item;
                                 class="list-group"
                                 style={{ paddingLeft: "2rem" }}
                               >
-                                {/* <form action="/action_page.php"> */}
+                                
                                 {cat.subcategories.map((subCat) => {
                                   return (
                                     <div
                                       key={`sub-category${subCat.category_id}`}
                                     >
-                                      {/* <a
-                                          href="#"
-                                          class="list-group-item"
-                                          style={{ border: "none" }}
-                                        > */}
+                                      
                                       <input
                                         type="radio"
                                         id={subCat.category_slug}
@@ -425,11 +449,11 @@ return item;
                                       <label for={subCat.category_slug}>
                                         {subCat.category_name}
                                       </label>
-                                      {/* </a> */}
+                                     
                                     </div>
                                   );
                                 })}
-                                {/* </form> */}
+                               
                               </div>
                             )}
                           </div>
@@ -439,35 +463,36 @@ return item;
                 </div>
                 <br />
                 <br />
-                {selectSubCatData.brands && selectSubCatData.brands.length > 0 && (
-                  <div>
-                    <p>Brand</p>
-                    <div className="list-group">
-                      {selectSubCatData.brands.map((brand) => {
-                        return (
-                          <div key={`sub-category${brand.brand_id}`}>
-                            {/* <a
+                {selectSubCatData.brands &&
+                  selectSubCatData.brands.length > 0 && (
+                    <div>
+                      <p>Brand</p>
+                      <div className="list-group">
+                        {selectSubCatData.brands.map((brand) => {
+                          return (
+                            <div key={`sub-category${brand.brand_id}`}>
+                              {/* <a
                                           href="#"
                                           class="list-group-item"
                                           style={{ border: "none" }}
                                         > */}
-                            <input
-                              type="radio"
-                              id={brand.brand_name}
-                              name="sub-category-list"
-                              value={brand.brand_id}
-                              // onChange={(e) => handleSubCategoryClick(e)}
-                            />
-                            <label for={brand.brand_name}>
-                              {brand.brand_name}
-                            </label>
-                            {/* </a> */}
-                          </div>
-                        );
-                      })}
+                              <input
+                                type="radio"
+                                id={brand.brand_name}
+                                name="brand"
+                                value={brand.brand_id}
+                                onChange={(e) => productInputChange(e)}
+                              />
+                              <label for={brand.brand_name}>
+                                {brand.brand_name}
+                              </label>
+                              {/* </a> */}
+                            </div>
+                          );
+                        })}
+                      </div>
                     </div>
-                  </div>
-                )}
+                  )}
                 <br />
 
                 <div className="form-group">
@@ -477,9 +502,9 @@ return item;
                     className="form-control"
                     id="exampleInputEmail1"
                     aria-describedby="emailHelp"
-                    value={product_tags}
+                    value={productInputData.product_tags}
                     onChange={(e) => {
-                      setProduct_tags(e.target.value);
+                      productInputChange(e);
                     }}
                     name="product_tags"
                   />
@@ -512,9 +537,9 @@ return item;
                     className="form-control"
                     id="exampleInputEmail1"
                     aria-describedby="emailHelp"
-                    value={sku}
+                    value={productInputData.sku}
                     onChange={(e) => {
-                      setSku(e.target.value);
+                      productInputChange(e);
                     }}
                     name="sku"
                   />
@@ -527,9 +552,9 @@ return item;
                     className="form-control"
                     id="exampleInputEmail1"
                     aria-describedby="emailHelp"
-                    value={model_number}
+                    value={productInputData.model_number}
                     onChange={(e) => {
-                      setModel_number(e.target.value);
+                      productInputChange(e);
                     }}
                     name="model_number"
                   />
@@ -559,9 +584,9 @@ return item;
                     className="form-control"
                     id="exampleInputEmail1"
                     aria-describedby="emailHelp"
-                    value={price_base}
+                    value={productInputData.price_base}
                     onChange={(e) => {
-                      setPrice_base(e.target.value);
+                      productInputChange(e);
                     }}
                     name="price_base"
                   />
@@ -574,11 +599,11 @@ return item;
                     className="form-control"
                     id="exampleInputEmail1"
                     aria-describedby="emailHelp"
-                    value={product_tags}
+                    value={productInputData.price_mrp}
                     onChange={(e) => {
-                      setProduct_tags(e.target.value);
+                      productInputChange(e);
                     }}
-                    name="product_tags"
+                    name="price_mrp"
                   />
                 </div>
                 <div className="col-md-4">
@@ -588,9 +613,9 @@ return item;
                     className="form-control"
                     id="exampleInputEmail1"
                     aria-describedby="emailHelp"
-                    value={price_sell}
+                    value={productInputData.price_sell}
                     onChange={(e) => {
-                      setPrice_sell(e.target.value);
+                      productInputChange(e);
                     }}
                     name="price_sell"
                   />
@@ -643,48 +668,7 @@ return item;
                     </div>
                   );
                 })}
-                {/* <div class="form-group row">
-             <label for="inputSize" class="col-sm-2 col-form-label">
-               Size
-             </label>
-             <div class="col-sm-4">
-               <input
-                 type="text"
-                 class="form-control"
-                 id="inputSize"
-                 placeholder="Size"
-               />
-             </div>
-           </div>
-           <div class="form-group row">
-             <label for="inputLorem" class="col-sm-2 col-form-label">
-               Material
-             </label>
-             <div class="col-sm-4">
-               <input
-                 type="text"
-                 class="form-control"
-                 id="inputLorem"
-                 placeholder="Lorem"
-               />
-             </div>
-           </div>
-           <div class="form-group row">
-             <label
-               class="col-sm-2 col-form-label"
-               for="exampleFormControlSelect1"
-             >
-               Product Status
-             </label>
-             <select
-               class="form-control "
-               id="exampleFormControlSelect1"
-               style={{ width: "25rem" }}
-             >
-               <option>Yes</option>
-               <option>No</option>
-             </select>
-           </div> */}
+             
               </div>
             </div>
           )}
@@ -694,36 +678,40 @@ return item;
         {/* <--------------------Dynamic Form---------------> */}
         {selectSubCatData.variants_fields &&
           selectSubCatData.variants_fields.length > 0 && (
-        <div class="card" style={{ height: "auto", width: "73rem" }}>
-          <div class="card-body">
-            <h5>Product Varient</h5>
-            {/* {selectSubCatData.variants_fields.map((vari) => {
+            <div class="card" style={{ height: "auto", width: "73rem" }}>
+              <div class="card-body">
+                <h5>Product Varient</h5>
+                {/* {selectSubCatData.variants_fields.map((vari) => {
                return ( */}
-                <div >
-            <table class="table table-bordered">
-              <thead>
-                {selectSubCatData.variants_fields.map((item)=>(
-                  <th scope="col">{item.attributes_label}</th>
-                ))}
-                {/* <th scope="col">Size</th> */}
-                <th scope="col">Inventory</th>
-                <th scope="col">Price</th>
-              </thead>
+                <div>
+                  <table class="table table-bordered">
+                    <thead>
+                      {selectSubCatData.variants_fields.map((item) => (
+                        <th scope="col">{item.attributes_label}</th>
+                      ))}
+                      {/* <th scope="col">Size</th> */}
+                      <th scope="col">Inventory</th>
+                      <th scope="col">Price</th>
+                    </thead>
 
-              <tbody>
-                {varientFormFields.map((form, index) => {
-                  return (
-                    <tr key={index}>
-                    {selectSubCatData.variants_fields.map((item,itemIndex)=>(  <td>
-                      <input type="text" placeholder={item.attributes_label} onChange={(e)=>{
-                        handleFormChange(e,index,itemIndex);
-                      }}
-                         
-                          className="form-control"
-                          id="exampleInputEmail1"
-                          aria-describedby="emailHelp"
-                        />
-                        {/* <select
+                    <tbody>
+                      {varientFormFields.map((form, index) => {
+                        return (
+                          <tr key={index}>
+                            {selectSubCatData.variants_fields.map(
+                              (item, itemIndex) => (
+                                <td>
+                                  <input
+                                    type="text"
+                                    placeholder={item.attributes_label}
+                                    onChange={(e) => {
+                                      handleFormChange(e, index, itemIndex);
+                                    }}
+                                    className="form-control"
+                                    id="exampleInputEmail1"
+                                    aria-describedby="emailHelp"
+                                  />
+                                  {/* <select
                           class="form-control "
                           id="exampleFormControlSelect1"
                           style={{ width: "13rem" }}
@@ -731,8 +719,10 @@ return item;
                           <option>Red</option>
                           <option>Black</option>
                         </select> */}
-                      </td>))}
-                      {/* <td>
+                                </td>
+                              )
+                            )}
+                            {/* <td>
                         <select
                           class="form-control "
                           id="exampleFormControlSelect1"
@@ -742,43 +732,43 @@ return item;
                           <option>M</option>
                         </select>
                       </td> */}
-                      <td>
-                        <input
-                          type="text"
-                          className="form-control"
-                          id="exampleInputEmail1"
-                          aria-describedby="emailHelp"
-                        />
-                      </td>
-                      <td>
-                        <input
-                          type="text"
-                          className="form-control"
-                          id="exampleInputEmail1"
-                          aria-describedby="emailHelp"
-                        />
-                      </td>
-                      <button
-                        onClick={() => removeFields(index)}
-                        style={{ marginLeft: "1rem" }}
-                      >
-                        Remove
-                      </button>
-                    </tr>
-                  );
-                })}
-              </tbody>
-              <button onClick={addFields} style={{ marginLeft: "48rem" }}>
-                Add More..
-              </button>
-              <br />
-            </table>
-            </div>
-            {/* );
+                            <td>
+                              <input
+                                type="text"
+                                className="form-control"
+                                id="exampleInputEmail1"
+                                aria-describedby="emailHelp"
+                              />
+                            </td>
+                            <td>
+                              <input
+                                type="text"
+                                className="form-control"
+                                id="exampleInputEmail1"
+                                aria-describedby="emailHelp"
+                              />
+                            </td>
+                            <button
+                              onClick={() => removeFields(index)}
+                              style={{ marginLeft: "1rem" }}
+                            >
+                              Remove
+                            </button>
+                          </tr>
+                        );
+                      })}
+                    </tbody>
+                    <button onClick={addFields} style={{ marginLeft: "48rem" }}>
+                      Add More..
+                    </button>
+                    <br />
+                  </table>
+                </div>
+                {/* );
           })} */}
-          </div>
-        </div>
-         )}
+              </div>
+            </div>
+          )}
         <br />
         {/* <--------------------Dynamic Form end------------------> */}
 
@@ -800,9 +790,9 @@ return item;
                   class="form-control"
                   id="inputColor"
                   placeholder="Meta Tags"
-                  value={product_seo_title}
+                  value={productInputData.product_seo_title}
                   onChange={(e) => {
-                    setProduct_seo_title(e.target.value);
+                    productInputChange(e);
                   }}
                   name="product_seo_title"
                 />
@@ -818,9 +808,9 @@ return item;
                   class="form-control"
                   id="inputColor"
                   placeholder="Description"
-                  value={product_seo_description}
+                  value={productInputData.product_seo_description}
                   onChange={(e) => {
-                    setProduct_seo_description(e.target.value);
+                    productInputChange(e);
                   }}
                   name="product_seo_description"
                 />
@@ -836,11 +826,11 @@ return item;
                   class="form-control"
                   id="inputColor"
                   placeholder="Keyword"
-                  value={product_seo_keywords}
+                  value={productInputData.product_seo_keywords}
                   onChange={(e) => {
-                    setProduct_seo_keywords(e.target.value);
+                    productInputChange(e);
                   }}
-                  name="product_seo_keywords"
+                  name="price_sell"
                 />
               </div>
             </div>
@@ -856,9 +846,10 @@ return item;
             <h5>FAQ</h5>
             <table class="table table-bordered">
               <thead>
-                <th scope="col" style={{width:"1rem"}}>Question</th>
+                <th scope="col" style={{ width: "1rem" }}>
+                  Question
+                </th>
                 <th scope="col">Answer</th>
-                
               </thead>
 
               <tbody>
@@ -869,55 +860,51 @@ return item;
                         <select
                           class="form-control"
                           id="exampleFormControlSelect1"
-                          style={{ width: "13rem" }}
+                          style={{}}
+                          name="questions"
+                    value={productInputData.questions}
+                    onChange={(e) => productInputChange(e)}
                         >
-                          <option>How are you?</option>
-                          <option>Black</option>
+                          <option value="questions">How are you?</option>
+                        
                         </select>
                       </td>
                       <td>
                         <select
                           class="form-control"
                           id="exampleFormControlSelect1"
-                          style={{ width: "13rem" }}
+                          style={{}}
+                          name="answers"
+                          value={productInputData.answers}
+                          onChange={(e) => productInputChange(e)}
                         >
-                          <option>I am good</option>
-                          <option>M</option>
+                          <option  value="answers">I am good</option>
+                        
                         </select>
                       </td>
-                      {/* <td>
-                        <input
-                          type="email"
-                          className="form-control"
-                          id="exampleInputEmail1"
-                          aria-describedby="emailHelp"
-                        />
-                      </td>
+                     
                       <td>
-                        <input
-                          type="email"
-                          className="form-control"
-                          id="exampleInputEmail1"
-                          aria-describedby="emailHelp"
-                        />
-                      </td> */}
-                      <button
-                        onClick={() => removeFields(index)}
-                        style={{ marginLeft: "1rem" }}
-                      >
-                        Remove
-                      </button>
+                        <button
+                          onClick={() => removeFields(index)}
+                          style={{ marginLeft: "1rem" }}
+                        >
+                          Remove
+                        </button>
+                      </td>
                     </tr>
                   );
                 })}
+                <tr>
+                  <td colSpan={3}>
+                    <button onClick={addFields} style={{ marginLeft: "48rem" }}>
+                      Add More..
+                    </button>
+                  </td>
+                </tr>
               </tbody>
-              <button onClick={addFields} style={{ marginLeft: "48rem" }}>
-                Add More..
-              </button>
-              <br />
             </table>
-            </div>
-            </div>
+          </div>
+        </div>
         {/* <--------------------------------Pricing From End-----------------------------------> */}
         <button
           type="button"

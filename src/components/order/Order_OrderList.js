@@ -19,7 +19,8 @@ export default function Order_OrderList() {
   const [order, setOrder] = useState("ASC");
   const [status, setStatus] = useState([]);
   const [order_id, setOrder_id] = useState([]);
-
+  const { user_id } = useParams();
+  
   const [page, setPage] = useState({
     current: 0,
     previous: 0,
@@ -372,6 +373,12 @@ const selectAllItems = (e) =>{
               })}
             </tbody>
           </table>
+          {
+            first && first.length <= 0 &&
+            <h3 class="d-flex justify-content-center my-2">
+            Records not found
+          </h3>
+          }
           {/* <-------------------------TableEnd----------------------> */}
 
           <div class="text-left">

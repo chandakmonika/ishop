@@ -37,6 +37,7 @@ export default function LoginPage() {
         if (response && response.token) {
           localStorage.setItem("ACCESS_TOKEN", response.token);
           localStorage.setItem("USER_NAME", response.username);
+          localStorage.setItem("USER_ID", response.user_id);
 
           setTimeout(() => {
             navigate("/home");

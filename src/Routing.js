@@ -528,6 +528,7 @@ import Coupen_CoupenCodeEdit from "./components/coupencode/Coupen_CoupenCodeEdit
 import Master_AddCMS from "./components/mastermanagment/Master_AddCMS";
 import Payment_PaymentGetwayAdd from "./components/payment/Payment_PaymentGetwayAdd";
 import Master_EditSetting from "./components/mastermanagment/Master_EditSetting";
+import Product_EditCategoryProduct from "./components/product/Product_EditCategoryProduct";
 
 export default function RoutingPage() {
   // const token = localStorage.getItem("ACCESS_TOKEN")
@@ -577,6 +578,10 @@ export default function RoutingPage() {
             <Route
               path="/product/editproduct/:product_id"
               element={<Product_EditProduct />}
+            />
+             <Route
+              path="/product/category/edit/:category_id"
+              element={<Product_EditCategoryProduct />}
             />
             <Route
               path="/product/category/add"
@@ -734,7 +739,7 @@ export default function RoutingPage() {
               element={<Customer_Editcustomer />}
             />
 
-            <Route path="/order/orderlist" element={<Order_OrderList />} />
+            <Route path="/order/orderlist/:user_id" element={<Order_OrderList />} />
 
             <Route
               path="/order/orderdetails/:order_id"

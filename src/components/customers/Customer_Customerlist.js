@@ -93,7 +93,7 @@ export default function Customer_Customerlist() {
     order === "ASC" ? setOrder("DESC") : setOrder("ASC");
     axios
       .get(
-        `http://admin.ishop.sunhimlabs.com/api/v1/customer/list?q=&per_page=12&page=1&sort_by=first_name&order_by=${order}`
+        `http://admin.ishop.sunhimlabs.com/api/v1/customer/list?q=&per_page=12&page=1&sort_by=first_name&email&order_by=${order}`
       )
       .then((res) => setIndex(res.data.data));
   };
@@ -307,8 +307,7 @@ export default function Customer_Customerlist() {
                 </th>
                 <th scope="col">
                   Mobile Number&nbsp;
-                  <i class="fas fa-arrow-down" onClick={update}></i>
-                  <i class="fas fa-arrow-up" onClick={update}></i>
+                
                 </th>
                 <th scope="col">
                   Email &nbsp;{" "}
@@ -370,6 +369,12 @@ export default function Customer_Customerlist() {
                         <Link to={`/customer/edit/${item.user_id}`}>
                           <i
                             class="fas fa-edit"
+                            style={{ fontSize: "24px" }}
+                          ></i>
+                        </Link>
+                        <Link to={`/order/orderlist/${item.user_id}`}>
+                          <i
+                            class="fa fa-address-card"
                             style={{ fontSize: "24px" }}
                           ></i>
                         </Link>

@@ -1,5 +1,5 @@
-import React, { useState, useEffect } from "react";
-import { Link } from "react-router-dom";
+import React, { useState, useEffect,  } from "react";
+import { Link,  useNavigate } from "react-router-dom";
 import { toast } from 'react-toastify';
 
 export default function Customer_Addnewcustomer() {
@@ -7,7 +7,11 @@ export default function Customer_Addnewcustomer() {
   const [last_name, setLast_name] = useState("");
   const [email, setEmail] = useState("");
   const [phone, setPhone] = useState("");
-  function customerUser() {
+
+  const navigate = useNavigate();
+
+  function customerUser(e) {
+    e.preventDefault();
     console.warn(first_name, last_name, email, phone);
     let datas = {
       first_name,
@@ -25,23 +29,38 @@ export default function Customer_Addnewcustomer() {
     }).then((result) => {
       result.json().then((resps) => {
         console.warn("resps", resps);
-        toast.success(' Customer Added Successfully!', {
-          position: "bottom-right",
-          autoClose: 5000,
-          hideProgressBar: false,
-          closeOnClick: true,
-          pauseOnHover: true,
-          draggable: true,
-          progress: undefined,
-          theme: "colored",
-          });
+        if(resps === true ){
+          toast.success(' Customer Added Successfully!', {
+            position: "bottom-right",
+            autoClose: 5000,
+            hideProgressBar: false,
+            closeOnClick: true,
+            pauseOnHover: true,
+            draggable: true,
+            progress: undefined,
+            theme: "colored",
+            });
+            navigate("/routing/customer/list")
+        }
+        else{
+          toast.error(resps.errors.map((err)=>err.msg).join(", "), {
+            position: "bottom-right",
+            autoClose: 5000,
+            hideProgressBar: false,
+            closeOnClick: true,
+            pauseOnHover: true,
+            draggable: true,
+            progress: undefined,
+            theme: "colored",
+            });
+        }
       });
     });
   }
-  const submit = (e) => {
-    e.preventDefault();
+  // const submit = (e) => {
+  //   e.preventDefault();
 
-  };
+  // };
 
   return (
     <div style={{ paddingLeft: "10rem" }}>
@@ -54,7 +73,7 @@ export default function Customer_Addnewcustomer() {
           <br />
 
           <h6 style={{ paddingLeft: "2rem" }}>Customer Details</h6>
-          <form onSubmit={submit} style={{ Display: "float-right", paddingLeft: "2rem" }}>
+          <form onSubmit={customerUser} style={{ Display: "float-right", paddingLeft: "2rem" }}>
             <div
               className="form-group"
               controlId="formBasicFirstName"
@@ -89,11 +108,13 @@ export default function Customer_Addnewcustomer() {
                 type="email"
                 className="form-control"
                 placeholder="Enter Email"
+               
                 value={email}
                 onChange={(e) => {
-                  setEmail(e.target.value);
+                  setEmail(e.target.value.trim());
                 }}
                 name="email"
+               
               />
 
               <label className="demo">Mobile Number</label>
@@ -108,11 +129,11 @@ export default function Customer_Addnewcustomer() {
                 name="phone"
               />
             </div>
-            <Link to="/routing/customer/list">
-            <button type="button" class="btn btn-info"  onClick={customerUser}>
+            {/* <Link to="/routing/customer/list"> */}
+            <button type="submit" class="btn btn-info">
               Add Customer
             </button>
-            </Link>
+            {/* </Link> */}
           </form>
           <br />
         </div>

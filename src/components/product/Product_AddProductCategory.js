@@ -37,7 +37,6 @@ export default function Product_AddProductCategory() {
       parent_category_id: Number(parent_category_id),
       category_name,
       category_image: category_image?.logoFile ? category_image?.logoFile:"",
-     
       attributes: formFields
     };
     
@@ -299,7 +298,7 @@ export default function Product_AddProductCategory() {
                           onChange={(e) => {
                             handleFormChange(e,index);
                           }}
-                          // value={is_variant_key}
+                          value={"y"}
                         />
                         Y &nbsp;&nbsp;
                         <input
@@ -308,7 +307,7 @@ export default function Product_AddProductCategory() {
                           onChange={(e) => {
                             handleFormChange(e,index);
                           }}
-                          // value={is_variant_key}
+                          value={"n"}
                         />
                         N
                       </div>

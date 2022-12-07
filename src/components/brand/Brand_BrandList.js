@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useMemo  } from "react";
+import React, { useEffect, useState, useMemo } from "react";
 import axios from "axios";
 import Button from "react-bootstrap/Button";
 import Container from "react-bootstrap/Container";
@@ -17,7 +17,7 @@ export default function Brand_BrandList() {
   const [brand, setBrand] = useState([]);
   const [status, setStatus] = useState([]);
   const [order, setOrder] = useState("ASC");
-  const [query, setQuery] = useState({ text: "" });
+  const [query, setQuery] = useState({ search: "", category_id: "" });
   const [brand_id, setBrand_id] = useState([]);
   const [selectedcustomer, setSelectedcustomer] = useState([]);
   const [selectedStatus, setSelectedStatus] = useState("0");
@@ -45,13 +45,15 @@ export default function Brand_BrandList() {
 
   console.log(query);
   const handleChange = (e) => {
-    setQuery({ text: e.target.value });
+    console.log(454, e.target.name, e.target.value);
+    setQuery({ [e.target.name]: e.target.value });
   };
   const handleSubmit = (e) => {
     e.preventDefault();
+    console.log('query', query)
     axios
       .get(
-        `http://admin.ishop.sunhimlabs.com/api/v1/products/brands/list/?q=${query.text}`
+        `http://admin.ishop.sunhimlabs.com/api/v1/products/brands/list?q=${query.search}&category_id=${query.category_id}`
       )
       .then((res) => setBrand(res.data.data));
   };
@@ -216,7 +218,6 @@ export default function Brand_BrandList() {
           ...item,
           isSelected: e.target.checked,
         };
-       
       });
     console.log(27, datas);
     setBrand(datas);
@@ -272,19 +273,18 @@ export default function Brand_BrandList() {
                     className="form-control"
                     id="exampleInputEmail1"
                     aria-describedby="texthelp"
-                    placeholder="Search this blog"
-                    onChange={handleChange}
+                    placeholder="Search"
+                    onChange={(e) => handleChange(e)}
                   />
                   &nbsp;&nbsp;&nbsp;&nbsp;
                   <select
                     class="form-control"
                     id="exampleFormControlSelect1"
-                    value={parent_category_id}
+                    value={query.category_id}
                     onChange={(e) => {
-                      setParent_category_id(e.target.value);
+                      handleChange(e);
                     }}
-                    name="parent_category_id"
-                    category
+                    name="category_id"
                   >
                     {index.map((item) => {
                       return (
@@ -346,11 +346,7 @@ export default function Brand_BrandList() {
                   <i class="fas fa-arrow-down" onClick={update}></i>
                   <i class="fas fa-arrow-up" onClick={update}></i>
                 </th>
-                <th scope="col">
-                  Logo &nbsp;
-                  <i class="fas fa-arrow-down" onClick={update}></i>
-                  <i class="fas fa-arrow-up" onClick={update}></i>
-                </th>
+                <th scope="col">Logo</th>
                 <th scope="col">Status</th>
                 <th scope="col">Action</th>
               </tr>
@@ -434,8 +430,7 @@ export default function Brand_BrandList() {
 
                 {paginationFunction}
               </div>
-
-              </div>
+            </div>
           </div>
         </div>
       </div>

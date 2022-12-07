@@ -62,7 +62,7 @@ export default function Coupen_CoupenCodeList() {
                     className="form-control"
                     id="exampleInputEmail1"
                     aria-describedby="texthelp"
-                    placeholder="Search this blog"
+                    placeholder="Search"
                     onChange={handleChange}
                   />
                   <div class="input-group-append">

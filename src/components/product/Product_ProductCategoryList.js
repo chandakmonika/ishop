@@ -725,7 +725,10 @@ const selectAllItems = (e) =>{
                         </button>
                       </td>
                       <td>
+                        
+                      <Link to={`/product/category/edit/${item.category_id}`}>
                         <i class="fas fa-edit" style={{ fontSize: "24px" }}></i>
+                      </Link>
                       </td>
                     </tr>
                   );
