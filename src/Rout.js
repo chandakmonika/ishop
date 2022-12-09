@@ -428,7 +428,7 @@ export default function DashboardPage() {
                         data-bs-parent="#menu"
                       >
                         <li>
-                          <Link to="/order/orderlist">Order List</Link>
+                          <Link to="/order/orderlist/:user_id">Order List</Link>
                         </li>
                         <br />
                         <li>

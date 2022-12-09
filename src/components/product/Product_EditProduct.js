@@ -3,9 +3,8 @@ import React, { useState, useEffect }  from "react";
 import Button from "react-bootstrap/Button";
 import Form from "react-bootstrap/Form";
 import Product_Editor from "./Product_Editor";
-// import ReactChipInput from "react-chip-input";
 import axios from "axios";
-
+import { useParams } from "react-router-dom";
 import "./Product_AddProduct.css";
 const config = {
   buttons: [
@@ -37,6 +36,41 @@ export default function Product_EditProduct() {
   const [value, setValue] = useState("");
   const [file, setFile] = useState();
   const [data, setData] = useState([]);
+  const [userdata, setUser_data] = useState({
+    product_name: "",
+    category_id: "",
+    brand: "",
+    model_number: "",
+    product_short_desc: "",
+    product_long_desc: "",
+    product_image: "",
+    product_other_images: "",
+    product_qty: "",
+    sku:"",
+    product_type: "",
+    price_base: "",
+    price_sell: "",
+    price_mrp: "",
+    product_tags:"",
+    product_seo_title: "",
+    product_seo_keywords: "",
+    product_seo_description: "",
+    attributes: [
+      {
+        attributes_id: "",
+        attributes_value: "",
+      },
+    ],
+    variants: [
+      {
+        attributes_id: "",
+        attributes_value: "",
+        product_qty: "",
+        product_price: "",
+      }
+    ]
+  });
+  const { category_id } = useParams();
 
 useEffect(() => {
 axios
@@ -188,7 +222,7 @@ axios
                         name="vehicle1"
                         value="Bike"
                       />
-                      <label for="vehicle1"> Category 1</label>
+                      <label for="vehicle1">Category 1</label>
                     </form>
                   </a>
                   <div class="list-group" style={{ paddingLeft: "2rem" }}>

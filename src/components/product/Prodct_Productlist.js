@@ -82,7 +82,13 @@ export default function ProductsComponent() {
 
   const getCustomerList = () => {
     axios
-    .get(`${process.env.REACT_APP_BACKEND_APIURL}api/v1/products/list`)
+    .get(`${process.env.REACT_APP_BACKEND_APIURL}api/v1/products/list`,{
+      headers: {
+        Accept: "application/json",      
+        "Content-Type": "Application/json",
+        storename: "kbtrends"
+      },
+    })
       .then((res) => setFirst(res.data.data));
   };
 
@@ -104,7 +110,7 @@ export default function ProductsComponent() {
     fetch(`${process.env.REACT_APP_BACKEND_APIURL}api/v1/products/changestatus`, {
       method: "POST",
       headers: {
-        Accept: "application/json",
+        Accept: "application/json",      
         "Content-Type": "Application/json",
       },
       body: JSON.stringify(apidata),
