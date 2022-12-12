@@ -453,7 +453,7 @@ export default function DashboardPage() {
                         data-bs-parent="#menu"
                       >
                         <li>
-                          <Link to="/product/list">Product List</Link>
+                          <Link to="/product/list?page=1">Product List</Link>
                         </li>
                         <br />
                         <li>

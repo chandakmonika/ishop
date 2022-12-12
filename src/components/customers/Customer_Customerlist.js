@@ -325,6 +325,7 @@ export default function Customer_Customerlist() {
                 index.length > 0 &&
                 index.map((item) => {
                   return (
+                    
                     <tr key={item.id}>
                       <td>
                         <div class="custom-control custom-checkbox">

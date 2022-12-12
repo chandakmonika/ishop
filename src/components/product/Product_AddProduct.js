@@ -925,6 +925,7 @@ import Form from "react-bootstrap/Form";
 import Product_Editor from "./Product_Editor";
 import axios from "axios";
 import "./Product_AddProduct.css";
+import { useLocation } from "react-router-dom";
 const config = {
   buttons: [
     "bold",
@@ -978,7 +979,12 @@ export default function Product_AddProduct() {
   const [selectSubCatData, setSelectSubCatData] = useState([]);
   const [prodAttributeInput, setProdAttributeInput] = useState([]);
   const [prodVarientInput, setProdVarientInput] = useState([]);
-  const [prodFaqInput, setProdFaqInput] = useState([]);
+  const [prodFaqInput, setProdFaqInput] = useState([
+    {
+      questions: "",
+      answers: "",
+    }
+  ]);
   const [productInputData, setProductInputData] = useState({
     product_name: "",
     category_id: "",
@@ -1179,8 +1185,13 @@ export default function Product_AddProduct() {
     });
     setVarientFormFields([...varientFormFields, finalAddObject]);
   };
+  const removeVarientFields = (index) => {
+    let data = [...varientFormFields];
+    data.splice(index, 1);
+    setVarientFormFields(data);
+  };
 
-  const addFields = () => {
+  const addFaqFields = () => {
     let object = {
       questions: "",
       answers: "",
@@ -1188,11 +1199,10 @@ export default function Product_AddProduct() {
 
     setProdFaqInput([...prodFaqInput, object]);
   };
-
-  const removeFields = (index) => {
-    let data = [...varientFormFields];
+  const removeFaqFields = (index) => {
+    let data = [...prodFaqInput];
     data.splice(index, 1);
-    setVarientFormFields(data);
+    setProdFaqInput(data);
   };
 
   const handleSubCategoryClick = (e) => {
@@ -1255,9 +1265,9 @@ export default function Product_AddProduct() {
   return (
     <div>
       {console.log(2324, prodAttributeInput)}
-      <div class="container">
-        <div class="row">
-          <div class="col" style={{ paddingRight: "30rem" }}>
+      <div class="py-4">
+        <div class="d-flex justify-content-between">
+          <div class="">
             <button type="button" class="btn ">
               <i class="fas fa-arrow-left"></i>
             </button>
@@ -1271,247 +1281,241 @@ export default function Product_AddProduct() {
         </div>
       </div>
       <form onSubmit={submit}>
-        <div
-          className="form-group"
-          controlId="formBasicFirstName"
-          style={{ width: "40%" }}
-        >
+        <div className="form-group" controlId="formBasicFirstName">
           <div class="row">
-            {/* <-----------------------------------Title From------------------------> */}
-            {/* <div
+            <div className="col-lg-8 col-mb-8">
+              {/* <-----------------------------------Title From------------------------> */}
+              {/* <div
             class="col-lg-4 col-md-12 mb-4 mb-lg-0"
             style={{ paddingLeft: "1rem" }}
           > */}
-            <div class="card" style={{ height: "40rem", width: "50rem" }}>
-              <div class="card-body">
-                <div className="form-group" style={{ Float: "left" }}>
-                  <label for="exampleInputPassword1" className="form-label">
-                    Title
-                  </label>
-                  <input
-                    type="email"
-                    className="form-control"
-                    id="exampleInputEmail1"
-                    aria-describedby="emailHelp"
-                    value={productInputData.product_name}
-                    onChange={(e) => {
-                      productInputChange(e);
-                    }}
-                    name="product_name"
+              {/* <div class="card" style={{ height: "40rem", width: "50rem" }}> */}
+              <div class="card">
+                <div class="card-body">
+                  <div className="form-group">
+                    <label for="exampleInputPassword1" className="form-label">
+                      Title
+                    </label>
+                    <input
+                      type="email"
+                      className="form-control"
+                      id="exampleInputEmail1"
+                      aria-describedby="emailHelp"
+                      value={productInputData.product_name}
+                      onChange={(e) => {
+                        productInputChange(e);
+                      }}
+                      name="product_name"
+                    />
+                  </div>
+                  <h6>Product Short Discription</h6>
+                  <Product_Editor
+                    setValue={(e) =>
+                      productInputChange(e, "editor", "product_short_desc")
+                    }
+                    config={config}
+                  />
+                  <br />
+                  <div></div>
+                  <h6>Product Long Discription</h6>
+                  <Product_Editor
+                    setValue={(e) =>
+                      productInputChange(e, "editor", "product_long_desc")
+                    }
+                    config={config}
                   />
                 </div>
-                <h6>Product Short Discription</h6>
-                <Product_Editor
-                  setValue={(e) =>
-                    productInputChange(e, "editor", "product_short_desc")
-                  }
-                  config={config}
-                />
-                <br />
-                <div></div>
-                <h6>Product Long Discription</h6>
-                <Product_Editor
-                  setValue={(e) =>
-                    productInputChange(e, "editor", "product_long_desc")
-                  }
-                  config={config}
-                />
+              </div>
+              <br />
+              {/* <---------------------------------Title From End------------------------------------------> */}
+
+              {/* <---------------------------------Media From----------------------------------> */}
+              {/* <div class="card" style={{ height: "24rem", width: "50rem" }}> */}
+              <div class="card">
+                <div class="card-body">
+                  <div className="container">
+                    <h5>Media</h5>
+                    <div className="add">
+                      <input type="file" onChange={handleChange} />
+                      <img src={file} />
+                    </div>
+                  </div>
+                </div>
               </div>
             </div>
-            <br />
-            {/* <---------------------------------Title From End------------------------------------------> */}
+            {/* <--------------------------------------Product Status From Start---------------------------------> */}
+            <div class="col-lg-4 col-mb-4">
+              <div class="card">
+                <div class="card-body">
+                  <div className="form-group">
+                    <label for="exampleFormControlSelect1">
+                      Product Status
+                    </label>
+                    <select
+                      class="form-control"
+                      id="exampleFormControlSelect1"
+                      name="product_status"
+                      value={productInputData.product_status}
+                      onChange={(e) => productInputChange(e)}
+                    >
+                      <option value="active">Active</option>
+                      <option value="inactive">Inactive</option>
+                    </select>
+                    <br />
+                  </div>
+                </div>
+              </div>
+              <br />
+              {/* <---------------------------------Product Status From End------------------------------------------> */}
 
-            {/* <---------------------------------Media From----------------------------------> */}
-            {console.log(4545, productInputData)}
-            <div class="card" style={{ height: "24rem", width: "50rem" }}>
-              <div class="card-body">
-                <div className="container" style={{ paddingTop: "38px" }}>
-                  <h5>Media</h5>
-                  <div className="add">
-                    <input type="file" onChange={handleChange} />
-                    <img src={file} />
+              {/* <-----------------------------------Product Organization From Start--------------------------------------> */}
+
+              <div class="card">
+                <div class="card-body">
+                  <h5>Product Categories</h5>
+                  <br />
+
+                  <p>Category</p>
+                  <div class="list-group">
+                    {categoryData &&
+                      categoryData.length > 0 &&
+                      categoryData.map((cat) => {
+                        return (
+                          <div className="category-item">
+                            <div key={`category${cat.category_id}`}>
+                              <input
+                                type="checkbox"
+                                id={cat.category_slug}
+                                name="category_id"
+                                value={productInputData.category_id}
+                                checked={cat.isChecked ? "checked" : false}
+                                onChange={(e) => {
+                                  productInputChange(e);
+                                  const checkedData = categoryData.map((d) => {
+                                    if (d.category_id === cat.category_id) {
+                                      productInputChange(
+                                        cat.category_id,
+                                        "cat_id",
+                                        "category_id"
+                                      );
+                                      return {
+                                        ...d,
+                                        isChecked: e.target.checked,
+                                      };
+                                    } else {
+                                      return {
+                                        ...d,
+                                        isChecked: false,
+                                      };
+                                    }
+                                  });
+                                  setCategoryData(checkedData);
+                                }}
+                              />
+                              <label for={cat.category_slug}>
+                                {cat.isChecked ? (
+                                  <span> - </span>
+                                ) : (
+                                  <span> + </span>
+                                )}
+                                <span>{cat.category_name}</span>
+                              </label>
+                              {cat.isChecked && (
+                                <div
+                                  class="list-group"
+                                  style={{ paddingLeft: "2rem" }}
+                                >
+                                  {cat.subcategories.map((subCat) => {
+                                    return (
+                                      <div
+                                        key={`sub-category${subCat.category_id}`}
+                                      >
+                                        <input
+                                          type="radio"
+                                          id={subCat.category_slug}
+                                          name="sub-category-list"
+                                          value={subCat.category_id}
+                                          onChange={(e) =>
+                                            handleSubCategoryClick(e)
+                                          }
+                                        />
+                                        <label for={subCat.category_slug}>
+                                          {subCat.category_name}
+                                        </label>
+                                      </div>
+                                    );
+                                  })}
+                                </div>
+                              )}
+                            </div>
+                          </div>
+                        );
+                      })}
+                  </div>
+                  <br />
+                  <br />
+                  {selectSubCatData.brands &&
+                    selectSubCatData.brands.length > 0 && (
+                      <div>
+                        <p>Brand</p>
+                        <div className="list-group">
+                          {selectSubCatData.brands.map((brand) => {
+                            return (
+                              <div key={`sub-category${brand.brand_id}`}>
+                                {/* <a
+                                          href="#"
+                                          class="list-group-item"
+                                          style={{ border: "none" }}
+                                        > */}
+                                <input
+                                  type="radio"
+                                  id={brand.brand_name}
+                                  name="brand"
+                                  value={brand.brand_id}
+                                  onChange={(e) => productInputChange(e)}
+                                />
+                                <label for={brand.brand_name}>
+                                  {brand.brand_name}
+                                </label>
+                                {/* </a> */}
+                              </div>
+                            );
+                          })}
+                        </div>
+                      </div>
+                    )}
+                  <br />
+
+                  <div className="form-group">
+                    <label className="demo">Tags</label>
+                    <input
+                      type="email"
+                      className="form-control"
+                      id="exampleInputEmail1"
+                      aria-describedby="emailHelp"
+                      value={productInputData.product_tags}
+                      onChange={(e) => {
+                        productInputChange(e);
+                      }}
+                      name="product_tags"
+                    />
+                    <br />
+                    <button type="button" class="btn btn-info">
+                      Add
+                    </button>
                   </div>
                 </div>
               </div>
             </div>
           </div>
           {/* <---------------------------------Media From End------------------------------------------> */}
-
-          {/* <--------------------------------------Product Status From Start---------------------------------> */}
-          <div class="col-lg-4 mb-4 mb-lg-0" style={{ paddingLeft: "25rem" }}>
-            <div class="card" style={{ height: "14rem", width: "24rem" }}>
-              <div class="card-body">
-                <div
-                  className="form-group"
-                  style={{ Float: "left", width: "20rem" }}
-                >
-                  <label for="exampleFormControlSelect1">Product Status</label>
-                  <select
-                    class="form-control"
-                    id="exampleFormControlSelect1"
-                    name="product_status"
-                    value={productInputData.product_status}
-                    onChange={(e) => productInputChange(e)}
-                  >
-                    <option value="active">Active</option>
-                    <option value="inactive">Inactive</option>
-                  </select>
-                  <br />
-                </div>
-              </div>
-            </div>
-            <br />
-            {/* <---------------------------------Product Status From End------------------------------------------> */}
-
-            {/* <-----------------------------------Product Organization From Start--------------------------------------> */}
-
-            <div class="card" style={{ height: "76%", width: "24rem" }}>
-              <div class="card-body">
-                <h5>Product Categories</h5>
-                <br />
-
-                <p>Category</p>
-                <div class="list-group">
-                  {categoryData &&
-                    categoryData.length > 0 &&
-                    categoryData.map((cat) => {
-                      return (
-                        <div className="category-item">
-                          <div key={`category${cat.category_id}`}>
-                            <input
-                              type="checkbox"
-                              id={cat.category_slug}
-                              name="category_id"
-                              value={productInputData.category_id}
-                              checked={cat.isChecked ? "checked" : false}
-                              onChange={(e) => {
-                                productInputChange(e);
-                                const checkedData = categoryData.map((d) => {
-                                  if (d.category_id === cat.category_id) {
-                                    productInputChange(
-                                      cat.category_id,
-                                      "cat_id",
-                                      "category_id"
-                                    );
-                                    return {
-                                      ...d,
-                                      isChecked: e.target.checked,
-                                    };
-                                  } else {
-                                    return {
-                                      ...d,
-                                      isChecked: false,
-                                    };
-                                  }
-                                });
-                                setCategoryData(checkedData);
-                              }}
-                            />
-                            <label for={cat.category_slug}>
-                              {cat.isChecked ? (
-                                <span> - </span>
-                              ) : (
-                                <span> + </span>
-                              )}
-                              <span>{cat.category_name}</span>
-                            </label>
-                            {cat.isChecked && (
-                              <div
-                                class="list-group"
-                                style={{ paddingLeft: "2rem" }}
-                              >
-                                {cat.subcategories.map((subCat) => {
-                                  return (
-                                    <div
-                                      key={`sub-category${subCat.category_id}`}
-                                    >
-                                      <input
-                                        type="radio"
-                                        id={subCat.category_slug}
-                                        name="sub-category-list"
-                                        value={subCat.category_id}
-                                        onChange={(e) =>
-                                          handleSubCategoryClick(e)
-                                        }
-                                      />
-                                      <label for={subCat.category_slug}>
-                                        {subCat.category_name}
-                                      </label>
-                                    </div>
-                                  );
-                                })}
-                              </div>
-                            )}
-                          </div>
-                        </div>
-                      );
-                    })}
-                </div>
-                <br />
-                <br />
-                {selectSubCatData.brands &&
-                  selectSubCatData.brands.length > 0 && (
-                    <div>
-                      <p>Brand</p>
-                      <div className="list-group">
-                        {selectSubCatData.brands.map((brand) => {
-                          return (
-                            <div key={`sub-category${brand.brand_id}`}>
-                              {/* <a
-                                          href="#"
-                                          class="list-group-item"
-                                          style={{ border: "none" }}
-                                        > */}
-                              <input
-                                type="radio"
-                                id={brand.brand_name}
-                                name="brand"
-                                value={brand.brand_id}
-                                onChange={(e) => productInputChange(e)}
-                              />
-                              <label for={brand.brand_name}>
-                                {brand.brand_name}
-                              </label>
-                              {/* </a> */}
-                            </div>
-                          );
-                        })}
-                      </div>
-                    </div>
-                  )}
-                <br />
-
-                <div className="form-group">
-                  <label className="demo">Tags</label>
-                  <input
-                    type="email"
-                    className="form-control"
-                    id="exampleInputEmail1"
-                    aria-describedby="emailHelp"
-                    value={productInputData.product_tags}
-                    onChange={(e) => {
-                      productInputChange(e);
-                    }}
-                    name="product_tags"
-                  />
-                  <br />
-                  <button type="button" class="btn btn-info">
-                    Add
-                  </button>
-                </div>
-              </div>
-            </div>
-          </div>
         </div>
         <br />
         {/* <-----------------------------------Product Organization From End--------------------------------------> */}
 
         {/* <-----------------------Product Information From Start-------------------------------> */}
 
-        <div
-          class="card"
-          style={{ height: "13rem", width: "73rem", marginLeft: "8px" }}
-        >
+        <div class="card" style={{ height: "13rem" }}>
           <div class="card-body">
             <h5>Product Information</h5>
             <div className="form-group">
@@ -1555,10 +1559,7 @@ export default function Product_AddProduct() {
 
         {/* <--------------------------------Pricing From start-----------------------------------> */}
 
-        <div
-          class="card"
-          style={{ height: "11rem", width: "73rem", marginLeft: "8px" }}
-        >
+        <div class="card" style={{ height: "11rem" }}>
           <div class="card-body">
             <h5>Pricing</h5>
             <div className="form-group">
@@ -1617,10 +1618,7 @@ export default function Product_AddProduct() {
 
         {selectSubCatData.category_attrbutes &&
           selectSubCatData.category_attrbutes.length > 0 && (
-            <div
-              class="card"
-              style={{ minHeight: "23rem", width: "73rem", marginLeft: "8px" }}
-            >
+            <div class="card" style={{ minHeight: "23rem" }}>
               <div class="card-body">
                 <h5>Product Attribute</h5>
                 {selectSubCatData.category_attrbutes.map((attr) => {
@@ -1663,12 +1661,13 @@ export default function Product_AddProduct() {
         {/* <--------------------Dynamic Form---------------> */}
         {selectSubCatData.variants_fields &&
           selectSubCatData.variants_fields.length > 0 && (
-            <div class="card" style={{ height: "auto", width: "73rem" }}>
+            <div class="card" style={{ height: "auto" }}>
               <div class="card-body">
                 <h5>Product Varient</h5>
                 {/* {selectSubCatData.variants_fields.map((vari) => {
                return ( */}
                 <div>
+                  {console.log("varientFormFields", varientFormFields)}
                   <table class="table table-bordered">
                     <thead>
                       {selectSubCatData.variants_fields.map((item) => (
@@ -1684,23 +1683,50 @@ export default function Product_AddProduct() {
                           <tr key={index}>
                             {form.map((field, fieldIndex) => (
                               <td>
-                                <input
-                                  type="text"
-                                  p
-                                  placeholder={field.attributes_label}
-                                  onChange={(e) => {
-                                    handleVarientFormChange(
-                                      "product_varient_input",
-                                      e,
-                                      index,
-                                      fieldIndex
-                                    );
-                                  }}
-                                  value={field.value ? field.value : ""}
-                                  className="form-control"
-                                  id="exampleInputEmail1"
-                                  aria-describedby="emailHelp"
-                                />
+                                {field.attributes_type === "select" ? (
+                                  <select
+                                    id="product_varient_input"
+                                    className="form-control"
+                                    placeholder={field.attributes_label}
+                                    onChange={(e) => {
+                                      handleVarientFormChange(
+                                        "product_varient_input",
+                                        e,
+                                        index,
+                                        fieldIndex
+                                      );
+                                    }}
+                                  >
+                                    <option value="">
+                                      select {field.attributes_label}
+                                    </option>
+                                    {field.attributes_value
+                                      .split(",")
+                                      .map((attrOption) => (
+                                        <option value={attrOption}>
+                                          {attrOption}
+                                        </option>
+                                      ))}
+                                  </select>
+                                ) : (
+                                  <input
+                                    type="text"
+                                    p
+                                    placeholder={field.attributes_label}
+                                    onChange={(e) => {
+                                      handleVarientFormChange(
+                                        "product_varient_input",
+                                        e,
+                                        index,
+                                        fieldIndex
+                                      );
+                                    }}
+                                    value={field.value ? field.value : ""}
+                                    className="form-control"
+                                    id="product_varient_input"
+                                    aria-describedby="emailHelp"
+                                  />
+                                )}
                               </td>
                             ))}
                             <td>
@@ -1734,7 +1760,7 @@ export default function Product_AddProduct() {
                             </td>
                             <button
                               className="pt-1"
-                              onClick={() => removeFields(index)}
+                              onClick={() => removeVarientFields(index)}
                               style={{ marginLeft: "1rem" }}
                             >
                               Remove
@@ -1760,10 +1786,7 @@ export default function Product_AddProduct() {
 
         {/* <--------------------------------Pricing From start-----------------------------------> */}
 
-        <div
-          class="card"
-          style={{ height: "auto", width: "73rem", marginLeft: "7px" }}
-        >
+        <div class="card" style={{ height: "auto" }}>
           <div class="card-body">
             <h5>Pricing</h5>
             <div class="form-group row">
@@ -1824,10 +1847,7 @@ export default function Product_AddProduct() {
         </div>
         <br />
 
-        <div
-          class="card"
-          style={{ height: "auto", width: "73rem", marginLeft: "7px" }}
-        >
+        <div class="card" style={{ height: "auto" }}>
           <div class="card-body">
             <h5>FAQ</h5>
             <table class="table table-bordered">
@@ -1882,7 +1902,7 @@ export default function Product_AddProduct() {
 
                       <td>
                         <button
-                          onClick={() => removeFields(index)}
+                          onClick={() => removeFaqFields(index)}
                           style={{ marginLeft: "1rem" }}
                         >
                           Remove
@@ -1893,7 +1913,10 @@ export default function Product_AddProduct() {
                 })}
                 <tr>
                   <td colSpan={3}>
-                    <button onClick={addFields} style={{ marginLeft: "48rem" }}>
+                    <button
+                      onClick={addFaqFields}
+                      style={{ marginLeft: "48rem" }}
+                    >
                       Add More..
                     </button>
                   </td>
@@ -1905,8 +1928,7 @@ export default function Product_AddProduct() {
         {/* <--------------------------------Pricing From End-----------------------------------> */}
         <button
           type="button"
-          class="btn btn-info "
-          style={{ marginLeft: "65rem" }}
+          class="btn btn-info float-right my-3"
           onClick={productUser}
         >
           Add Product

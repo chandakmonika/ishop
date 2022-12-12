@@ -1,18 +1,27 @@
-import React, { useEffect, useState, useMemo} from "react";
+import React, { useEffect, useState, useMemo } from "react";
 import axios from "axios";
 import Button from "react-bootstrap/Button";
 import Dropdown from "react-bootstrap/Dropdown";
 import Container from "react-bootstrap/Container";
 import Nav from "react-bootstrap/Nav";
 import Navbar from "react-bootstrap/Navbar";
-import { Link,useNavigate } from "react-router-dom";
+import {
+  Link,
+  useNavigate,
+  useLocation,
+  useParams,
+  useSearchParams,
+} from "react-router-dom";
 import TablePagination from "@mui/material/TablePagination";
-import Box from '@mui/material/Box';
-import Typography from '@mui/material/Typography';
-import Modal from '@mui/material/Modal';
+import Box from "@mui/material/Box";
+import Typography from "@mui/material/Typography";
+import Modal from "@mui/material/Modal";
 //import "././Product_Productlist.css";
 import EmptyPage from "../emptypage";
 export default function ProductsComponent() {
+  const [searchParams, setSearchParams] = useSearchParams();
+  const pageNo = searchParams.get("page");
+
   const [first, setFirst] = useState([]);
   const [query, setQuery] = useState({ text: "" });
   const [status, setStatus] = useState([]);
@@ -28,14 +37,16 @@ export default function ProductsComponent() {
     totalrecords: 0,
   });
 
-  const navigate = useNavigate()
-  
+  console.log(12123, pageNo);
+
+  const navigate = useNavigate();
+
   const [changeStatusId, setChangeStatusId] = useState({
     product_id: "",
-    status: ""
+    status: "",
   });
-  const [isSingleStatusUpdate, setIsSingleStatusUpdate] = useState(true)
-  
+  const [isSingleStatusUpdate, setIsSingleStatusUpdate] = useState(true);
+
   const url = `${process.env.REACT_APP_BACKEND_APIURL}api/v1/products/list`;
 
   console.log(query);
@@ -45,56 +56,60 @@ export default function ProductsComponent() {
   };
   const handleSubmit = (e) => {
     e.preventDefault();
-    axios
-      .get(
-        `${process.env.REACT_APP_BACKEND_APIURL}api/v1/products/list/?q=${query.text}`
-      )
-      .then((res) => setFirst(res.data.data));
+    getCustomerList(page.current)
   };
 
-  const getData = async () => {
+  // const getData = async () => {
+  //   try {
+  //     console.log(20, process.env.REACT_APP_BACKEND_APIURL);
+  //     const res = await axios.get(`${url}`);
+  //     const { data, pages } = res.data;
+  //     setFirst(data);
+  //     setPage(pages);
+  //   } catch (error) {
+  //     console.log(error);
+  //   }
+  // };
+  // useEffect(() => {
+  //   getData();
+  // }, []);
+
+  useEffect(() => {
+    getCustomerList(pageNo)
+  }, [pageNo])
+
+  const handlePageChange = async (e, newPage) => {
+    navigate(`/product/list?page=${newPage + 1}`)
+  }
+
+  const getCustomerList = async (newPage) => {
+    // setPage(newPage);
     try {
-      console.log(20,process.env.REACT_APP_BACKEND_APIURL)
-      const res = await axios.get(`${url}`);
+      const res = await axios.get(`${url}?q=${query.text}&page=${Number(newPage)}`);
       const { data, pages } = res.data;
+      console.log('pages', pages)
       setFirst(data);
       setPage(pages);
     } catch (error) {
       console.log(error);
     }
   };
-  useEffect(() => {
-    getData();
-  }, []);
 
-  const handleChangePage = async (e, newPage) => {
-    setPage(newPage);
-    try {
-      const res = await axios.get(`${url}?&page=${newPage + 1}`);
-      const { data, pages } = res.data;
-      setFirst(data);
-      setPage(pages);
-    } catch (error) {
-      console.log(error);
-    }
-  };
+  // const getCustomerList = () => {
+  //   axios
+  //     .get(`${process.env.REACT_APP_BACKEND_APIURL}api/v1/products/list`, {
+  //       headers: {
+  //         Accept: "application/json",
+  //         "Content-Type": "Application/json",
+  //         storename: "kbtrends",
+  //       },
+  //     })
+  //     .then((res) => setFirst(res.data.data));
+  // };
 
-
-  const getCustomerList = () => {
-    axios
-    .get(`${process.env.REACT_APP_BACKEND_APIURL}api/v1/products/list`,{
-      headers: {
-        Accept: "application/json",      
-        "Content-Type": "Application/json",
-        storename: "kbtrends"
-      },
-    })
-      .then((res) => setFirst(res.data.data));
-  };
-
-  useEffect(() => {
-    getCustomerList();
-  }, []);
+  // useEffect(() => {
+  //   getCustomerList();
+  // }, []);
 
   const update = (e) => {
     e.preventDefault();
@@ -107,37 +122,36 @@ export default function ProductsComponent() {
   };
 
   const statusChange = (apidata) => {
-    fetch(`${process.env.REACT_APP_BACKEND_APIURL}api/v1/products/changestatus`, {
-      method: "POST",
-      headers: {
-        Accept: "application/json",      
-        "Content-Type": "Application/json",
-      },
-      body: JSON.stringify(apidata),
-    }).then((result) => {
+    fetch(
+      `${process.env.REACT_APP_BACKEND_APIURL}api/v1/products/changestatus`,
+      {
+        method: "POST",
+        headers: {
+          Accept: "application/json",
+          "Content-Type": "Application/json",
+        },
+        body: JSON.stringify(apidata),
+      }
+    ).then((result) => {
       result.json().then((resps) => {
         console.warn("resps", resps);
         handleClose();
-        getCustomerList(); 
+        getCustomerList();
       });
     });
   };
 
   function handleStatusChange(productId, status) {
-    if (
-      isSingleStatusUpdate
-    ) {
+    if (isSingleStatusUpdate) {
       console.warn(product_id, status);
       let apidata = {
         product_id: changeStatusId.product_id,
         status: changeStatusId.status === "0" ? "1" : "0",
       };
       statusChange(apidata);
-    }
-    else {
+    } else {
       applyStatus();
     }
-
   }
 
   // function handleClick(product_id, status) {
@@ -185,43 +199,41 @@ export default function ProductsComponent() {
   };
 
   const style = {
-    position: 'absolute',
-    top: '50%',
-    left: '50%',
-    transform: 'translate(-50%, -50%)',
+    position: "absolute",
+    top: "50%",
+    left: "50%",
+    transform: "translate(-50%, -50%)",
     width: 400,
-    bgcolor: 'background.paper',
-    border: '2px solid #000',
+    bgcolor: "background.paper",
+    border: "2px solid #000",
     boxShadow: 24,
     p: 4,
   };
 
   const [open, setOpen] = React.useState(false);
   const handleOpen = (product_id, status, isSingleStatus) => {
-    setIsSingleStatusUpdate(isSingleStatus)
+    setIsSingleStatusUpdate(isSingleStatus);
     setChangeStatusId({
-      product_id, 
-      status
-    })
+      product_id,
+      status,
+    });
     setOpen(true);
-  }
+  };
   const handleClose = () => setOpen(false);
 
-  const selectAllItems = (e) =>{
+  const selectAllItems = (e) => {
     console.log(1, e.target.checked);
     const datas =
-        first.length > 0 &&
-        first.map((item) => {
-         
-            return {
-              ...item,
-              isSelected: e.target.checked,
-            };
-         
-        });
-        console.log(27, datas);
-        setFirst(datas);
-  }
+      first.length > 0 &&
+      first.map((item) => {
+        return {
+          ...item,
+          isSelected: e.target.checked,
+        };
+      });
+    console.log(27, datas);
+    setFirst(datas);
+  };
 
   const paginationFunction = useMemo(
     () => (
@@ -231,7 +243,7 @@ export default function ProductsComponent() {
         component="div"
         count={page.totalrecords || 0}
         page={page.current - 1 || 0}
-        onPageChange={handleChangePage}
+        onPageChange={handlePageChange}
         rowsPerPage={page.records_per_page || 0}
       />
     ),
@@ -255,7 +267,7 @@ export default function ProductsComponent() {
                 <Button variant="light">Export CSV</Button>&nbsp;&nbsp;&nbsp;
                 <Button variant="light">Import CSV</Button>&nbsp;&nbsp;&nbsp;
                 <Link to="/product/addproduct">
-                <Button variant="info">Add Product</Button>&nbsp;&nbsp;&nbsp;
+                  <Button variant="info">Add Product</Button>&nbsp;&nbsp;&nbsp;
                 </Link>
               </div>
               &nbsp;&nbsp;&nbsp;
@@ -269,9 +281,7 @@ export default function ProductsComponent() {
       {/* <---------------main-------------------> */}
 
       <div class="card" style={{ width: "100%" }}>
-        
         <div class="card-body">
-          
           <div class="row">
             <div className="col-sm-6">
               <form onSubmit={handleSubmit}>
@@ -330,7 +340,7 @@ export default function ProductsComponent() {
 
           {/* <--------------------TableStart-------------------------> */}
           <table class="table table-bordered" style={{ width: "95%" }}>
-          {console.log(
+            {console.log(
               2,
               first
                 .map((select) => {
@@ -343,75 +353,96 @@ export default function ProductsComponent() {
             )}
             <thead style={{ backgroundColor: "#EBF1F3" }}>
               <tr>
-              <th scope="col">
+                <th scope="col">
                   <div class="custom-control custom-checkbox">
-                    <input type="checkbox" 
-                     checked={
-                      !first
-                        .map((select) => {
-                          if (select.isSelected === true) {
-                            return true;
-                          }
-                          return false;
-                        })
-                        .includes(false)
-                    }
-                    onChange={(e) => selectAllItems(e)}
-                    
+                    <input
+                      type="checkbox"
+                      checked={
+                        !first
+                          .map((select) => {
+                            if (select.isSelected === true) {
+                              return true;
+                            }
+                            return false;
+                          })
+                          .includes(false)
+                      }
+                      onChange={(e) => selectAllItems(e)}
                     />
                     <label for="customCheck"></label>
                   </div>
                 </th>
-                <th scope="col">Product &nbsp;
+                <th scope="col">
+                  Product &nbsp;
                   <i class="fas fa-arrow-down" onClick={update}></i>
-                  <i class="fas fa-arrow-up" onClick={update}></i></th>
-                <th scope="col">Category &nbsp;
+                  <i class="fas fa-arrow-up" onClick={update}></i>
+                </th>
+                <th scope="col">
+                  Category &nbsp;
                   <i class="fas fa-arrow-down" onClick={update}></i>
-                  <i class="fas fa-arrow-up" onClick={update}></i></th>
-                <th scope="col">Product Quantity &nbsp;
+                  <i class="fas fa-arrow-up" onClick={update}></i>
+                </th>
+                <th scope="col">
+                  Product Quantity &nbsp;
                   <i class="fas fa-arrow-down" onClick={update}></i>
-                  <i class="fas fa-arrow-up" onClick={update}></i></th>
+                  <i class="fas fa-arrow-up" onClick={update}></i>
+                </th>
                 <th scope="col">Status</th>
                 <th scope="col">Action</th>
               </tr>
             </thead>
-           
+
             <tbody>
-            {first &&
+              {first &&
                 first.length > 0 &&
-              first.map((item) => {
-                return (
-                  <tr key={item.product_id}>
-                    <td>
-                
-                <div class="custom-control custom-checkbox">
-                  <input
-                    type="checkbox"
-                    value={item.isSelected}
-                    onChange={(e) => onSelectCustomer(e, item.product_id)}
-                  />
-                  <label for="customCheck{item.id}">{item.isSelected}</label>
-                </div>
-            </td>
-                    <td>{item.product_name}</td>
-                    <td>{item.category_id}</td>
-                    <td>{item.product_qty}</td>
-                    <td><button
+                first.map((item) => {
+                  return (
+                    <tr key={item.product_id}>
+                      <td>
+                        <div class="custom-control custom-checkbox">
+                          <input
+                            type="checkbox"
+                            value={item.isSelected}
+                            onChange={(e) =>
+                              onSelectCustomer(e, item.product_id)
+                            }
+                          />
+                          <label for="customCheck{item.id}">
+                            {item.isSelected}
+                          </label>
+                        </div>
+                      </td>
+                      <td>{item.product_name}</td>
+                      <td>{item.category_id}</td>
+                      <td>{item.product_qty}</td>
+                      <td>
+                        <button
                           type="button"
-                          onClick={() => handleOpen(item.product_id, item.status, true)}
+                          onClick={() =>
+                            handleOpen(item.product_id, item.status, true)
+                          }
                         >
                           {item.status === "0" ? "inactive" : "active"}
-                        </button></td>
-                    <td><Link to={`/product/editproduct/${item.product_id}`}><i class="fas fa-edit" style={{ fontSize: "24px" }}></i></Link></td>
-                  </tr>
-                );
-              })}
+                        </button>
+                      </td>
+                      <td>
+                        <Link to={`/product/editproduct/${item.product_id}`}>
+                          <i
+                            class="fas fa-edit"
+                            style={{ fontSize: "24px" }}
+                          ></i>
+                        </Link>
+                      </td>
+                    </tr>
+                  );
+                })}
             </tbody>
-
           </table>
-          {first.length <= 0 && <div>
-            <EmptyPage/>
-            </div>}
+          {first.length <= 0 && (
+            <div>
+              <EmptyPage />
+            </div>
+          )}
           {/* <-------------------------TableEnd----------------------> */}
 
           <div class="text-left">
@@ -441,13 +472,12 @@ export default function ProductsComponent() {
               </div>
 
               <p className="col-md-3">
-                  &nbsp; Pages:
-                  <b style={{ color: "black" }}> {page.current}</b> /{" "}
-                  {page.totalpages}{" "}
-                </p>
+                &nbsp; Pages:
+                <b style={{ color: "black" }}> {page.current}</b> /{" "}
+                {page.totalpages}{" "}
+              </p>
 
-                {paginationFunction}
-
+              {paginationFunction}
             </div>
           </div>
         </div>
@@ -459,9 +489,11 @@ export default function ProductsComponent() {
         aria-describedby="modal-modal-description"
       >
         <Box sx={style}>
-          <Typography id="modal-modal-title" variant="h6" component="h2">
-          </Typography>
-
+          <Typography
+            id="modal-modal-title"
+            variant="h6"
+            component="h2"
+          ></Typography>
           <Typography id="modal-modal-description" sx={{ mt: 2 }}>
             Are you sure want to change the status?
           </Typography>
