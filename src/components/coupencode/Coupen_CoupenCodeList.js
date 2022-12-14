@@ -20,14 +20,30 @@ export default function Coupen_CoupenCodeList() {
     e.preventDefault();
     axios
       .get(
-        `http://admin.ishop.sunhimlabs.com/api/v1/coupons/list/?q=${query.text}`
+        `http://admin.ishop.sunhimlabs.com/api/v1/coupons/list/?q=${query.text}`, {
+          method: "GET",
+          headers: {
+            Accept: "application/json",
+            "content-Type": "Application/json",
+            storename: "kbtrends",
+          },
+          // body: JSON.stringify(productInputData),
+        }
       )
       .then((res) => setFirst(res.data.data));
   };
 
   const getCustomerList = () => {
     axios
-      .get(`http://admin.ishop.sunhimlabs.com/api/v1/coupons/list`)
+      .get(`http://admin.ishop.sunhimlabs.com/api/v1/coupons/list`, {
+        method: "GET",
+        headers: {
+          Accept: "application/json",
+          "content-Type": "Application/json",
+          storename: "kbtrends",
+        },
+        // body: JSON.stringify(productInputData),
+      })
       .then((res) => setFirst(res.data.data));
   };
 

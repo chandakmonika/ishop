@@ -47,7 +47,15 @@ export default function Customer_Customerlist() {
     e.preventDefault();
     axios
       .get(
-        `http://admin.ishop.sunhimlabs.com/api/v1/customer/list/?q=${query.text}`
+        `http://admin.ishop.sunhimlabs.com/api/v1/customer/list/?q=${query.text}`,{
+          method: "GET",
+          headers: {
+            Accept: "application/json",
+            "content-Type": "Application/json",
+            storename: "kbtrends",
+          },
+          // body: JSON.stringify(productInputData),
+        }
       )
       .then((res) => setIndex(res.data.data));
   };
@@ -80,7 +88,16 @@ export default function Customer_Customerlist() {
 
   const getCustomerList = () => {
     axios
-      .get(`http://admin.ishop.sunhimlabs.com/api/v1/customer/list/`)
+      .get(`http://admin.ishop.sunhimlabs.com/api/v1/customer/list/`,{
+        method: "GET",
+        headers: {
+          Accept: "application/json",
+          "content-Type": "Application/json",
+          storename: "kbtrends",
+        },
+        // body: JSON.stringify(productInputData),
+      })
+      
       .then((res) => setIndex(res.data.data));
   };
 
@@ -93,7 +110,15 @@ export default function Customer_Customerlist() {
     order === "ASC" ? setOrder("DESC") : setOrder("ASC");
     axios
       .get(
-        `http://admin.ishop.sunhimlabs.com/api/v1/customer/list?q=&per_page=12&page=1&sort_by=first_name&email&order_by=${order}`
+        `http://admin.ishop.sunhimlabs.com/api/v1/customer/list?q=&per_page=12&page=1&sort_by=first_name&email&order_by=${order}`,{
+          method: "GET",
+          headers: {
+            Accept: "application/json",
+            "content-Type": "Application/json",
+            storename: "kbtrends",
+          },
+          // body: JSON.stringify(productInputData),
+        }
       )
       .then((res) => setIndex(res.data.data));
   };
@@ -106,6 +131,7 @@ export default function Customer_Customerlist() {
       headers: {
         Accept: "application/json",
         "Content-Type": "Application/json",
+        storename: "kbtrends",
       },
       body: JSON.stringify(apidata),
     }).then((result) => {

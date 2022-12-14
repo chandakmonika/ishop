@@ -284,7 +284,7 @@ export default function ProductsComponent() {
         <div class="card-body">
           <div class="row">
             <div className="col-sm-6">
-              <form onSubmit={handleSubmit}>
+              <form onSubmit={getCustomerList}>
                 <div class="input-group">
                   <input
                     type="text"
@@ -413,7 +413,7 @@ export default function ProductsComponent() {
                         </div>
                       </td>
                       <td>{item.product_name}</td>
-                      <td>{item.category_id}</td>
+                      <td>{item.category_name}</td>
                       <td>{item.product_qty}</td>
                       <td>
                         <button

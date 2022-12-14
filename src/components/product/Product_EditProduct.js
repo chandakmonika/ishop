@@ -57,7 +57,12 @@ export default function Product_AddProduct() {
   const [selectSubCatData, setSelectSubCatData] = useState([]);
   const [prodAttributeInput, setProdAttributeInput] = useState([]);
   const [prodVarientInput, setProdVarientInput] = useState([]);
-  const [prodFaqInput, setProdFaqInput] = useState([]);
+  const [prodFaqInput, setProdFaqInput] = useState([
+    {
+      questions: '',
+      answers: ''
+    }
+  ]);
   const [productInputData, setProductInputData] = useState({
     product_name: "",
     category_id: "",
@@ -87,7 +92,15 @@ export default function Product_AddProduct() {
   const getCatData = async () => {
     await axios
     .get(
-      `${process.env.REACT_APP_BACKEND_APIURL}api/v1/products/categorieswithsubcategories`
+      `${process.env.REACT_APP_BACKEND_APIURL}api/v1/products/categorieswithsubcategories`,{
+        method: "GET",
+        headers: {
+          Accept: "application/json",
+          "content-Type": "Application/json",
+          storename: "kbtrends",
+        },
+        // body: JSON.stringify(productInputData),
+      }
     )
     .then((res) => {
       console.log(9898, productInputData.category_id.toString())
@@ -152,7 +165,7 @@ export default function Product_AddProduct() {
             ...attr,
             attributes_label: attr.attribute_key,
             attributes_name: attr.attribute_key,
-            
+            value: attr.attribute_value
           }
         })
         setProdAttributeInput(attrData)
@@ -241,6 +254,7 @@ export default function Product_AddProduct() {
       headers: {
         Accept: "application/json",
         "content-Type": "Application/json",
+        storename: "kbtrends",
       },
       body: JSON.stringify(productInputData),
     }).then((result) => {
@@ -377,7 +391,15 @@ export default function Product_AddProduct() {
     console.log(e.target.value);
     axios
       .get(
-        `${process.env.REACT_APP_BACKEND_APIURL}api/v1/products/category/attributeswithbrand?category_id=${e.target.value}`
+        `${process.env.REACT_APP_BACKEND_APIURL}api/v1/products/category/attributeswithbrand?category_id=${e.target.value}`,{
+          method: "GET",
+          headers: {
+            Accept: "application/json",
+            "content-Type": "Application/json",
+            storename: "kbtrends",
+          },
+          // body: JSON.stringify(productInputData),
+        }
       )
       .then((res) => {
         console.log(27, res.data);
@@ -831,6 +853,7 @@ export default function Product_AddProduct() {
                             name={attr.attributes_label}
                             id={attr.attributes_label}
                             placeholder=""
+                            value={attr.value}
                             onChange={(e) => handleAttributeInputChange(e)}
                           />
                         )}
@@ -1014,6 +1037,7 @@ export default function Product_AddProduct() {
         >
           <div class="card-body">
             <h5>FAQ</h5>
+            <div style={{overflow: 'auto'}}>
             <table class="table table-bordered">
               <thead>
                 <th scope="col" style={{ width: "1rem" }}>
@@ -1077,13 +1101,14 @@ export default function Product_AddProduct() {
                 })}
                 <tr>
                   <td colSpan={3}>
-                    <button onClick={addFaqFields} style={{ marginLeft: "48rem" }}>
+                    <button className="float-right" onClick={addFaqFields}>
                       Add More..
                     </button>
                   </td>
                 </tr>
               </tbody>
             </table>
+            </div>
           </div>
         </div>
         {/* <--------------------------------Pricing From End-----------------------------------> */}
@@ -1099,3 +1124,4 @@ export default function Product_AddProduct() {
     </div>
   );
 }
+

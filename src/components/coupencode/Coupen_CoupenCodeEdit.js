@@ -23,7 +23,16 @@ export default function Coupen_CoupenCodeEdit() {
   useEffect(() => {
     axios
       .get(
-        `http://admin.ishop.sunhimlabs.com/api/v1/coupons/details/${coupon_id}`
+        `http://admin.ishop.sunhimlabs.com/api/v1/coupons/details/${coupon_id}`,
+        {
+          method: "GET",
+          headers: {
+            Accept: "application/json",
+            "content-Type": "Application/json",
+            storename: "kbtrends",
+          },
+          // body: JSON.stringify(productInputData),
+        }
       )
       .then((res) => {
         const getData = res.data.data;
@@ -62,6 +71,7 @@ else{
       headers: {
         Accept: "application/json",
         "Content-Type": "Application/json",
+        storename: "kbtrends",
       },
       body: JSON.stringify({
         ...userdata,

@@ -20,7 +20,15 @@ export default function Customer_Editcustomer() {
   useEffect(() => {
     axios
       .get(
-        `http://admin.ishop.sunhimlabs.com/api/v1/customer/details/${user_id}`
+        `http://admin.ishop.sunhimlabs.com/api/v1/customer/details/${user_id}`,{
+          method: "GET",
+          headers: {
+            Accept: "application/json",
+            "content-Type": "Application/json",
+            storename: "kbtrends",
+          },
+          // body: JSON.stringify(productInputData),
+        }
       )
       .then((res) => {
         const getData = res.data.data;
@@ -47,6 +55,7 @@ export default function Customer_Editcustomer() {
       headers: {
         Accept: "application/json",
         "Content-Type": "Application/json",
+        storename: "kbtrends",
       },
       body: JSON.stringify(userdata),
     }).then((result) => {

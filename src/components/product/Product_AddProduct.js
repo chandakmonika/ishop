@@ -1010,6 +1010,7 @@ export default function Product_AddProduct() {
   useEffect(() => {
     axios
       .post(`${process.env.REACT_APP_BACKEND_APIURL}api/v1/product/add`, {
+        method: "POST",
         headers: {
           Accept: "application/json",
           "Content-Type": "Application/json",
@@ -1063,6 +1064,7 @@ export default function Product_AddProduct() {
       headers: {
         Accept: "application/json",
         "content-Type": "Application/json",
+        storename: "kbtrends",
       },
       body: JSON.stringify(productInputData),
     }).then((result) => {
@@ -1075,7 +1077,16 @@ export default function Product_AddProduct() {
   useEffect(() => {
     axios
       .get(
-        `${process.env.REACT_APP_BACKEND_APIURL}api/v1/products/categorieswithsubcategories`
+        `${process.env.REACT_APP_BACKEND_APIURL}api/v1/products/categorieswithsubcategories` ,{
+          method: "GET",
+          headers: {
+            Accept: "application/json",
+            "content-Type": "Application/json",
+            storename: "kbtrends",
+          },
+          // body: JSON.stringify(productInputData),
+        }
+             
       )
       .then((res) => {
         setCategoryData(res.data.data);
@@ -1209,8 +1220,18 @@ export default function Product_AddProduct() {
     console.log(e.target.value);
     axios
       .get(
-        `${process.env.REACT_APP_BACKEND_APIURL}api/v1/products/category/attributeswithbrand?category_id=${e.target.value}`
+        `${process.env.REACT_APP_BACKEND_APIURL}api/v1/products/category/attributeswithbrand?category_id=${e.target.value}`,
+        {
+          method: "GET",
+          headers: {
+            Accept: "application/json",
+            "content-Type": "Application/json",
+            storename: "kbtrends",
+          },
+          // body: JSON.stringify(productInputData),
+        }
       )
+
       .then((res) => {
         console.log(27, res.data);
         setProdAttributeInput(res.data.category_attrbutes);
@@ -1358,8 +1379,8 @@ export default function Product_AddProduct() {
                       value={productInputData.product_status}
                       onChange={(e) => productInputChange(e)}
                     >
-                      <option value="active">Active</option>
-                      <option value="inactive">Inactive</option>
+                      <option value="1">Active</option>
+                      <option value="0">Inactive</option>
                     </select>
                     <br />
                   </div>
@@ -1520,13 +1541,13 @@ export default function Product_AddProduct() {
             <h5>Product Information</h5>
             <div className="form-group">
               <div className="row">
-                <div className="col-md-4">
+                <div className="col-md-3">
                   <label className="demo">SKU</label>
                   <input
-                    type="email"
+                    type="text"
                     className="form-control"
                     id="exampleInputEmail1"
-                    aria-describedby="emailHelp"
+                    // aria-describedby="emailHelp"
                     value={productInputData.sku}
                     onChange={(e) => {
                       productInputChange(e);
@@ -1535,18 +1556,33 @@ export default function Product_AddProduct() {
                   />
                 </div>
 
-                <div className="col-md-4">
+                <div className="col-md-3">
                   <label className="demo">Model Number</label>
                   <input
-                    type="email"
+                    type="text"
                     className="form-control"
                     id="exampleInputEmail1"
-                    aria-describedby="emailHelp"
+                    // aria-describedby="emailHelp"
                     value={productInputData.model_number}
                     onChange={(e) => {
                       productInputChange(e);
                     }}
                     name="model_number"
+                  />
+                </div>
+
+                <div className="col-md-3">
+                  <label className="demo">Product Quantity</label>
+                  <input
+                    type="text"
+                    className="form-control"
+                    id="exampleInputEmail1"
+                    aria-describedby="emailHelp"
+                    value={productInputData.product_qty}
+                    onChange={(e) => {
+                      productInputChange(e);
+                    }}
+                    name="product_qty"
                   />
                 </div>
               </div>

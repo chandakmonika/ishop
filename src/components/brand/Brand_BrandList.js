@@ -369,7 +369,7 @@ export default function Brand_BrandList() {
                           </label>
                         </div>
                       </td>
-                      <td>{item.id}</td>
+                      <td>{item.category_name}</td>
                       <td>{item.brand_name}</td>
                       <td>{item.brand_logo}</td>
                       <td>
