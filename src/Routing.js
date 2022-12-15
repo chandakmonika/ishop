@@ -739,7 +739,7 @@ export default function RoutingPage() {
               element={<Customer_Editcustomer />}
             />
 
-            <Route path="/order/orderlist/:user_id" element={<Order_OrderList />} />
+            <Route path="/order/orderlist" element={<Order_OrderList />} />
 
             <Route
               path="/order/orderdetails/:order_id"

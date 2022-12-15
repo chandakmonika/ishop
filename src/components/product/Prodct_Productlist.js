@@ -18,10 +18,10 @@ import Typography from "@mui/material/Typography";
 import Modal from "@mui/material/Modal";
 //import "././Product_Productlist.css";
 import EmptyPage from "../emptypage";
+
 export default function ProductsComponent() {
   const [searchParams, setSearchParams] = useSearchParams();
   const pageNo = searchParams.get("page");
-
   const [first, setFirst] = useState([]);
   const [query, setQuery] = useState({ text: "" });
   const [status, setStatus] = useState([]);
@@ -284,7 +284,7 @@ export default function ProductsComponent() {
         <div class="card-body">
           <div class="row">
             <div className="col-sm-6">
-              <form onSubmit={getCustomerList}>
+              <form onSubmit={handleSubmit}>
                 <div class="input-group">
                   <input
                     type="text"

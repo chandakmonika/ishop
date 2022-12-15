@@ -349,6 +349,7 @@ import "./Sidebar.css";
 export default function DashboardPage() {
   const navigate = useNavigate();
   const userName = localStorage.getItem("USER_NAME");
+  // const user_id = localStorage.getItem("USER_ID");
 
   return (
     <div>
@@ -428,7 +429,7 @@ export default function DashboardPage() {
                         data-bs-parent="#menu"
                       >
                         <li>
-                          <Link to="/order/orderlist/:user_id">Order List</Link>
+                          <Link to="/order/orderlist">Order List</Link>
                         </li>
                         <br />
                         <li>

@@ -111,7 +111,7 @@ export default function Customer_Customerlist() {
     axios
       .get(
         `http://admin.ishop.sunhimlabs.com/api/v1/customer/list?q=&per_page=12&page=1&sort_by=first_name&email&order_by=${order}`,{
-          method: "GET",
+          method: "POST",
           headers: {
             Accept: "application/json",
             "content-Type": "Application/json",
@@ -399,19 +399,24 @@ export default function Customer_Customerlist() {
                             style={{ fontSize: "24px" }}
                           ></i>
                         </Link>
-                        <Link to={`/order/orderlist/${item.user_id}`}>
+                        {/* <Link to={`/order/orderlist/${item.user_id}`}>
                           <i
                             class="fa fa-address-card"
                             style={{ fontSize: "24px" }}
                           ></i>
-                        </Link>
+                        </Link> */}
                       </td>
                     </tr>
                   );
                 })}
             </tbody>
           </table>
-
+          {
+            index && index.length <= 0 &&
+            <h3 class="d-flex justify-content-center my-2">
+            Records not found
+          </h3>
+          }
           {/* <-------------------------TableEnd----------------------> */}
 
           <div class="text-left">
@@ -428,6 +433,7 @@ export default function Customer_Customerlist() {
                   <option value={"0"}>Inactive</option>
                   <option value={"2"}>Delete</option>
                 </select>
+                
               </div>
               <div className="row">
                 <button
@@ -447,10 +453,15 @@ export default function Customer_Customerlist() {
 
                 {paginationFunction}
               </div>
+              
             </div>
+            
           </div>
+          
         </div>
+        
       </div>
+      
       <Modal
         open={open}
         onClose={handleClose}
@@ -470,6 +481,8 @@ export default function Customer_Customerlist() {
           <Button onClick={() => handleStatusChange()}>Yes</Button>
         </Box>
       </Modal>
+      
     </div>
+    
   );
 }
