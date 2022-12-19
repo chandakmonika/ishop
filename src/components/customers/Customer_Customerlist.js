@@ -399,12 +399,12 @@ export default function Customer_Customerlist() {
                             style={{ fontSize: "24px" }}
                           ></i>
                         </Link>
-                        {/* <Link to={`/order/orderlist/${item.user_id}`}>
+                        <Link to={`/order/orderlist/${item.user_id}`}>
                           <i
                             class="fa fa-address-card"
                             style={{ fontSize: "24px" }}
                           ></i>
-                        </Link> */}
+                        </Link>
                       </td>
                     </tr>
                   );

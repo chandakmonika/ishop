@@ -93,7 +93,7 @@ export default function Order_OrderList() {
     order === "ASC" ? setOrder("DESC") : setOrder("ASC");
     axios
       .get(
-        `http://admin.ishop.sunhimlabs.com/api/v1/orders/list?q=&per_page=12&page=1&sort_by=payment_gateway_name&order_by=${order}`
+        `http://admin.ishop.sunhimlabs.com/api/v1/orders/list?q=&per_page=12&page=1&sort_by=order_number&order_by=${order}`
       )
       .then((res) => setFirst(res.data.data));
   };

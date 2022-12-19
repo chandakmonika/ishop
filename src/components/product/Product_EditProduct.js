@@ -2,7 +2,12 @@ import React, { useState, useEffect } from "react";
 import Product_Editor from "./Product_Editor";
 import axios from "axios";
 import "./Product_AddProduct.css";
-import { useNavigate, useParams, useLocation, useSearchParams } from "react-router-dom";
+import {
+  useNavigate,
+  useParams,
+  useLocation,
+  useSearchParams,
+} from "react-router-dom";
 import { getCardActionAreaUtilityClass } from "@mui/material";
 const config = {
   buttons: [
@@ -59,13 +64,14 @@ export default function Product_AddProduct() {
   const [prodVarientInput, setProdVarientInput] = useState([]);
   const [prodFaqInput, setProdFaqInput] = useState([
     {
-      questions: '',
-      answers: ''
-    }
+      questions: "",
+      answers: "",
+    },
   ]);
   const [productInputData, setProductInputData] = useState({
     product_name: "",
     category_id: "",
+    sub_category_id: "",
     brand: "",
     model_number: "",
     product_short_desc: "",
@@ -86,177 +92,176 @@ export default function Product_AddProduct() {
     product_seo_keywords: "",
   });
 
-  const { product_id } = useParams()
-  const navigate = useNavigate()
+  const { product_id } = useParams();
+  const navigate = useNavigate();
 
   const getCatData = async () => {
     await axios
-    .get(
-      `${process.env.REACT_APP_BACKEND_APIURL}api/v1/products/categorieswithsubcategories`,{
-        method: "GET",
-        headers: {
-          Accept: "application/json",
-          "content-Type": "Application/json",
-          storename: "kbtrends",
-        },
-        // body: JSON.stringify(productInputData),
-      }
-    )
-    .then((res) => {
-      console.log(9898, productInputData.category_id.toString())
-      const selectedCat = res.data.data.map((cat) => {
-        if(productInputData.category_id && (cat.category_id.toString() === productInputData.category_id.toString())){
-          console.log(879, productInputData)
-          // handleSubCategoryClick()
-          return{
-            ...cat,
-            isChecked: true
-          }
-        } else{
-          return cat
+      .get(
+        `${process.env.REACT_APP_BACKEND_APIURL}api/v1/products/categorieswithsubcategories`,
+        {
+          method: "GET",
+          headers: {
+            Accept: "application/json",
+            "content-Type": "Application/json",
+            storename: "kbtrends",
+          },
+          // body: JSON.stringify(productInputData),
         }
-      })
-      console.log(545, 'res.data.data', selectedCat)
-      setCategoryData(selectedCat);
-    });
-  }
+      )
+      .then((res) => {
+        console.log(9898, res.data.data);
+        const selectedCat = res.data.data.map((cat) => {
+          console.log(
+            5467,
+            productInputData.category_id,
+            cat.category_id.toString()
+          );
+          if (
+            productInputData.category_id &&
+            cat.category_id.toString() ===
+              productInputData.category_id.toString()
+          ) {
+            console.log(879, productInputData);
+            const subCategory = cat.subcategories.map((subCat) => {
+              console.log(
+                15467,
+                productInputData.sub_category_id,
+                subCat.category_id.toString()
+              );
+              if (
+                productInputData.sub_category_id &&
+                subCat.category_id.toString() ===
+                  productInputData.sub_category_id.toString()
+              ) {
+                return {
+                  ...subCat,
+                  isSubCatChecked: true,
+                };
+              } else {
+                return subCat;
+              }
+            });
+            return {
+              ...cat,
+              subcategories: subCategory,
+              isChecked: true,
+            };
+          } else {
+            return cat;
+          }
+        });
+        console.log(545, "res.data.data", selectedCat);
+        setCategoryData(selectedCat);
+      });
+  };
 
   const getProductData = async () => {
     await axios
-    .get(`${process.env.REACT_APP_BACKEND_APIURL}api/v1/products/details/${product_id}`, {
-      headers: {
-        Accept: "application/json",
-        "Content-Type": "Application/json",
-        storename: "kbtrends",
-      },
-    })
-    .then((res) => {
-      console.log(4343, res.data)
-      if(res.data.data){
-        const { 
-          product_name,
-          brand_id,
-          category_id,
-          is_featured,
-          model_number,
-          parent_id,
-          price_base,
-          price_mrp,
-          price_sell,
-          product_id,
-          product_image,
-          product_long_desc,
-          product_name_slug,
-          product_other_images,
-          product_qty,
-          product_short_desc,
-          product_tags,
-          product_type,
-          product_unlimited,
-          shipping_charges,
-          sku,
-          status,
-          tax_amount,
-          updated_date
-        } = res.data.data[0]
-        const attributes = res.data.product_attributes
-        const attrData = attributes.map((attr)=>{
-          return {
-            ...attr,
-            attributes_label: attr.attribute_key,
-            attributes_name: attr.attribute_key,
-            value: attr.attribute_value
-          }
-        })
-        setProdAttributeInput(attrData)
-        setProductInputData({
-          ...productInputData,
-          product_name,
-          brand_id,
-          category_id,
-          is_featured,
-          model_number,
-          parent_id,
-          price_base,
-          price_mrp,
-          price_sell,
-          product_id,
-          product_image,
-          product_long_desc,
-          product_name_slug,
-          product_other_images,
-          product_qty,
-          product_short_desc,
-          product_tags,
-          product_type,
-          product_unlimited,
-          shipping_charges,
-          sku,
-          status,
-          tax_amount,
-          updated_date,
-          attributes
-        })
-      }
-    });
-  }
+      .get(
+        `${process.env.REACT_APP_BACKEND_APIURL}api/v1/products/details/${product_id}`,
+        {
+          headers: {
+            Accept: "application/json",
+            "Content-Type": "Application/json",
+            storename: "kbtrends",
+          },
+        }
+      )
+      .then((res) => {
+        console.log(4343, res.data.data[0]);
+        if (res.data.data) {
+          const {
+            product_name,
+            brand_id,
+            category_id,
+            parent_category_id,
+            is_featured,
+            model_number,
+            parent_id,
+            price_base,
+            price_mrp,
+            price_sell,
+            product_id,
+            product_image,
+            product_long_desc,
+            product_name_slug,
+            product_other_images,
+            product_qty,
+            product_short_desc,
+            product_tags,
+            product_type,
+            product_unlimited,
+            shipping_charges,
+            sku,
+            status,
+            tax_amount,
+            updated_date,
+          } = res.data.data[0];
+          const attributes = res.data.product_attributes;
+          const attrData = attributes.map((attr) => {
+            return {
+              ...attr,
+              attributes_label: attr.attribute_key,
+              attributes_name: attr.attribute_key,
+              value: attr.attribute_value,
+            };
+          });
+          setProdAttributeInput(attrData);
+          setProductInputData({
+            ...productInputData,
+            product_name,
+            brand_id,
+            sub_category_id: category_id,
+            category_id: parent_category_id,
+            is_featured,
+            model_number,
+            parent_id,
+            price_base,
+            price_mrp,
+            price_sell,
+            product_id,
+            product_image,
+            product_long_desc,
+            product_name_slug,
+            product_other_images,
+            product_qty,
+            product_short_desc,
+            product_tags,
+            product_type,
+            product_unlimited,
+            shipping_charges,
+            sku,
+            status,
+            tax_amount,
+            updated_date,
+            attributes,
+          });
+        }
+      });
+  };
 
   useEffect(() => {
-    getProductData()
+    getProductData();
   }, []);
 
   useEffect(() => {
-    getCatData()
-  }, [productInputData.category_id]);
-
+    getCatData();
+  }, [productInputData.category_id, productInputData.sub_category_id]);
 
   function productUser() {
-    console.warn(
-      product_name,
-      category_id,
-      brand,
-      model_number,
-      product_short_desc,
-      product_long_desc,
-      product_image,
-      product_other_images,
-      product_qty,
-      sku,
-      price_base,
-      price_sell,
-      price_mrp,
-      product_tags,
-      product_seo_title,
-      product_seo_keywords,
-      product_seo_description
-    );
-    let datas = {
-      product_name,
-      category_id,
-      brand,
-      model_number,
-      product_short_desc,
-      product_long_desc,
-      product_image,
-      product_other_images,
-      product_qty,
-      sku,
-      price_base,
-      price_sell,
-      price_mrp,
-      product_tags,
-      product_seo_title,
-      product_seo_description,
-      product_seo_keywords,
-    };
-    fetch(`${process.env.REACT_APP_BACKEND_APIURL}api/v1/products/add`, {
+    const updatedProductData = {
+      ...productInputData,
+      brand: productInputData.brand_id
+    }
+    fetch(`${process.env.REACT_APP_BACKEND_APIURL}api/v1/products/edit`, {
       method: "POST",
       headers: {
         Accept: "application/json",
         "content-Type": "Application/json",
         storename: "kbtrends",
       },
-      body: JSON.stringify(productInputData),
+      body: JSON.stringify(updatedProductData),
     }).then((result) => {
       result.json().then((response) => {
         console.warn("response", response);
@@ -275,6 +280,11 @@ export default function Product_AddProduct() {
         [inputName]: e,
       });
     } else if (inputField === "cat_id") {
+      setProductInputData({
+        ...productInputData,
+        [inputName]: e,
+      });
+    } else if (inputField === "sub_cat_id") {
       setProductInputData({
         ...productInputData,
         [inputName]: e,
@@ -388,10 +398,12 @@ export default function Product_AddProduct() {
   };
 
   const handleSubCategoryClick = (e) => {
-    console.log(e.target.value);
+    console.log('handleSubCategoryClick', e.target.value);
+    productInputChange(e.target.value, "sub_cat_id", "sub_category_id");
     axios
       .get(
-        `${process.env.REACT_APP_BACKEND_APIURL}api/v1/products/category/attributeswithbrand?category_id=${e.target.value}`,{
+        `${process.env.REACT_APP_BACKEND_APIURL}api/v1/products/category/attributeswithbrand?category_id=${e.target.value}`,
+        {
           method: "GET",
           headers: {
             Accept: "application/json",
@@ -458,7 +470,11 @@ export default function Product_AddProduct() {
       <div class="py-4">
         <div class="d-flex justify-content-between">
           <div class="">
-            <button type="button" class="btn" onClick={() => navigate('/product/list')}>
+            <button
+              type="button"
+              class="btn"
+              onClick={() => navigate("/product/list")}
+            >
               <i class="fas fa-arrow-left"></i>
             </button>
             <span>Edit Product</span>
@@ -471,10 +487,7 @@ export default function Product_AddProduct() {
         </div>
       </div>
       <form onSubmit={submit}>
-        <div
-          className="form-group"
-          controlId="formBasicFirstName"
-        >
+        <div className="form-group" controlId="formBasicFirstName">
           <div class="row">
             <div className="col-lg-8 col-mb-8">
               {/* <-----------------------------------Title From------------------------> */}
@@ -540,12 +553,12 @@ export default function Product_AddProduct() {
             </div>
             {/* <--------------------------------------Product Status From Start---------------------------------> */}
             <div class="col-lg-4 col-mb-4">
-              <div class="card" >
+              <div class="card">
                 <div class="card-body">
-                  <div
-                    className="form-group"
-                  >
-                    <label for="exampleFormControlSelect1">Product Status</label>
+                  <div className="form-group">
+                    <label for="exampleFormControlSelect1">
+                      Product Status
+                    </label>
                     <select
                       class="form-control"
                       id="exampleFormControlSelect1"
@@ -578,7 +591,7 @@ export default function Product_AddProduct() {
                         return (
                           <div className="category-item">
                             <div key={`category${cat.category_id}`}>
-                              {console.log('cat.isChecked',cat.isChecked)}
+                              {console.log("cat.isChecked", cat.isChecked)}
                               <input
                                 type="checkbox"
                                 id={cat.category_slug}
@@ -631,12 +644,13 @@ export default function Product_AddProduct() {
                                           id={subCat.category_slug}
                                           name="sub-category-list"
                                           value={subCat.category_id}
+                                          checked={cat.isSubCatChecked ? "checked" : false}
                                           onChange={(e) =>
                                             handleSubCategoryClick(e)
                                           }
                                         />
                                         <label for={subCat.category_slug}>
-                                          {subCat.category_name}
+                                          {subCat.category_name} | {subCat.category_id}
                                         </label>
                                       </div>
                                     );
@@ -705,18 +719,13 @@ export default function Product_AddProduct() {
             </div>
           </div>
           {/* <---------------------------------Media From End------------------------------------------> */}
-
-
         </div>
         <br />
         {/* <-----------------------------------Product Organization From End--------------------------------------> */}
 
         {/* <-----------------------Product Information From Start-------------------------------> */}
 
-        <div
-          class="card"
-          style={{ height: "13rem" }}
-        >
+        <div class="card" style={{ height: "13rem" }}>
           <div class="card-body">
             <h5>Product Information</h5>
             <div className="form-group">
@@ -760,10 +769,7 @@ export default function Product_AddProduct() {
 
         {/* <--------------------------------Pricing From start-----------------------------------> */}
 
-        <div
-          class="card"
-          style={{ height: "11rem" }}
-        >
+        <div class="card" style={{ height: "11rem" }}>
           <div class="card-body">
             <h5>Pricing</h5>
             <div className="form-group">
@@ -820,50 +826,46 @@ export default function Product_AddProduct() {
 
         {/* <-----------------------Product Attribute From Start-------------------------------> */}
 
-        {prodAttributeInput &&
-          prodAttributeInput.length > 0 && (
-            <div
-              class="card"
-              style={{ minHeight: "23rem" }}
-            >
-              <div class="card-body">
-                {console.log(657, prodAttributeInput)}
-                <h5>Product Attribute</h5>
-                {prodAttributeInput.map((attr) => {
-                  return (
-                    <div class="form-group row">
-                      <label for="inputColor" class="col-sm-2 col-form-label">
-                        {attr.attributes_label}
-                      </label>
-                      <div class="col-sm-4">
-                        {attr.attributes_type === "select" ? (
-                          <select
-                            name={attr.attributes_label}
-                            id={attr.attributes_label}
-                            onChange={(e) => handleAttributeInputChange(e)}
-                          >
-                            {attr.attributes_value.split(",").map((opt) => (
-                              <option value={opt}>{opt}</option>
-                            ))}
-                          </select>
-                        ) : (
-                          <input
-                            type="text"
-                            class="form-control"
-                            name={attr.attributes_label}
-                            id={attr.attributes_label}
-                            placeholder=""
-                            value={attr.value}
-                            onChange={(e) => handleAttributeInputChange(e)}
-                          />
-                        )}
-                      </div>
+        {prodAttributeInput && prodAttributeInput.length > 0 && (
+          <div class="card" style={{ minHeight: "23rem" }}>
+            <div class="card-body">
+              {console.log(657, prodAttributeInput)}
+              <h5>Product Attribute</h5>
+              {prodAttributeInput.map((attr) => {
+                return (
+                  <div class="form-group row">
+                    <label for="inputColor" class="col-sm-2 col-form-label">
+                      {attr.attributes_label}
+                    </label>
+                    <div class="col-sm-4">
+                      {attr.attributes_type === "select" ? (
+                        <select
+                          name={attr.attributes_label}
+                          id={attr.attributes_label}
+                          onChange={(e) => handleAttributeInputChange(e)}
+                        >
+                          {attr.attributes_value.split(",").map((opt) => (
+                            <option value={opt}>{opt}</option>
+                          ))}
+                        </select>
+                      ) : (
+                        <input
+                          type="text"
+                          class="form-control"
+                          name={attr.attributes_label}
+                          id={attr.attributes_label}
+                          placeholder=""
+                          value={attr.value}
+                          onChange={(e) => handleAttributeInputChange(e)}
+                        />
+                      )}
                     </div>
-                  );
-                })}
-              </div>
+                  </div>
+                );
+              })}
             </div>
-          )}
+          </div>
+        )}
         <br />
         {/* <-----------------------Product Attribute From End-------------------------------> */}
 
@@ -967,10 +969,7 @@ export default function Product_AddProduct() {
 
         {/* <--------------------------------Pricing From start-----------------------------------> */}
 
-        <div
-          class="card"
-          style={{ height: "auto" }}
-        >
+        <div class="card" style={{ height: "auto" }}>
           <div class="card-body">
             <h5>Pricing</h5>
             <div class="form-group row">
@@ -1031,27 +1030,24 @@ export default function Product_AddProduct() {
         </div>
         <br />
 
-        <div
-          class="card"
-          style={{ height: "auto" }}
-        >
+        <div class="card" style={{ height: "auto" }}>
           <div class="card-body">
             <h5>FAQ</h5>
-            <div style={{overflow: 'auto'}}>
-            <table class="table table-bordered">
-              <thead>
-                <th scope="col" style={{ width: "1rem" }}>
-                  Question
-                </th>
-                <th scope="col">Answer</th>
-              </thead>
+            <div style={{ overflow: "auto" }}>
+              <table class="table table-bordered">
+                <thead>
+                  <th scope="col" style={{ width: "1rem" }}>
+                    Question
+                  </th>
+                  <th scope="col">Answer</th>
+                </thead>
 
-              <tbody>
-                {prodFaqInput.map((form, index) => {
-                  return (
-                    <tr key={index}>
-                      <td>
-                        {/* <select
+                <tbody>
+                  {prodFaqInput.map((form, index) => {
+                    return (
+                      <tr key={index}>
+                        <td>
+                          {/* <select
                           class="form-control"
                           id="exampleFormControlSelect1"
                           style={{}}
@@ -1062,52 +1058,52 @@ export default function Product_AddProduct() {
                           <option value="questions">How are you?</option>
 
                         </select> */}
-                        <input
-                          type="text"
-                          class="form-control"
-                          id="inputColor"
-                          placeholder=""
-                          value={form.questions}
-                          onChange={(e) => {
-                            productFaqChange(e, index);
-                          }}
-                          name="questions"
-                        />
-                      </td>
-                      <td>
-                        <input
-                          type="text"
-                          class="form-control"
-                          id="inputColor"
-                          placeholder=""
-                          value={form.answers}
-                          onChange={(e) => {
-                            productFaqChange(e, index);
-                          }}
-                          name="answers"
-                        />
-                      </td>
+                          <input
+                            type="text"
+                            class="form-control"
+                            id="inputColor"
+                            placeholder=""
+                            value={form.questions}
+                            onChange={(e) => {
+                              productFaqChange(e, index);
+                            }}
+                            name="questions"
+                          />
+                        </td>
+                        <td>
+                          <input
+                            type="text"
+                            class="form-control"
+                            id="inputColor"
+                            placeholder=""
+                            value={form.answers}
+                            onChange={(e) => {
+                              productFaqChange(e, index);
+                            }}
+                            name="answers"
+                          />
+                        </td>
 
-                      <td>
-                        <button
-                          onClick={() => removeFaqFields(index)}
-                          style={{ marginLeft: "1rem" }}
-                        >
-                          Remove
-                        </button>
-                      </td>
-                    </tr>
-                  );
-                })}
-                <tr>
-                  <td colSpan={3}>
-                    <button className="float-right" onClick={addFaqFields}>
-                      Add More..
-                    </button>
-                  </td>
-                </tr>
-              </tbody>
-            </table>
+                        <td>
+                          <button
+                            onClick={() => removeFaqFields(index)}
+                            style={{ marginLeft: "1rem" }}
+                          >
+                            Remove
+                          </button>
+                        </td>
+                      </tr>
+                    );
+                  })}
+                  <tr>
+                    <td colSpan={3}>
+                      <button className="float-right" onClick={addFaqFields}>
+                        Add More..
+                      </button>
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
             </div>
           </div>
         </div>
@@ -1124,4 +1120,3 @@ export default function Product_AddProduct() {
     </div>
   );
 }
-

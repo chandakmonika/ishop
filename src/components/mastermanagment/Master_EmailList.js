@@ -80,17 +80,7 @@ export default function Master_EmailList() {
                 return (
                   <tr key={item.product_id}>
                     <td>
-                      <div class="custom-control custom-checkbox">
-                        <input
-                          type="checkbox"
-                          class="custom-control-input"
-                          id="customCheck2"
-                        />
-                        <label
-                          class="custom-control-label"
-                          for="customCheck2"
-                        ></label>
-                      </div>
+                      {item.template_id}
                     </td>
                    
                     <td>{item.email_title}</td>
@@ -106,10 +96,10 @@ export default function Master_EmailList() {
           </table>
           {/* <-------------------------TableEnd----------------------> */}
 
-          <div class="text-left">
+          {/* <div class="text-left">
             <div className="row">
               <div className="col-md-2">
-                {/* <label for="exampleFormControlSelect1">Action</label> */}
+              
                 <select
                   class="form-control"
                   id="exampleFormControlSelect1"
@@ -130,7 +120,7 @@ export default function Master_EmailList() {
                 </button>
               </div>
             </div>
-          </div>
+          </div> */}
         </div>
       </div>
     </div>

@@ -926,6 +926,7 @@ import Product_Editor from "./Product_Editor";
 import axios from "axios";
 import "./Product_AddProduct.css";
 import { useLocation } from "react-router-dom";
+import { toast } from "react-toastify";
 const config = {
   buttons: [
     "bold",
@@ -989,11 +990,12 @@ export default function Product_AddProduct() {
     product_name: "",
     category_id: "",
     brand: "",
+    brand_id: 0,
     model_number: "",
     product_short_desc: "",
     product_long_desc: "",
     product_image: "",
-    product_status: "",
+    product_status: "1",
     product_other_images: "",
     product_qty: "",
     attributes: [],
@@ -1007,58 +1009,24 @@ export default function Product_AddProduct() {
     product_seo_description: "",
     product_seo_keywords: "",
   });
-  useEffect(() => {
-    axios
-      .post(`${process.env.REACT_APP_BACKEND_APIURL}api/v1/product/add`, {
-        method: "POST",
-        headers: {
-          Accept: "application/json",
-          "Content-Type": "Application/json",
-          storename: "kbtrends",
-        },
-      })
-      .then((res) => setIndex(res.data.data));
-  }, []);
+  // useEffect(() => {
+  //   axios
+  //     .post(`${process.env.REACT_APP_BACKEND_APIURL}api/v1/product/add`, {
+  //       method: "POST",
+  //       headers: {
+  //         Accept: "application/json",
+  //         "Content-Type": "Application/json",
+  //         storename: "kbtrends",
+  //       },
+  //     })
+  //     .then((res) => setIndex(res.data.data));
+  // }, []);
 
   function productUser() {
-    console.warn(
-      product_name,
-      category_id,
-      brand,
-      model_number,
-      product_short_desc,
-      product_long_desc,
-      product_image,
-      product_other_images,
-      product_qty,
-      sku,
-      price_base,
-      price_sell,
-      price_mrp,
-      product_tags,
-      product_seo_title,
-      product_seo_keywords,
-      product_seo_description
-    );
-    let datas = {
-      product_name,
-      category_id,
-      brand,
-      model_number,
-      product_short_desc,
-      product_long_desc,
-      product_image,
-      product_other_images,
-      product_qty,
-      sku,
-      price_base,
-      price_sell,
-      price_mrp,
-      product_tags,
-      product_seo_title,
-      product_seo_description,
-      product_seo_keywords,
-    };
+    const productData = {
+      ...productInputData,
+      brand: productInputData.brand_id
+    }
     fetch(`${process.env.REACT_APP_BACKEND_APIURL}api/v1/products/add`, {
       method: "POST",
       headers: {
@@ -1066,12 +1034,15 @@ export default function Product_AddProduct() {
         "content-Type": "Application/json",
         storename: "kbtrends",
       },
-      body: JSON.stringify(productInputData),
+      body: JSON.stringify(productData),
     }).then((result) => {
       result.json().then((response) => {
         console.warn("response", response);
-      });
-    });
+      })
+    }).catch((err) => {
+      console.log(32324, err)
+      // toast.error(err.message)
+    })
   }
 
   useEffect(() => {
@@ -1259,7 +1230,6 @@ export default function Product_AddProduct() {
 
     setProductInputData({
       ...productInputData,
-
       attributes: attrDatas,
     });
   };

@@ -8,11 +8,31 @@ import { Link } from "react-router-dom";
 
 export default function Master_SettingList() {
   const [first, setFirst] = useState([]);
+  const [query, setQuery] = useState({ text: "" });
+
+  console.log(query);
+  const handleChange = (e) => {
+    setQuery({ text: e.target.value });
+  };
+
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    axios
+      .get(
+        `http://admin.ishop.sunhimlabs.com/api/v1/getAllSiteOptions/?q=${query.text}`
+      )
+      .then((res) => setFirst(res.data.data));
+  };
+
+
   useEffect(() => {
     axios
       .get(`http://admin.ishop.sunhimlabs.com/api/v1/getAllSiteOptions`)
       .then((res) => setFirst(res.data.data));
   }, []);
+
+  
   return (
     <div>
       <Navbar expand="lg">
@@ -32,14 +52,24 @@ export default function Master_SettingList() {
         <div class="card-body" style={{ width: "100%" }}>
           <div class="row">
             <div className="col-sm-3">
-              <div class="input-group">
-                <input type="text" class="form-control" placeholder="Search" />
-                <div class="input-group-append">
-                  <Button variant="info" type="submit">
-                    Search
-                  </Button>
+            <form onSubmit={handleSubmit}>
+                <div class="input-group">
+                  <input
+                    type="text"
+                    name="search"
+                    className="form-control"
+                    id="exampleInputEmail1"
+                    aria-describedby="texthelp"
+                    placeholder="Search"
+                    onChange={handleChange}
+                  />
+                  <div class="input-group-append">
+                    <Button variant="info" type="submit">
+                      Search
+                    </Button>
+                  </div>
                 </div>
-              </div>
+              </form>
             </div>
           </div>
           <br />

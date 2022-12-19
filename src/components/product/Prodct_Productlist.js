@@ -56,7 +56,7 @@ export default function ProductsComponent() {
   };
   const handleSubmit = (e) => {
     e.preventDefault();
-    getCustomerList(page.current)
+    getCustomerList(page.current);
   };
 
   // const getData = async () => {
@@ -75,19 +75,21 @@ export default function ProductsComponent() {
   // }, []);
 
   useEffect(() => {
-    getCustomerList(pageNo)
-  }, [pageNo])
+    getCustomerList(pageNo);
+  }, [pageNo]);
 
   const handlePageChange = async (e, newPage) => {
-    navigate(`/product/list?page=${newPage + 1}`)
-  }
+    navigate(`/product/list?page=${newPage + 1}`);
+  };
 
   const getCustomerList = async (newPage) => {
     // setPage(newPage);
     try {
-      const res = await axios.get(`${url}?q=${query.text}&page=${Number(newPage)}`);
+      const res = await axios.get(
+        `${url}?q=${query.text}&page=${Number(newPage)}`
+      );
       const { data, pages } = res.data;
-      console.log('pages', pages)
+      console.log("pages", pages);
       setFirst(data);
       setPage(pages);
     } catch (error) {

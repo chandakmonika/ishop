@@ -6,13 +6,15 @@ import Container from "react-bootstrap/Container";
 import Nav from "react-bootstrap/Nav";
 import Navbar from "react-bootstrap/Navbar";
 import { Link } from "react-router-dom";
-import { useParams, useNavigate } from "react-router-dom";
+import { useParams, useNavigate, useSearchParams, } from "react-router-dom";
 import TablePagination from "@mui/material/TablePagination";
 import Box from "@mui/material/Box";
 import Typography from "@mui/material/Typography";
 import Modal from "@mui/material/Modal";
 
 export default function Coupen_CoupenCodeList() {
+  const [searchParams, setSearchParams] = useSearchParams();
+  const pageNo = searchParams.get("page");
   const [first, setFirst] = useState([]);
   const [query, setQuery] = useState({ text: "" });
   const [faq_id, setFaq_id] = useState([]);
@@ -45,44 +47,52 @@ export default function Coupen_CoupenCodeList() {
   };
   const handleSubmit = (e) => {
     e.preventDefault();
-    axios
-      .get(
-        `http://admin.ishop.sunhimlabs.com/api/v1/coupons/list/?q=${query.text}`,
-        {
-          method: "GET",
-          headers: {
-            Accept: "application/json",
-            "content-Type": "Application/json",
-            storename: "kbtrends",
-          },
-          // body: JSON.stringify(productInputData),
-        }
-      )
-      .then((res) => setFirst(res.data.data));
+    getCustomerList(page.current);
+    // axios
+    //   .get(
+    //     `http://admin.ishop.sunhimlabs.com/api/v1/coupons/list/?q=${query.text}`,
+    //     {
+    //       method: "GET",
+    //       headers: {
+    //         Accept: "application/json",
+    //         "content-Type": "Application/json",
+    //         storename: "kbtrends",
+    //       },
+    //       // body: JSON.stringify(productInputData),
+    //     }
+    //   )
+    //   .then((res) => setFirst(res.data.data));
   };
 
-  const getCustomerList = () => {
-    axios
-      .get(`http://admin.ishop.sunhimlabs.com/api/v1/coupons/list`, {
-        method: "GET",
-        headers: {
-          Accept: "application/json",
-          "content-Type": "Application/json",
-          storename: "kbtrends",
-        },
-        // body: JSON.stringify(productInputData),
-      })
-      .then((res) => setFirst(res.data.data));
-  };
+  // const getCustomerList = () => {
+  //   axios
+  //     .get(`http://admin.ishop.sunhimlabs.com/api/v1/coupons/list`, {
+  //       method: "GET",
+  //       headers: {
+  //         Accept: "application/json",
+  //         "content-Type": "Application/json",
+  //         storename: "kbtrends",
+  //       },
+   
+  //     })
+  //     .then((res) => setFirst(res.data.data));
+  // };
   useEffect(() => {
-    getCustomerList();
-  }, []);
+    getCustomerList(pageNo);
+  }, [pageNo]);
 
-  const handleChangePage = async (e, newPage) => {
-    setPage(newPage);
+  const handlePageChange = async (e, newPage) => {
+    navigate(`/coupons/list?page=${newPage + 1}`);
+  };
+
+  const getCustomerList = async (newPage) => {
+    // setPage(newPage);
     try {
-      const res = await axios.get(`${url}?&page=${newPage + 1}`);
+      const res = await axios.get(
+        `${url}?q=${query.text}&page=${Number(newPage)}`
+      );
       const { data, pages } = res.data;
+      console.log("pages", pages);
       setFirst(data);
       setPage(pages);
     } catch (error) {
@@ -202,7 +212,7 @@ export default function Coupen_CoupenCodeList() {
         component="div"
         count={page.totalrecords || 0}
         page={page.current - 1 || 0}
-        onPageChange={handleChangePage}
+        onPageChange={handlePageChange}
         rowsPerPage={page.records_per_page || 0}
       />
     ),

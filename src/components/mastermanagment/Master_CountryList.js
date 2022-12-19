@@ -1,4 +1,4 @@
-import React,{ useEffect, useState } from "react";
+import React,{ useEffect, useState,useMemo } from "react";
 import axios from "axios";
 import { Link, useNavigate } from "react-router-dom";
 import Button from "react-bootstrap/Button";
@@ -18,7 +18,13 @@ export default function Master_CountryList() {
   const [country_id, setCountry_id] = useState([]);
   const [selectedcustomer, setSelectedcustomer] = useState([]);
   const [selectedStatus, setSelectedStatus] = useState("0");
-  const [page, setPage] = useState([]);
+  const [page, setPage] = useState({
+    current: 0,
+    previous: 0,
+    records_per_page: 0,
+    totalpages: 0,
+    totalrecords: 0,
+  });
 
   const navigate = useNavigate()
   
@@ -112,13 +118,13 @@ export default function Master_CountryList() {
     });
   };
 
-  function handleStatusChange(userId, status) {
+  function handleStatusChange(country_id, status) {
     if (
       isSingleStatusUpdate
     ) {
       console.warn(country_id, status);
       let apidata = {
-        user_id: changeStatusId.user_id,
+        country_id: changeStatusId.country_id,
         status: changeStatusId.status === "0" ? "1" : "0",
       };
       statusChange(apidata);
@@ -129,15 +135,15 @@ export default function Master_CountryList() {
 
   }
 
-  function handleClick(country_id, status) {
-    console.warn(country_id, status);
+  // function handleClick(country_id, status) {
+  //   console.warn(country_id, status);
 
-    let apidata = {
-      country_id: country_id,
-      status: status === "0" ? "1" : "0",
-    };
-    statusChange(apidata);
-  }
+  //   let apidata = {
+  //     country_id: country_id,
+  //     status: status === "0" ? "1" : "0",
+  //   };
+  //   statusChange(apidata);
+  // }
 
   const onSelectCustomer = (e, country_id) => {
     const datas =
@@ -165,7 +171,8 @@ export default function Master_CountryList() {
 
   const applyStatus = () => {
     console.log(3, selectedcustomer, selectedStatus);
-    const selectedId = selectedcustomer.map((id) => id.country_id).join(",");
+    const selectedData = first.filter((item) => item.isSelected === true);
+    const selectedId = selectedData.map((id) => id.country_id).join(",");
     console.log(selectedId);
     const apidata = {
       country_id: selectedId,
@@ -195,6 +202,36 @@ export default function Master_CountryList() {
   }
   const handleClose = () => setOpen(false);
  
+  const selectAllItems = (e) =>{
+    console.log(1, e.target.checked);
+    const datas =
+        first.length > 0 &&
+        first.map((item) => {
+         
+            return {
+              ...item,
+              isSelected: e.target.checked,
+            };
+         
+        });
+        console.log(27, datas);
+        setFirst(datas);
+  }
+  
+    const paginationFunction = useMemo(
+      () => (
+        <TablePagination
+          className="col-md-7"
+          rowsPerPageOptions={[12]}
+          component="div"
+          count={page.totalrecords || 0}
+          page={page.current - 1 || 0}
+          onPageChange={handleChangePage}
+          rowsPerPage={page.records_per_page || 0}
+        />
+      ),
+      [page]
+    );
   return (
     <div>
       <Navbar expand="lg">
@@ -237,18 +274,23 @@ export default function Master_CountryList() {
           <table class="table table-bordered" style={{ width: "95%" }}>
             <thead style={{ backgroundColor: "#EBF1F3" }}>
               <tr>
-                <th scope="col">
+              <th scope="col">
                   <div class="custom-control custom-checkbox">
-                    <input
-                      type="checkbox"
-                      class="custom-control-input"
-                      id="customCheck1"
-                      checked
+                    <input type="checkbox" 
+                     checked={
+                      !first
+                        .map((select) => {
+                          if (select.isSelected === true) {
+                            return true;
+                          }
+                          return false;
+                        })
+                        .includes(false)
+                    }
+                    onChange={(e) => selectAllItems(e)}
+                    
                     />
-                    <label
-                      class="custom-control-label"
-                      for="customCheck1"
-                    ></label>
+                    <label for="customCheck"></label>
                   </div>
                 </th>
                 <th scope="col">Country Name&nbsp;
@@ -322,21 +364,13 @@ export default function Master_CountryList() {
               </div>
 
               <h6>Pages:</h6>
-              <p>
-                &nbsp;
-                <b style={{ color: "black" }}> {page.current}</b> /{" "}
-                {page.totalpages}{" "}
-              </p>
+              <p className="col-md-3">
+                  &nbsp; Pages:
+                  <b style={{ color: "black" }}> {page.current}</b> /{" "}
+                  {page.totalpages}{" "}
+                </p>
 
-              <TablePagination
-                className="col-md-5"
-                component="div"
-                count={page.totalrecords}
-                page={page.current - 1}
-                onPageChange={handleChangePage}
-                rowsPerPage={page.records_per_page}
-              />
-
+                {paginationFunction}
             </div>
           </div>
         </div>
