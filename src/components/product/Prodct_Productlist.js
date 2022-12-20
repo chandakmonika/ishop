@@ -405,6 +405,7 @@ export default function ProductsComponent() {
                           <input
                             type="checkbox"
                             value={item.isSelected}
+                            checked={item.isSelected ? 'checked' : false}
                             onChange={(e) =>
                               onSelectCustomer(e, item.product_id)
                             }

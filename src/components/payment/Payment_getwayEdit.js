@@ -78,7 +78,7 @@ export default function Payment_getwayEdit() {
                   className="form-control"
                   placeholder="Enter Payment Name"
                   name="payment_gateway_name"
-                  value={userdata.payment_gateway_name}
+                  value={userdata?.payment_gateway_name}
                 onChange={handleChange}
                 />
 
@@ -86,7 +86,7 @@ export default function Payment_getwayEdit() {
                 <input
                 type="file"
                 name="payment_gateway_logo"
-                value={userdata.payment_gateway_logo}
+                value={userdata?.payment_gateway_logo}
               onChange={handleChange}
                 
               />

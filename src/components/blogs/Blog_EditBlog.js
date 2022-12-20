@@ -82,7 +82,7 @@ export default function Blog_EditBlog() {
                 className="form-control"
                 placeholder="Enter Title"
                 name="title"
-                value={userdata.title}
+                value={userdata?.title}
                 onChange={handleChange}
                 
               />
@@ -93,7 +93,7 @@ export default function Blog_EditBlog() {
                 className="form-control"
                 placeholder="Enter Description"
                 name="description"
-                value={userdata.description}
+                value={userdata?.description}
                 onChange={handleChange}
                 
               />
@@ -104,7 +104,7 @@ export default function Blog_EditBlog() {
                 className="form-control"
                 placeholder="Enter Tags"
                 name="blogs_tags"
-                value={userdata.blogs_tags}
+                value={userdata?.blogs_tags}
                 onChange={handleChange}
                 
               />
@@ -113,7 +113,7 @@ export default function Blog_EditBlog() {
                 <input
                   type="file"
                   name="featured_image"
-                  value={userdata.featured_image}
+                  value={userdata?.featured_image}
                   onChange={handleChange}
                   
                 />

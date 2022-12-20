@@ -1,11 +1,9 @@
 import React, { useState, useEffect } from "react";
-import Button from "react-bootstrap/Button";
-import Form from "react-bootstrap/Form";
 import Product_Editor from "./Product_Editor";
 import axios from "axios";
 import "./Product_AddProduct.css";
-import { useLocation } from "react-router-dom";
-import { toast } from "react-toastify";
+import { useNavigate } from "react-router-dom";
+import { toaster } from "../../utils/toaster";
 const config = {
   buttons: [
     "bold",
@@ -34,31 +32,32 @@ const config = {
 };
 
 export default function Product_AddProduct() {
-  const [value, setValue] = useState("");
+  // const [value, setValue] = useState("");
   const [mediaFiles, setMediaFiles] = useState([]);
   const [categoryData, setCategoryData] = useState([]);
-  const [product_name, setProduct_name] = useState("");
-  const [category_id, setCategory_id] = useState("");
-  const [brand, setBrand] = useState("");
-  const [variants, setVariants] = useState("");
-  const [model_number, setModel_number] = useState("");
-  const [product_short_desc, setProduct_short_desc] = useState("");
-  const [product_long_desc, setProduct_long_desc] = useState("");
-  const [product_image, setProduct_image] = useState("");
-  const [product_other_images, setProduct_other_images] = useState("");
-  const [product_qty, setProduct_qty] = useState("");
-  const [sku, setSku] = useState("");
-  const [price_base, setPrice_base] = useState("");
-  const [price_sell, setPrice_sell] = useState("");
-  const [price_mrp, setPrice_mrp] = useState("");
-  const [product_tags, setProduct_tags] = useState("");
-  const [product_seo_title, setProduct_seo_title] = useState("");
-  const [product_seo_description, setProduct_seo_description] = useState("");
-  const [product_seo_keywords, setProduct_seo_keywords] = useState("");
-  const [index, setIndex] = useState([]);
+  // const [product_name, setProduct_name] = useState("");
+  // const [category_id, setCategory_id] = useState("");
+  // const [brand, setBrand] = useState("");
+  // const [variants, setVariants] = useState("");
+  // const [model_number, setModel_number] = useState("");
+  // const [product_short_desc, setProduct_short_desc] = useState("");
+  // const [product_long_desc, setProduct_long_desc] = useState("");
+  // const [product_image, setProduct_image] = useState("");
+  // const [product_other_images, setProduct_other_images] = useState("");
+  // const [product_qty, setProduct_qty] = useState("");
+  // const [sku, setSku] = useState("");
+  // const [price_base, setPrice_base] = useState("");
+  // const [price_sell, setPrice_sell] = useState("");
+  // const [price_mrp, setPrice_mrp] = useState("");
+  // const [product_tags, setProduct_tags] = useState("");
+  // const [product_seo_title, setProduct_seo_title] = useState("");
+  // const [product_seo_description, setProduct_seo_description] = useState("");
+  // const [product_seo_keywords, setProduct_seo_keywords] = useState("");
+  // const [index, setIndex] = useState([]);
   const [selectSubCatData, setSelectSubCatData] = useState([]);
   const [prodAttributeInput, setProdAttributeInput] = useState([]);
-  const [prodVarientInput, setProdVarientInput] = useState([]);
+  const [varientFormFields, setVarientFormFields] = useState([]);
+  // const [prodVarientInput, setProdVarientInput] = useState([]);
   const [prodFaqInput, setProdFaqInput] = useState([
     {
       questions: "",
@@ -75,7 +74,7 @@ export default function Product_AddProduct() {
     product_long_desc: "",
     product_image: [],
     product_status: "1",
-    
+
     product_qty: "",
     attributes: [],
     faq: [],
@@ -101,10 +100,12 @@ export default function Product_AddProduct() {
   //     .then((res) => setIndex(res.data.data));
   // }, []);
 
+  const navigate = useNavigate()
+
   function productUser() {
     const productData = {
       ...productInputData,
-      brand: productInputData.brand_id,
+      // brand: productInputData.brand_id.toString(),
     };
     fetch(`${process.env.REACT_APP_BACKEND_APIURL}api/v1/products/add`, {
       method: "POST",
@@ -117,6 +118,8 @@ export default function Product_AddProduct() {
     })
       .then((result) => {
         result.json().then((response) => {
+          toaster(response, 'Product Added Successfully!')
+          navigate('/product/list?page=1')
           console.warn("response", response);
         });
       })
@@ -147,23 +150,23 @@ export default function Product_AddProduct() {
 
   function handleImageUpload(e) {
     const fileData = [...e.target.files]
-    console.log(37, fileData,e.target.files, URL.createObjectURL(e.target.files[0]));
-    const media = fileData.map((file,i) => {
+    console.log(37, fileData, e.target.files, URL.createObjectURL(e.target.files[0]));
+    const media = fileData.map((file, i) => {
       return {
         media_id: file.lastModified.toString(),
         media_name: file.name,
         media_file: URL.createObjectURL(e.target.files[i]),
       };
     });
-    console.log(56,media)
-    
+    console.log(56, media)
+
     setMediaFiles(media);
     setProductInputData({
       ...productInputData,
-      product_image: media.map((file)=>{
-return{
-  media_id : file.media_id
-}
+      product_image: media.map((file) => {
+        return {
+          media_id: file.media_id
+        }
       }),
     });
   }
@@ -176,17 +179,16 @@ return{
     } else if (inputField === "cat_id") {
       setProductInputData({
         ...productInputData,
-        [inputName]: e,
+        [inputName]: e.toString(),
       });
     } else {
       setProductInputData({
         ...productInputData,
-        [e.target.name]: e.target.value,
+        [e.target.name]: e.target.value.toString(),
       });
     }
   };
   // <----------------Dynamic Form--------------->
-  const [varientFormFields, setVarientFormFields] = useState([]);
 
   const handleVarientFormChange = (fieldName, e, index, itemIndex) => {
     const finatm = varientFormFields.map((prodRow, i) => {
@@ -228,11 +230,9 @@ return{
 
     setVarientFormFields(finatm);
     const fin = finatm.map((varient) => {
-      console.log(65, varient);
       return varient.map((vs) => {
-        console.log(66, vs);
         return {
-          attribute_id: vs.attributes_id,
+          attribute_id: vs.attributes_id.toString(),
           attributes_value: vs.value,
           product_qty: vs.product_qty,
           product_price: vs.product_price,
@@ -241,10 +241,8 @@ return{
     });
     setProductInputData({
       ...productInputData,
-      product_varient: fin,
+      variants: fin,
     });
-
-    console.log("mainArray", fin);
   };
 
   const submit = (e) => {
@@ -253,10 +251,6 @@ return{
   };
 
   const addVarientFields = () => {
-    console.log(
-      "selectSubCatData.variants_fields",
-      selectSubCatData.variants_fields
-    );
     const finalAddObject = selectSubCatData.variants_fields.map((vr) => {
       return {
         ...vr,
@@ -287,7 +281,6 @@ return{
   };
 
   const handleSubCategoryClick = (e) => {
-    console.log(e.target.value);
     axios
       .get(
         `${process.env.REACT_APP_BACKEND_APIURL}api/v1/products/category/attributeswithbrand?category_id=${e.target.value}`,
@@ -297,13 +290,11 @@ return{
             Accept: "application/json",
             "content-Type": "Application/json",
             storename: "kbtrends",
-          },
-          // body: JSON.stringify(productInputData),
+          }
         }
       )
 
       .then((res) => {
-        console.log(27, res.data);
         setProdAttributeInput(res.data.category_attrbutes);
         setVarientFormFields([...varientFormFields, res.data.variants_fields]);
         setSelectSubCatData(res.data);
@@ -317,12 +308,10 @@ return{
       }
       return attr;
     });
-    console.log(2122, prodAttrData);
     setProdAttributeInput(prodAttrData);
     const attrDatas = prodAttrData.map((attr) => {
-      console.log(7890, attr);
       return {
-        attributes_id: attr.attribute_id,
+        attributes_id: attr.attribute_id.toString(),
         attributes_value: attr.value,
       };
     });
@@ -345,16 +334,16 @@ return{
       }
     });
     setProdFaqInput(faqData);
-    setProductInputData({
-      ...productInputData,
-      faq: faqData,
-    });
-    console.log(27, faqData);
+
+    // FAQ should be accepted by backend
+    // setProductInputData({
+    //   ...productInputData,
+    //   faq: faqData,
+    // });
   };
 
   return (
     <div>
-      {console.log(2324, prodAttributeInput)}
       <div class="py-4">
         <div class="d-flex justify-content-between">
           <div class="">
@@ -777,10 +766,7 @@ return{
             <div class="card" style={{ height: "auto" }}>
               <div class="card-body">
                 <h5>Product Varient</h5>
-                {/* {selectSubCatData.variants_fields.map((vari) => {
-               return ( */}
                 <div>
-                  {console.log("varientFormFields", varientFormFields)}
                   <table class="table table-bordered">
                     <thead>
                       {selectSubCatData.variants_fields.map((item) => (
@@ -857,7 +843,6 @@ return{
                                 }}
                                 value={form[index].product_qty}
                               />
-                              {console.log("form[index].", form[index])}
                             </td>
                             <td>
                               <input
@@ -901,7 +886,7 @@ return{
 
         <div class="card" style={{ height: "auto" }}>
           <div class="card-body">
-            <h5>Pricing</h5>
+            <h5>SEO</h5>
             <div class="form-group row">
               <label for="inputColor" class="col-sm-2 col-form-label">
                 Meta Tags
@@ -1051,3 +1036,4 @@ return{
     </div>
   );
 }
+

@@ -91,7 +91,7 @@ export default function Order_OrderDetails() {
               </div>
             </div>
             <br />
-            <div className="card">
+            {/* <div className="card">
               <div className="card-body">
                 <div className="row">
                   <div className="col-md-2">
@@ -143,7 +143,7 @@ export default function Order_OrderDetails() {
                   </div>
                 </div>
               </div>
-            </div>
+            </div> */}
             <br />
 
             <div className="card">

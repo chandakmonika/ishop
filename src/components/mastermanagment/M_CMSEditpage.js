@@ -47,7 +47,7 @@ export default function M_CMSEditpage() {
   useEffect(() => {
     axios
       .get(
-        `http://admin.ishop.sunhimlabs.com/api/v1/cmapages/details/${page_id}`
+        `http://admin.ishop.sunhimlabs.com/api/v1/cmspages/details/${page_id}`
       )
       .then((res) => {
         const getData = res.data.data;
@@ -78,7 +78,7 @@ export default function M_CMSEditpage() {
     );
 
     fetch(
-      `http://admin.ishop.sunhimlabs.com/api/v1/cmapages/edit/`,
+      `http://admin.ishop.sunhimlabs.com/api/v1/cmspages/edit/`,
       {
         method: "POST",
         headers: {

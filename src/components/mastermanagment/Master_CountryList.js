@@ -312,6 +312,7 @@ export default function Master_CountryList() {
                   <input
                     type="checkbox"
                     value={item.isSelected}
+                    checked={item.isSelected ? 'checked' : false}
                     onChange={(e) => onSelectCustomer(e, item.country_id)}
                   />
                   <label for="customCheck{item.id}"></label>

@@ -1,10 +1,14 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useMemo } from "react";
 import axios from "axios";
 import Button from "react-bootstrap/Button";
 import Container from "react-bootstrap/Container";
 import Nav from "react-bootstrap/Nav";
 import Navbar from "react-bootstrap/Navbar";
-import { Link } from "react-router-dom";
+import TablePagination from "@mui/material/TablePagination";
+import { Link, useNavigate } from "react-router-dom";
+import Box from "@mui/material/Box";
+import Typography from "@mui/material/Typography";
+import Modal from "@mui/material/Modal";
 
 export default function Master_StateList() {
   const [first, setFirst] = useState([]);
@@ -13,20 +17,53 @@ export default function Master_StateList() {
   const [states, setStates] = useState([]);
   const [country_id, setCountry_id] = useState("");
   const [query, setQuery] = useState({ text: "" });
-  const [page, setPage] = useState([]);
   const [cpage, setCpage] = useState();
   const [rowsPerPage, setRowsPerPage] = useState(10);
   const [state_id, setState_id] = useState([]);
   const [selectedcustomer, setSelectedcustomer] = useState([]);
   const [selectedStatus, setSelectedStatus] = useState("0");
+  const [page, setPage] = useState({
+    current: 0,
+    previous: 0,
+    records_per_page: 0,
+    totalpages: 0,
+    totalrecords: 0,
+  });
+
+  // const navigate = useNavigate();
+
+  const [changeStatusId, setChangeStatusId] = useState({
+    state_id: "",
+    status: "",
+  });
+
+
   console.log(page);
+  const navigate = useNavigate()
+
+  const [isSingleStatusUpdate, setIsSingleStatusUpdate] = useState(true);
+
   const url = "http://admin.ishop.sunhimlabs.com/api/v1/";
  
   useEffect(() => {
     axios.get(`${`http://admin.ishop.sunhimlabs.com/api/v1/`}/allcountries/`).then((res) => setCountry(res.data.data));
   }, []);
 
+  const handlePageChange = async (e, newPage) => {
+    navigate(`/mastermanagement/state/list?page=${newPage + 1}`);
+  };
 
+const handleChangePage = async (e, newPage) => {
+    setPage(newPage);
+    try {
+      const res = await axios.get(`${url}?&page=${newPage + 1}`);
+      const { data, pages } = res.data;
+      setStateData(data);
+      setPage(pages);
+    } catch (error) {
+      console.log(error);
+    }
+  };
   // const handleChangePage = async (e, newPage) => {
   //   setCpage(newPage);
   //   try {
@@ -40,14 +77,6 @@ export default function Master_StateList() {
   //     console.log(error);
   //   }
   // };
-
-  useEffect(() => {
-    axios
-      .get(
-        `http://admin.ishop.sunhimlabs.com/api/v1/states/list/?country_id=`
-      )
-      .then((res) => setFirst(res.data.data));
-  }, []);
 
 
   const handleChange = (e) => {
@@ -67,14 +96,16 @@ export default function Master_StateList() {
     }
   };
 
-  const getCustomerList = () => {
+  const getStateList = () => {
     axios
-    .get(`http://admin.ishop.sunhimlabs.com/api/v1/countries/list/`)
+      .get(
+        `${url}/states/list/?country_id=`
+      )
       .then((res) => setStateData(res.data.data));
   };
 
   useEffect(() => {
-    getCustomerList();
+    getStateList();
   }, []);
 
   const statusChange = (apidata) => {
@@ -88,7 +119,8 @@ export default function Master_StateList() {
     }).then((result) => {
       result.json().then((resps) => {
         console.warn("resps", resps);
-        getCustomerList();
+        handleClose();
+        getStateList();
         
       });
     });
@@ -103,10 +135,23 @@ export default function Master_StateList() {
     statusChange(apidata);
   }
 
+  function handleStatusChange(stateId, status) {
+    if (isSingleStatusUpdate) {
+      console.warn(state_id, status);
+      let apidata = {
+        state_id: changeStatusId.state_id,
+        status: changeStatusId.status === "0" ? "1" : "0",
+      };
+      statusChange(apidata);
+    } else {
+      applyStatus();
+    }
+  }
+
   const onSelectCustomer = (e, state_id) => {
     const datas =
-      first.length > 0 &&
-      first.map((item) => {
+    stateData.length > 0 &&
+    stateData.map((item) => {
         if (item.state_id === state_id) {
           return {
             ...item,
@@ -128,14 +173,69 @@ export default function Master_StateList() {
 
   const applyStatus = () => {
     console.log(3, selectedcustomer, selectedStatus);
-    const selectedId = selectedcustomer.map((id) => id.state_id).join(",");
+    const selectedData = stateData.filter((item) => item.isSelected === true);
+    const selectedId = selectedData.map((id) => id.state_id).join(",");
     console.log(selectedId);
     const apidata = {
-      country_id: selectedId,
+      state_id: selectedId,
       status: selectedStatus,
     };
     statusChange(apidata);
   };
+
+  const style = {
+    position: "absolute",
+    top: "50%",
+    left: "50%",
+    transform: "translate(-50%, -50%)",
+    width: 400,
+    bgcolor: "background.paper",
+    border: "2px solid #000",
+    boxShadow: 24,
+    p: 4,
+  };
+
+  const [open, setOpen] = React.useState(false);
+  const handleOpen = (state_id, status, isSingleStatus) => {
+    setIsSingleStatusUpdate(isSingleStatus);
+    setChangeStatusId({
+      state_id,
+      status,
+    });
+    setOpen(true);
+  };
+  const handleClose = () => setOpen(false);
+
+  const selectAllItems = (e) => {
+    console.log(1, e.target.checked);
+    const datas =
+    stateData.length > 0 &&
+    stateData.map((item) => {
+        // if (item.brand_id === brand_id) {
+        return {
+          ...item,
+          isSelected: e.target.checked,
+        };
+      });
+    console.log(27, datas);
+    setStateData(datas);
+  };
+
+  const paginationFunction = useMemo(
+    () => (
+      <TablePagination
+        className="col-md-7"
+        rowsPerPageOptions={[12]}
+        component="div"
+        count={page.totalrecords || 0}
+        page={page.current - 1 || 0}
+        onPageChange={handleChangePage}
+        rowsPerPage={page.records_per_page || 0}
+      />
+    ),
+    [page]
+  );
+
 
   return (
     <div>
@@ -199,16 +299,21 @@ export default function Master_StateList() {
               <tr>
                 <th scope="col">
                   <div class="custom-control custom-checkbox">
-                    <input
+                  <input
                       type="checkbox"
-                      class="custom-control-input"
-                      id="customCheck1"
-                      checked
+                      checked={
+                        !stateData
+                          .map((select) => {
+                            if (select.isSelected === true) {
+                              return true;
+                            }
+                            return false;
+                          })
+                          .includes(false)
+                      }
+                      onChange={(e) => selectAllItems(e)}
                     />
-                    <label
-                      class="custom-control-label"
-                      for="customCheck1"
-                    ></label>
+                     <label for="customCheck"></label>
                   </div>
                 </th>
                 <th scope="col">State </th>
@@ -230,6 +335,7 @@ export default function Master_StateList() {
                   <input
                     type="checkbox"
                     value={item.isSelected}
+                    checked={item.isSelected ? 'checked' : false}
                     onChange={(e) => onSelectCustomer(e, item.state_id)}
                   />
                   <label for="customCheck{item.id}"></label>
@@ -241,7 +347,7 @@ export default function Master_StateList() {
                     <td><button
                           type="button"
                           onClick={() =>
-                            handleClick(item.state_id, item.status)
+                            handleOpen(item.state_id, item.status)
                           }
                         >
                           {item.status === "0" ? "inactive" : "active"}
@@ -260,7 +366,7 @@ export default function Master_StateList() {
 
           <div class="text-left">
             <div className="row">
-            <div className="col-md-2">
+              <div className="col-md-2">
                 <select
                   class="form-control"
                   id="exampleFormControlSelect1"
@@ -273,20 +379,48 @@ export default function Master_StateList() {
                   <option value={"2"}>Delete</option>
                 </select>
               </div>
-              <div className="col-md-4">
+              <div className="row">
                 <button
                   type="button"
                   class="btn btn-light"
                   style={{ width: "8rem" }}
-                  onClick={() => applyStatus()}
+                  onClick={() => handleOpen(null, null, false)}
                 >
                   Apply
                 </button>
               </div>
+              <h6>Pages:</h6>
+              <p>
+                &nbsp;
+                <b style={{ color: "black" }}> {page.current}</b> /{" "}
+                {page.totalpages}{" "}
+              </p>
+              {paginationFunction}
+              
             </div>
           </div>
         </div>
       </div>
+      <Modal
+        open={open}
+        onClose={handleClose}
+        aria-labelledby="modal-modal-title"
+        aria-describedby="modal-modal-description"
+      >
+        <Box sx={style}>
+          <Typography
+            id="modal-modal-title"
+            variant="h6"
+            component="h2"
+          ></Typography>
+          <Typography id="modal-modal-description" sx={{ mt: 2 }}>
+            Are you sure want to change the status?
+          </Typography>
+          <Button onClick={() => handleClose()}> No </Button>&nbsp;&nbsp;
+          <Button onClick={() => handleStatusChange()}>Yes</Button>
+        </Box>
+      </Modal>
     </div>
   );
 }
+

@@ -683,7 +683,7 @@ const selectAllItems = (e) =>{
                   <i class="fas fa-arrow-up" onClick={update}></i>
                 </th>
                 <th scope="col">
-                  Parent Category id
+                  Parent Category Name
                   <i class="fas fa-arrow-down" onClick={update}></i>
                   <i class="fas fa-arrow-up" onClick={update}></i>
                 </th>
@@ -713,7 +713,7 @@ const selectAllItems = (e) =>{
                         </div>
                       </td>
                       <td>{item.category_name}</td>
-                      <td>{item.parent_category_id}</td>
+                      <td>{item.parent_category_name}</td>
                       <td>
                         <button
                           type="button"

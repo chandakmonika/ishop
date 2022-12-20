@@ -1,6 +1,7 @@
 import React, { useState, useEffect,  } from "react";
 import { Link,  useNavigate } from "react-router-dom";
 import { toast } from 'react-toastify';
+import { toaster } from "../../utils/toaster";
 
 export default function Customer_Addnewcustomer() {
   const [first_name, setFirst_name] = useState("");
@@ -29,30 +30,9 @@ export default function Customer_Addnewcustomer() {
     }).then((result) => {
       result.json().then((resps) => {
         console.warn("resps", resps);
+        toaster(resps, 'Customer Added Successfully!')
         if(resps === true ){
-          toast.success(' Customer Added Successfully!', {
-            position: "bottom-right",
-            autoClose: 5000,
-            hideProgressBar: false,
-            closeOnClick: true,
-            pauseOnHover: true,
-            draggable: true,
-            progress: undefined,
-            theme: "colored",
-            });
             navigate("/routing/customer/list")
-        }
-        else{
-          toast.error(resps.errors.map((err)=>err.msg).join(", "), {
-            position: "bottom-right",
-            autoClose: 5000,
-            hideProgressBar: false,
-            closeOnClick: true,
-            pauseOnHover: true,
-            draggable: true,
-            progress: undefined,
-            theme: "colored",
-            });
         }
       });
     });
@@ -141,3 +121,4 @@ export default function Customer_Addnewcustomer() {
     </div>
   );
 }
+

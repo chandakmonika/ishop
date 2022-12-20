@@ -644,13 +644,13 @@ export default function Product_AddProduct() {
                                           id={subCat.category_slug}
                                           name="sub-category-list"
                                           value={subCat.category_id}
-                                          checked={cat.isSubCatChecked ? "checked" : false}
+                                          checked={subCat.isSubCatChecked ? "checked" : false}
                                           onChange={(e) =>
                                             handleSubCategoryClick(e)
                                           }
                                         />
                                         <label for={subCat.category_slug}>
-                                          {subCat.category_name} | {subCat.category_id}
+                                          {subCat.category_name}
                                         </label>
                                       </div>
                                     );
@@ -1120,3 +1120,4 @@ export default function Product_AddProduct() {
     </div>
   );
 }
+

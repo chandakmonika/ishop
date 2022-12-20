@@ -19,13 +19,13 @@ export default function Mastermange_CMSListpages() {
     e.preventDefault();
     axios
       .get(
-        `http://admin.ishop.sunhimlabs.com/api/v1/cmapages/list/?q=${query.text}`
+        `http://admin.ishop.sunhimlabs.com/api/v1/cmspages/list/?q=${query.text}`
       )
       .then((res) => setFirst(res.data.data));
   };
   useEffect(() => {
     axios
-      .get(`http://admin.ishop.sunhimlabs.com/api/v1/cmapages/list`)
+      .get(`http://admin.ishop.sunhimlabs.com/api/v1/cmspages/list`)
       .then((res) => setFirst(res.data.data));
   }, []);
   return (
