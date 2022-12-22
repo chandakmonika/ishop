@@ -6,10 +6,38 @@ import Dropdown from "react-bootstrap/Dropdown";
 import Container from "react-bootstrap/Container";
 import Nav from "react-bootstrap/Nav";
 import Navbar from "react-bootstrap/Navbar";
-import NavDropdown from "react-bootstrap/NavDropdown";
+import { useParams, useNavigate } from "react-router-dom";
+import TablePagination from "@mui/material/TablePagination";
+import Box from "@mui/material/Box";
+import Typography from "@mui/material/Typography";
+import Modal from "@mui/material/Modal";
 export default function Master_NewsLetterSubscribtion() {
   const [first, setFirst] = useState([]);
   const [query, setQuery] = useState({ text: "" });
+  const [order, setOrder] = useState("ASC");
+  const [faq_id, setFaq_id] = useState([]);
+  const [selectedcustomer, setSelectedcustomer] = useState([]);
+  const [selectedStatus, setSelectedStatus] = useState("0");
+  const [status, setStatus] = useState([]);
+
+  const [page, setPage] = useState({
+    current: 0,
+    previous: 0,
+    records_per_page: 0,
+    totalpages: 0,
+    totalrecords: 0,
+  });
+
+  const navigate = useNavigate();
+
+  const [changeStatusId, setChangeStatusId] = useState({
+    faq_id: "",
+    status: "",
+  });
+
+  const [isSingleStatusUpdate, setIsSingleStatusUpdate] = useState(true);
+  const url = "http://admin.ishop.sunhimlabs.com/api/v1/newsletter/subscribers/list";
+
 
   console.log(query);
   const handleChange = (e) => {
@@ -23,6 +51,29 @@ export default function Master_NewsLetterSubscribtion() {
       )
       .then((res) => setFirst(res.data.data));
   };
+
+  const handleChangePage = async (e, newPage) => {
+    setPage(newPage);
+    try {
+      const res = await axios.get(`${url}?&page=${newPage + 1}`);
+      const { data, pages } = res.data;
+      setFirst(data);
+      setPage(pages);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  const getCustomerList = () => {
+    axios
+      .get(`http://admin.ishop.sunhimlabs.com/api/v1/newsletter/subscribers/list`)
+      .then((res) => setFirst(res.data.data));
+  };
+
+  useEffect(() => {
+    getCustomerList();
+  }, []);
+
   useEffect(() => {
     axios
       .get(

@@ -37,31 +37,32 @@ const config = {
 };
 
 export default function Product_AddProduct() {
-  const [value, setValue] = useState("");
+  // const [value, s  etValue] = useState("");
   const [file, setFile] = useState();
   const [categoryData, setCategoryData] = useState([]);
-  const [product_name, setProduct_name] = useState("");
-  const [category_id, setCategory_id] = useState("");
-  const [brand, setBrand] = useState("");
-  const [variants, setVariants] = useState("");
-  const [model_number, setModel_number] = useState("");
-  const [product_short_desc, setProduct_short_desc] = useState("");
-  const [product_long_desc, setProduct_long_desc] = useState("");
-  const [product_image, setProduct_image] = useState("");
-  const [product_other_images, setProduct_other_images] = useState("");
-  const [product_qty, setProduct_qty] = useState("");
-  const [sku, setSku] = useState("");
-  const [price_base, setPrice_base] = useState("");
-  const [price_sell, setPrice_sell] = useState("");
-  const [price_mrp, setPrice_mrp] = useState("");
-  const [product_tags, setProduct_tags] = useState("");
-  const [product_seo_title, setProduct_seo_title] = useState("");
-  const [product_seo_description, setProduct_seo_description] = useState("");
-  const [product_seo_keywords, setProduct_seo_keywords] = useState("");
-  const [index, setIndex] = useState([]);
+  // const [product_name, setProduct_name] = useState("");
+  // const [category_id, setCategory_id] = useState("");
+  // const [brand, setBrand] = useState("");
+  // const [variants, setVariants] = useState("");
+  // const [model_number, setModel_number] = useState("");
+  // const [product_short_desc, setProduct_short_desc] = useState("");
+  // const [product_long_desc, setProduct_long_desc] = useState("");
+  // const [product_image, setProduct_image] = useState("");
+  // const [product_other_images, setProduct_other_images] = useState("");
+  // const [product_qty, setProduct_qty] = useState("");
+  // const [sku, setSku] = useState("");
+  // const [price_base, setPrice_base] = useState("");
+  // const [price_sell, setPrice_sell] = useState("");
+  // const [price_mrp, setPrice_mrp] = useState("");
+  // const [product_tags, setProduct_tags] = useState("");
+  // const [product_seo_title, setProduct_seo_title] = useState("");
+  // const [product_seo_description, setProduct_seo_description] = useState("");
+  // const [product_seo_keywords, setProduct_seo_keywords] = useState("");
+  const [prodVarientData, setProdVarientData] = useState([]);
   const [selectSubCatData, setSelectSubCatData] = useState([]);
   const [prodAttributeInput, setProdAttributeInput] = useState([]);
-  const [prodVarientInput, setProdVarientInput] = useState([]);
+  const [varientFormFields, setVarientFormFields] = useState([]);
+  // const [prodVarientInput, setProdVarientInput] = useState([]);
   const [prodFaqInput, setProdFaqInput] = useState([
     {
       questions: "",
@@ -71,17 +72,17 @@ export default function Product_AddProduct() {
   const [productInputData, setProductInputData] = useState({
     product_name: "",
     category_id: "",
-    sub_category_id: "",
+    parent_category_id: "",
     brand: "",
     model_number: "",
     product_short_desc: "",
     product_long_desc: "",
     product_image: "",
-    product_status: "",
-    product_other_images: "",
+    product_status: "1",
+    // product_other_images: "",
     product_qty: "",
     attributes: [],
-    faq: [],
+    // faq: [],
     sku: "",
     price_base: "",
     price_sell: "",
@@ -90,6 +91,7 @@ export default function Product_AddProduct() {
     product_seo_title: "",
     product_seo_description: "",
     product_seo_keywords: "",
+    varients: []
   });
 
   const { product_id } = useParams();
@@ -112,27 +114,26 @@ export default function Product_AddProduct() {
       .then((res) => {
         console.log(9898, res.data.data);
         const selectedCat = res.data.data.map((cat) => {
-          console.log(
-            5467,
-            productInputData.category_id,
-            cat.category_id.toString()
-          );
+          // console.log(
+          //   5467,
+          //   productInputData.category_id,
+          //   cat.category_id.toString()
+          // );
           if (
-            productInputData.category_id &&
+            productInputData.parent_category_id &&
             cat.category_id.toString() ===
-              productInputData.category_id.toString()
+              productInputData.parent_category_id.toString()
           ) {
-            console.log(879, productInputData);
             const subCategory = cat.subcategories.map((subCat) => {
               console.log(
                 15467,
-                productInputData.sub_category_id,
+                productInputData.category_id,
                 subCat.category_id.toString()
               );
               if (
-                productInputData.sub_category_id &&
+                productInputData.category_id &&
                 subCat.category_id.toString() ===
-                  productInputData.sub_category_id.toString()
+                  productInputData.category_id.toString()
               ) {
                 return {
                   ...subCat,
@@ -176,28 +177,53 @@ export default function Product_AddProduct() {
             brand_id,
             category_id,
             parent_category_id,
-            is_featured,
+            // is_featured,
             model_number,
-            parent_id,
+            // parent_id,
             price_base,
             price_mrp,
             price_sell,
             product_id,
             product_image,
             product_long_desc,
-            product_name_slug,
-            product_other_images,
+            // product_name_slug,
+            // product_other_images,
             product_qty,
             product_short_desc,
             product_tags,
             product_type,
-            product_unlimited,
-            shipping_charges,
+            // product_unlimited,
+            // shipping_charges,
             sku,
             status,
-            tax_amount,
-            updated_date,
+            // tax_amount,
+            // updated_date,
           } = res.data.data[0];
+
+          // const variant = res.data.product_variants;
+          // const variData = variant.map((vari) => {
+          //   return {
+          //     ...vari,
+          //     attributes_label: vari.attribute_key,
+          //     attributes_name: vari.attribute_key,
+          //     value: vari.attribute_value,
+          //   };
+          // });
+          // setVarientFormFields(variData);
+
+          const finalAddObject = res.data.product_variants.map((vr) => {
+            return {
+              ...vr,
+              attributes_label: vr.attribute_key,
+              attributes_name: vr.attribute_key,
+              value: vr.attribute_value,
+            };
+          });
+          console.log(3245, finalAddObject)
+          setProdVarientData(finalAddObject)
+          setVarientFormFields([...varientFormFields, finalAddObject])
+
+
           const attributes = res.data.product_attributes;
           const attrData = attributes.map((attr) => {
             return {
@@ -211,31 +237,31 @@ export default function Product_AddProduct() {
           setProductInputData({
             ...productInputData,
             product_name,
-            brand_id,
-            sub_category_id: category_id,
-            category_id: parent_category_id,
-            is_featured,
+            brand: brand_id ? brand_id?.toString() : "",
+            category_id: category_id,
+            parent_category_id: parent_category_id,
+            // is_featured,
             model_number,
-            parent_id,
-            price_base,
-            price_mrp,
-            price_sell,
-            product_id,
+            // parent_id,
+            price_base: price_base ? price_base?.toString() : "",
+            price_mrp: price_mrp ? price_mrp?.toString() : "",
+            price_sell: price_sell ? price_sell?.toString() : "",
+            product_id: product_id ? product_id?.toString() : "",
             product_image,
             product_long_desc,
-            product_name_slug,
-            product_other_images,
-            product_qty,
+            // product_name_slug,
+            // product_other_images,
+            product_qty: product_qty ? product_qty?.toString() : "",
             product_short_desc,
             product_tags,
             product_type,
-            product_unlimited,
-            shipping_charges,
+            // product_unlimited,
+            // shipping_charges,
             sku,
             status,
-            tax_amount,
-            updated_date,
-            attributes,
+            // tax_amount,
+            // updated_date,
+            attributes: attrData,
           });
         }
       });
@@ -252,7 +278,7 @@ export default function Product_AddProduct() {
   function productUser() {
     const updatedProductData = {
       ...productInputData,
-      brand: productInputData.brand_id
+      // brand: productInputData.brand_id
     }
     fetch(`${process.env.REACT_APP_BACKEND_APIURL}api/v1/products/edit`, {
       method: "POST",
@@ -279,12 +305,7 @@ export default function Product_AddProduct() {
         ...productInputData,
         [inputName]: e,
       });
-    } else if (inputField === "cat_id") {
-      setProductInputData({
-        ...productInputData,
-        [inputName]: e,
-      });
-    } else if (inputField === "sub_cat_id") {
+    } else if (inputField === "parent_cat_id") {
       setProductInputData({
         ...productInputData,
         [inputName]: e,
@@ -297,7 +318,6 @@ export default function Product_AddProduct() {
     }
   };
   // <----------------Dynamic Form--------------->
-  const [varientFormFields, setVarientFormFields] = useState([]);
 
   const handleVarientFormChange = (fieldName, e, index, itemIndex) => {
     const finatm = varientFormFields.map((prodRow, i) => {
@@ -352,7 +372,7 @@ export default function Product_AddProduct() {
     });
     setProductInputData({
       ...productInputData,
-      product_varient: fin,
+      varients: fin,
     });
 
     console.log("mainArray", fin);
@@ -364,19 +384,21 @@ export default function Product_AddProduct() {
   };
 
   const addVarientFields = () => {
-    console.log(
-      "selectSubCatData.variants_fields",
-      selectSubCatData.variants_fields
+    console.log(234, 
+      "varientFormFields",
+      varientFormFields
     );
-    const finalAddObject = selectSubCatData.variants_fields.map((vr) => {
+    const finalAddObject = prodVarientData.map((vr) => {
       return {
         ...vr,
         product_qty: "",
         product_price: "",
       };
     });
+    console.log(434, finalAddObject)
     setVarientFormFields([...varientFormFields, finalAddObject]);
   };
+
   const removeVarientFields = (index) => {
     let data = [...varientFormFields];
     data.splice(index, 1);
@@ -399,7 +421,10 @@ export default function Product_AddProduct() {
 
   const handleSubCategoryClick = (e) => {
     console.log('handleSubCategoryClick', e.target.value);
-    productInputChange(e.target.value, "sub_cat_id", "sub_category_id");
+    setProductInputData({
+      ...productInputData,
+      category_id: e.target.value
+    });
     axios
       .get(
         `${process.env.REACT_APP_BACKEND_APIURL}api/v1/products/category/attributeswithbrand?category_id=${e.target.value}`,
@@ -440,8 +465,7 @@ export default function Product_AddProduct() {
 
     setProductInputData({
       ...productInputData,
-
-      attributes: attrDatas,
+      attributes: attrDatas
     });
   };
 
@@ -457,10 +481,11 @@ export default function Product_AddProduct() {
       }
     });
     setProdFaqInput(faqData);
-    setProductInputData({
-      ...productInputData,
-      faq: faqData,
-    });
+    // NEED TO ADD FAQ
+    // setProductInputData({
+    //   ...productInputData,
+    //   faq: faqData,
+    // });
     console.log(27, faqData);
   };
 
@@ -503,10 +528,9 @@ export default function Product_AddProduct() {
                       Title
                     </label>
                     <input
-                      type="email"
+                      type="text"
                       className="form-control"
-                      id="exampleInputEmail1"
-                      aria-describedby="emailHelp"
+                      id="product_name"
                       value={productInputData.product_name}
                       onChange={(e) => {
                         productInputChange(e);
@@ -595,7 +619,7 @@ export default function Product_AddProduct() {
                               <input
                                 type="checkbox"
                                 id={cat.category_slug}
-                                name="category_id"
+                                name="parent_category_id"
                                 value={cat.category_id}
                                 checked={cat.isChecked ? "checked" : false}
                                 onChange={(e) => {
@@ -604,8 +628,8 @@ export default function Product_AddProduct() {
                                     if (d.category_id === cat.category_id) {
                                       productInputChange(
                                         cat.category_id,
-                                        "cat_id",
-                                        "category_id"
+                                        "parent_cat_id",
+                                        "parent_category_id"
                                       );
                                       return {
                                         ...d,
@@ -733,10 +757,9 @@ export default function Product_AddProduct() {
                 <div className="col-md-4">
                   <label className="demo">SKU</label>
                   <input
-                    type="email"
+                    type="text"
                     className="form-control"
-                    id="exampleInputEmail1"
-                    aria-describedby="emailHelp"
+                    id="sku"
                     value={productInputData.sku}
                     onChange={(e) => {
                       productInputChange(e);
@@ -748,10 +771,9 @@ export default function Product_AddProduct() {
                 <div className="col-md-4">
                   <label className="demo">Model Number</label>
                   <input
-                    type="email"
+                    type="text"
                     className="form-control"
-                    id="exampleInputEmail1"
-                    aria-describedby="emailHelp"
+                    id="model_number"
                     value={productInputData.model_number}
                     onChange={(e) => {
                       productInputChange(e);
@@ -779,8 +801,7 @@ export default function Product_AddProduct() {
                   <input
                     type="text"
                     className="form-control"
-                    id="exampleInputEmail1"
-                    aria-describedby="emailHelp"
+                    id="price_base"
                     value={productInputData.price_base}
                     onChange={(e) => {
                       productInputChange(e);
@@ -792,10 +813,9 @@ export default function Product_AddProduct() {
                 <div className="col-md-4">
                   <label className="demo">Original Price</label>
                   <input
-                    type="email"
+                    type="text"
                     className="form-control"
-                    id="exampleInputEmail1"
-                    aria-describedby="emailHelp"
+                    id="price_mrp"
                     value={productInputData.price_mrp}
                     onChange={(e) => {
                       productInputChange(e);
@@ -806,10 +826,9 @@ export default function Product_AddProduct() {
                 <div className="col-md-4">
                   <label className="demo">Selling Price</label>
                   <input
-                    type="email"
+                    type="text"
                     className="form-control"
-                    id="exampleInputEmail1"
-                    aria-describedby="emailHelp"
+                    id="price_sell"
                     value={productInputData.price_sell}
                     onChange={(e) => {
                       productInputChange(e);
@@ -870,8 +889,11 @@ export default function Product_AddProduct() {
         {/* <-----------------------Product Attribute From End-------------------------------> */}
 
         {/* <--------------------Dynamic Form---------------> */}
-        {selectSubCatData.variants_fields &&
-          selectSubCatData.variants_fields.length > 0 && (
+        {
+          console.log(8767, 'varientFormFields', varientFormFields)
+        }
+        {varientFormFields &&
+          varientFormFields.length > 0 && (
             <div class="card" style={{ height: "auto" }}>
               <div class="card-body">
                 <h5>Product Varient</h5>
@@ -880,18 +902,17 @@ export default function Product_AddProduct() {
                 <div>
                   <table class="table table-bordered">
                     <thead>
-                      {selectSubCatData.variants_fields.map((item) => (
+                      {prodVarientData.map((item) => (
                         <th scope="col">{item.attributes_label}</th>
                       ))}
                       <th scope="col">Inventory</th>
                       <th scope="col">Price</th>
                     </thead>
-
                     <tbody>
                       {varientFormFields.map((form, index) => {
                         return (
                           <tr key={index}>
-                            {form.map((field, fieldIndex) => (
+                            {form && form.length > 0 && form.map((field, fieldIndex) => (
                               <td>
                                 <input
                                   type="text"
@@ -907,8 +928,7 @@ export default function Product_AddProduct() {
                                   }}
                                   value={field.value ? field.value : ""}
                                   className="form-control"
-                                  id="exampleInputEmail1"
-                                  aria-describedby="emailHelp"
+                                  id="product_varient_input"
                                 />
                               </td>
                             ))}
@@ -917,7 +937,6 @@ export default function Product_AddProduct() {
                                 type="text"
                                 className="form-control"
                                 id="inventory"
-                                aria-describedby="inventory"
                                 onChange={(e) => {
                                   handleVarientFormChange(
                                     "inventory",
@@ -925,7 +944,7 @@ export default function Product_AddProduct() {
                                     index
                                   );
                                 }}
-                                value={form[index].product_qty}
+                                value={form[index]?.product_qty}
                               />
                               {console.log("form[index].", form[index])}
                             </td>
@@ -934,17 +953,17 @@ export default function Product_AddProduct() {
                                 type="text"
                                 className="form-control"
                                 id="price"
-                                aria-describedby="price"
                                 onChange={(e) => {
                                   handleVarientFormChange("price", e, index);
                                 }}
-                                value={form[index].product_price}
+                                value={form[index]?.product_price}
                               />
                             </td>
                             <button
                               className="pt-1"
                               onClick={() => removeVarientFields(index)}
                               style={{ marginLeft: "1rem" }}
+                              disabled={varientFormFields.length <= 1}
                             >
                               Remove
                             </button>
@@ -952,14 +971,14 @@ export default function Product_AddProduct() {
                         );
                       })}
                     </tbody>
+                  </table>
                     <button
-                      onClick={addVarientFields}
-                      style={{ marginLeft: "48rem" }}
+                    className="float-right"
+                      onClick={() => addVarientFields()}
                     >
                       Add More..
                     </button>
                     <br />
-                  </table>
                 </div>
               </div>
             </div>
@@ -1088,6 +1107,7 @@ export default function Product_AddProduct() {
                           <button
                             onClick={() => removeFaqFields(index)}
                             style={{ marginLeft: "1rem" }}
+                            disabled={prodFaqInput.length <= 1}
                           >
                             Remove
                           </button>
@@ -1120,4 +1140,5 @@ export default function Product_AddProduct() {
     </div>
   );
 }
+
 

@@ -39,9 +39,10 @@ export default function M_CMSEditpage() {
   const [userdata, setUser_data] = useState({
     page_title: "",
     page_description: "",
-    seo_page_title: "",
-    seo_page_keywords: "",
-    seo_page_description: "",
+    seo : {},
+    // seo_page_title: "",
+    // seo_page_keywords: "",
+    // seo_page_description: "",
   });
   const { page_id } = useParams();
   useEffect(() => {

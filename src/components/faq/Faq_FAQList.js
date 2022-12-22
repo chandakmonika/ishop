@@ -183,6 +183,7 @@ export default function Faq_FAQList() {
     boxShadow: 24,
     p: 4,
   };
+  
 
   const [open, setOpen] = React.useState(false);
   const handleOpen = (faq_id, status, isSingleStatus) => {

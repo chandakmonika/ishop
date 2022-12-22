@@ -108,7 +108,7 @@ export default function Blog_EditBlog() {
                 onChange={handleChange}
                 
               />
-              <label className="demo">Featured Image</label>
+              {/* <label className="demo">Featured Image</label>
               <div className="add">
                 <input
                   type="file"
@@ -118,7 +118,7 @@ export default function Blog_EditBlog() {
                   
                 />
                 <img src={file} />
-              </div>
+              </div> */}
 
               <label className="demo">Meta Tags</label>
               <input

@@ -360,16 +360,18 @@ export default function ProductsComponent() {
                     <input
                       type="checkbox"
                       checked={
-                        !first
+                        first && first.length > 0 &&
+                         !first
                           .map((select) => {
                             if (select.isSelected === true) {
-                              return true;
+                              return 'checked';
                             }
                             return false;
                           })
                           .includes(false)
                       }
                       onChange={(e) => selectAllItems(e)}
+                      disabled={first.length === 0}
                     />
                     <label for="customCheck"></label>
                   </div>
@@ -442,47 +444,48 @@ export default function ProductsComponent() {
             </tbody>
           </table>
           {first.length <= 0 && (
-            <div>
+            <div className="text-center">
               <EmptyPage />
             </div>
           )}
           {/* <-------------------------TableEnd----------------------> */}
-
-          <div class="text-left">
-            <div className="row">
-              <div className="col-md-2">
-                <select
-                  class="form-control"
-                  id="exampleFormControlSelect1"
-                  placeholder="Action"
-                  onChange={(e) => setSelectedStatus(e.target.value)}
-                >
-                  <option selected>Action</option>
-                  <option value={"1"}>Active</option>
-                  <option value={"0"}>Inactive</option>
-                  <option value={"2"}>Delete</option>
-                </select>
-              </div>
+          {first.length > 0 && (
+            <div class="text-left">
               <div className="row">
-                <button
-                  type="button"
-                  class="btn btn-light col-md-2"
-                  style={{ width: "8rem" }}
-                  onClick={() => handleOpen(null, null, false)}
-                >
-                  Apply
-                </button>
+                <div className="col-md-2">
+                  <select
+                    class="form-control"
+                    id="exampleFormControlSelect1"
+                    placeholder="Action"
+                    onChange={(e) => setSelectedStatus(e.target.value)}
+                  >
+                    <option selected>Action</option>
+                    <option value={"1"}>Active</option>
+                    <option value={"0"}>Inactive</option>
+                    <option value={"2"}>Delete</option>
+                  </select>
+                </div>
+                <div className="row">
+                  <button
+                    type="button"
+                    class="btn btn-light col-md-2"
+                    style={{ width: "8rem" }}
+                    onClick={() => handleOpen(null, null, false)}
+                  >
+                    Apply
+                  </button>
+                </div>
+
+                <p className="col-md-3">
+                  &nbsp; Pages:
+                  <b style={{ color: "black" }}> {page.current}</b> /{" "}
+                  {page.totalpages}{" "}
+                </p>
+
+                {paginationFunction}
               </div>
-
-              <p className="col-md-3">
-                &nbsp; Pages:
-                <b style={{ color: "black" }}> {page.current}</b> /{" "}
-                {page.totalpages}{" "}
-              </p>
-
-              {paginationFunction}
             </div>
-          </div>
+          )}
         </div>
       </div>
       <Modal
@@ -507,3 +510,4 @@ export default function ProductsComponent() {
     </div>
   );
 }
+
