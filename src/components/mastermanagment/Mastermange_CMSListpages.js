@@ -256,6 +256,7 @@ export default function Mastermange_CMSListpages() {
                   </div>
                 </th>
                 <th scope="col">Page Title</th>
+                <th scope="col">Status</th>
                 <th scope="col">Action</th>
               </tr>
             </thead>
@@ -292,7 +293,7 @@ export default function Mastermange_CMSListpages() {
                         </button>
                       </td>
                     <td>
-                      <Link to={`/mastermanagement/cms/edit${item.page_id}`}>
+                      <Link to={`/mastermanagement/cms/edit/${item.page_id}`}>
                         <i class="fas fa-edit" style={{ fontSize: "24px" }}></i>
                       </Link>
                     </td>
@@ -363,3 +364,4 @@ export default function Mastermange_CMSListpages() {
     </div>
   );
 }
+

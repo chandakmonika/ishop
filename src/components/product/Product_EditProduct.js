@@ -263,11 +263,13 @@ export default function Product_AddProduct() {
             // updated_date,
             attributes: attrData,
           });
+          getAttrWithBrand(category_id)
         }
       });
   };
 
   useEffect(() => {
+    console.log('use effect')
     getProductData();
   }, []);
 
@@ -425,9 +427,13 @@ export default function Product_AddProduct() {
       ...productInputData,
       category_id: e.target.value
     });
+    getAttrWithBrand(e.target.value)
+  };
+
+  const getAttrWithBrand = (category_id) => {
     axios
       .get(
-        `${process.env.REACT_APP_BACKEND_APIURL}api/v1/products/category/attributeswithbrand?category_id=${e.target.value}`,
+        `${process.env.REACT_APP_BACKEND_APIURL}api/v1/products/category/attributeswithbrand?category_id=${category_id}`,
         {
           method: "GET",
           headers: {
@@ -440,11 +446,11 @@ export default function Product_AddProduct() {
       )
       .then((res) => {
         console.log(27, res.data);
-        setProdAttributeInput(res.data.category_attrbutes);
-        setVarientFormFields([...varientFormFields, res.data.variants_fields]);
+        // setProdAttributeInput(res.data.category_attrbutes);
+        // setVarientFormFields([...varientFormFields, res.data.variants_fields]);
         setSelectSubCatData(res.data);
       });
-  };
+  }
 
   const handleAttributeInputChange = (e) => {
     const prodAttrData = prodAttributeInput.map((attr) => {
@@ -491,7 +497,7 @@ export default function Product_AddProduct() {
 
   return (
     <div>
-      {console.log(2324, prodAttributeInput)}
+      {console.log(2324, varientFormFields)}
       <div class="py-4">
         <div class="d-flex justify-content-between">
           <div class="">
@@ -912,6 +918,9 @@ export default function Product_AddProduct() {
                       {varientFormFields.map((form, index) => {
                         return (
                           <tr key={index}>
+                            {
+                              console.log(4349, form)
+                            }
                             {form && form.length > 0 && form.map((field, fieldIndex) => (
                               <td>
                                 <input
@@ -1140,5 +1149,6 @@ export default function Product_AddProduct() {
     </div>
   );
 }
+
 
 

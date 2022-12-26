@@ -192,7 +192,7 @@ export default function RoutingPage() {
               element={<Mastermange_CMSListpages />}
             />
             <Route
-              path="/mastermanagement/cms/edit:page_id"
+              path="/mastermanagement/cms/edit/:page_id"
               element={<M_CMSEditpage />}
             />
             <Route
@@ -321,3 +321,5 @@ export default function RoutingPage() {
     </div>
   );
 }
+
+
