@@ -363,6 +363,72 @@ export default function DashboardPage() {
                         </li>
                       </ul>
                     </li>
+                    <li>
+                      <a
+                        href="#submenu3"
+                        data-bs-toggle="collapse"
+                        class="nav-link px-0 align-middle"
+                      >
+                        <i className="fa fa-home"></i>&nbsp;Apperance
+                        &nbsp;&nbsp;&nbsp;
+                        <i className="fa fa-chevron-right arrow-icon"></i>
+                      </a>
+                      <ul
+                        class="collapse nav flex-column ms-1"
+                        id="submenu3"
+                        data-bs-parent="#menu"
+                      >
+                        <li>
+                          <Link to="/apperance/menu">Menu</Link>
+                        </li>
+                        <li>
+                          <Link to="/apperance/home">Home Page</Link>
+                        </li>
+                        <li>
+                          <Link to="/apperance/header">Header</Link>
+                        </li>
+                        <li>
+                          <Link to="/apperance/footer">Footer</Link>
+                        </li>
+                        <li>
+                          <Link to="/apperance/themes">Themes</Link>
+                        </li>
+                        <li>
+                          <Link to="/apperance/smtp">SMTP</Link>
+                        </li>
+                        <li>
+                          <Link to="/apperance/transaction">Transaction</Link>
+                        </li>
+                        <br />
+                      </ul>
+                    </li>
+                    <li>
+                      <a
+                        href="#submenu3"
+                        data-bs-toggle="collapse"
+                        class="nav-link px-0 align-middle"
+                      >
+                        <i className="fa fa-home"></i>&nbsp;Media
+                        &nbsp;&nbsp;&nbsp;
+                        <i className="fa fa-chevron-right arrow-icon"></i>
+                      </a>
+                      <ul
+                        class="collapse nav flex-column ms-1"
+                        id="submenu3"
+                        data-bs-parent="#menu"
+                      >
+                        <li>
+                          <Link to="/media/list">List</Link>
+                        </li>
+                        <li>
+                          <Link to="/media/addmedia">Add Media</Link>
+                        </li>
+                        <li>
+                          <Link to="/media/editmedia">Edit Media File</Link>
+                        </li>
+                        <br />
+                      </ul>
+                    </li>
                   </ul>
                   <hr />
                 </div>

@@ -21,6 +21,7 @@ import EmptyPage from "../emptypage";
 
 export default function ProductsComponent() {
   const [searchParams, setSearchParams] = useSearchParams();
+  const [index, setIndex] = useState([]);
   const pageNo = searchParams.get("page");
   const [first, setFirst] = useState([]);
   const [query, setQuery] = useState({ text: "" });
@@ -59,6 +60,13 @@ export default function ProductsComponent() {
     getCustomerList(page.current);
   };
 
+  useEffect(() => {
+    axios
+      .get(`http://admin.ishop.sunhimlabs.com/api/v1/products/parentcategories`)
+      .then((res) => setIndex(res.data.data));
+  }, []);
+
+
   // const getData = async () => {
   //   try {
   //     console.log(20, process.env.REACT_APP_BACKEND_APIURL);
@@ -86,7 +94,7 @@ export default function ProductsComponent() {
     // setPage(newPage);
     try {
       const res = await axios.get(
-        `${url}?q=${query.text}&page=${Number(newPage)}`
+        `${url}?q=${query.text}&=${query.category_name}&page=${Number(newPage)}`
       );
       const { data, pages } = res.data;
       console.log("pages", pages);
@@ -118,7 +126,7 @@ export default function ProductsComponent() {
     order === "ASC" ? setOrder("DESC") : setOrder("ASC");
     axios
       .get(
-        `${process.env.REACT_APP_BACKEND_APIURL}api/v1/products/list?q=&per_page=12&page=1&sort_by=product_name&order_by=${order}`
+        `${process.env.REACT_APP_BACKEND_APIURL}api/v1/products/list?q=&category_id=&status=&per_page=12&page=1&sort_by=product_name&order_by=${order}`
       )
       .then((res) => setFirst(res.data.data));
   };
@@ -187,6 +195,7 @@ export default function ProductsComponent() {
     setSelectedcustomer(selectedData);
     console.log(datas);
   };
+
 
   const applyStatus = () => {
     console.log(3, selectedcustomer, selectedStatus);
@@ -285,7 +294,7 @@ export default function ProductsComponent() {
       <div class="card" style={{ width: "100%" }}>
         <div class="card-body">
           <div class="row">
-            <div className="col-sm-6">
+            <div className="col-sm-7">
               <form onSubmit={handleSubmit}>
                 <div class="input-group">
                   <input
@@ -298,22 +307,29 @@ export default function ProductsComponent() {
                     onChange={handleChange}
                   />
                   &nbsp;&nbsp;&nbsp;&nbsp;
-                  <span>
-                    <Dropdown>
-                      <Dropdown.Toggle variant="light" id="dropdown-basic">
-                        Category
-                      </Dropdown.Toggle>
-                      <Dropdown.Menu>
-                        <Dropdown.Item href="#/action-1">Action</Dropdown.Item>
-                        <Dropdown.Item href="#/action-2">
-                          Another action
-                        </Dropdown.Item>
-                        <Dropdown.Item href="#/action-3">
-                          Something else
-                        </Dropdown.Item>
-                      </Dropdown.Menu>
-                    </Dropdown>
-                  </span>
+                  <select
+                    class="form-control"
+                    id="exampleFormControlSelect1"
+                    value={query.category_id}
+                    onChange={(e) => {
+                      handleChange(e);
+                    }}
+                    name="category_id"
+                  >
+                     <option value="">
+                      
+                      Select Category
+                     </option>
+                    {index.map((item) => {
+                      return (
+                      
+                        <option value={item.category_id}>
+                         
+                          {item.category_name}
+                        </option>
+                      );
+                    })}
+                  </select>
                   &nbsp;&nbsp;&nbsp;&nbsp; &nbsp;
                   <span>
                     <Dropdown onChange={handleChange} name="status">
@@ -382,6 +398,11 @@ export default function ProductsComponent() {
                   <i class="fas fa-arrow-up" onClick={update}></i>
                 </th>
                 <th scope="col">
+                  Product Type &nbsp;
+                  <i class="fas fa-arrow-down" onClick={update}></i>
+                  <i class="fas fa-arrow-up" onClick={update}></i>
+                </th>
+                <th scope="col">
                   Category &nbsp;
                   <i class="fas fa-arrow-down" onClick={update}></i>
                   <i class="fas fa-arrow-up" onClick={update}></i>
@@ -418,6 +439,7 @@ export default function ProductsComponent() {
                         </div>
                       </td>
                       <td>{item.product_name}</td>
+                      <td>{item.product_type}</td>
                       <td>{item.category_name}</td>
                       <td>{item.product_qty}</td>
                       <td>

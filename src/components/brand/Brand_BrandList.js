@@ -53,7 +53,7 @@ export default function Brand_BrandList() {
     console.log('query', query)
     axios
       .get(
-        `http://admin.ishop.sunhimlabs.com/api/v1/products/brands/list?q=${query.search}&category_id=${query.category_id}`
+        `http://admin.ishop.sunhimlabs.com/api/v1/products/brands/list?q=${query.search}`
       )
       .then((res) => setBrand(res.data.data));
   };
@@ -98,7 +98,7 @@ export default function Brand_BrandList() {
     order === "ASC" ? setOrder("DESC") : setOrder("ASC");
     axios
       .get(
-        `http://admin.ishop.sunhimlabs.com/api/v1/products/brands/list?q=&per_page=12&page=1&sort_by=brand_name&order_by=${order}`
+        `http://admin.ishop.sunhimlabs.com/api/v1/products/brands/list?q=&category_name=&per_page=12&page=1&sort_by=brand_name&order_by=${order}`
       )
       .then((res) => setBrand(res.data.data));
   };
@@ -286,6 +286,10 @@ export default function Brand_BrandList() {
                     }}
                     name="category_id"
                   >
+                     <option value="">
+                      
+                      Select Category
+                     </option>
                     {index.map((item) => {
                       return (
                         <option value={item.category_id}>
