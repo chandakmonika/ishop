@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
-import { Link, useParams } from "react-router-dom";
+import { Link, useParams,useNavigate } from "react-router-dom";
+import { toaster } from "../../utils/toaster";
 
 export default function Address_AddAddress() {
   const [first_name, setFirst_name] = useState("");
@@ -30,6 +31,9 @@ export default function Address_AddAddress() {
 
   console.log(indexs);
 
+  const navigate = useNavigate();
+
+
   useEffect(() => {
     axios
       .get(`http://admin.ishop.sunhimlabs.com/api/v1/allstates/${country}`)
@@ -51,24 +55,7 @@ export default function Address_AddAddress() {
   }, []);
 
   function customerUser() {
-    console.log(
-      first_name,
-      last_name,
-      email,
-      phone,
-      addressline1,
-      addressline2,
-      zipcode,
-      gender,
-      isdefault,
-      address_type,
-      countryName,
-      state_name,
-      country_id,
-      state_id,
-      city_name,
-      user_id
-    );
+   
     let datas = {
       first_name,
       last_name,
@@ -96,6 +83,10 @@ export default function Address_AddAddress() {
     }).then((result) => {
       result.json().then((resps) => {
         console.warn("resps", resps);
+        toaster(resps, 'Address Added Successfully!')
+        if(resps === true ){
+            navigate("/customer/address/list/:user_id")
+        }
       });
     });
   }
@@ -104,8 +95,6 @@ export default function Address_AddAddress() {
   };
 
   
-
-
   return (
     <div style={{ paddingLeft: "4rem" }}>
       <br />
@@ -324,11 +313,11 @@ export default function Address_AddAddress() {
             /> */}
             <br />
           </div>
-          <Link to="/customer/address/list/:user_id" >
+          {/* <Link to="/customer/address/list/:user_id" > */}
           <button type="button" class="btn btn-info" onClick={customerUser}>
-            Submit
+            Add Address
           </button>
-          </Link>
+          {/* </Link> */}
         </form>
         <br />
       </div>

@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
-import { Link } from "react-router-dom";
-
+import { Link, useNavigate } from "react-router-dom";
+import { toast } from 'react-toastify';
+import { toaster } from "../../utils/toaster";
 
 export default function Customer_Addnewcustomer() {
   const [product_category_id, setProduct_category_id] = useState("");
@@ -9,6 +10,8 @@ export default function Customer_Addnewcustomer() {
   const [brand_image, setBrand_image] = useState("");
   const [status, setStatus] = useState("");
   const [index, setIndex] = useState([]);
+
+  const navigate = useNavigate();
 
   useEffect(() => {
     axios
@@ -34,6 +37,10 @@ export default function Customer_Addnewcustomer() {
     }).then((result) => {
       result.json().then((response) => {
         console.warn("response", response);
+        toaster(response, 'Brand Added Successfully!')
+        if(response === true ){
+            navigate("/brand/list")
+        }
       });
     });
   }
@@ -116,11 +123,11 @@ export default function Customer_Addnewcustomer() {
                 <option value="1">Active</option>
               </select>
             </div>
-            <Link to="/brand/list">
+            {/* <Link to="/brand/list"> */}
             <button type="button" class="btn btn-info" onClick={brandrUser}>
               Add Brand
             </button>
-            </Link>
+            {/* </Link> */}
           </form>
           <br />
         </div>

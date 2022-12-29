@@ -24,7 +24,7 @@ export default function ProductsComponent() {
   const [index, setIndex] = useState([]);
   const pageNo = searchParams.get("page");
   const [first, setFirst] = useState([]);
-  const [query, setQuery] = useState({ text: "" });
+  const [query, setQuery] = useState({ search: "", category_name: "" });
   const [status, setStatus] = useState([]);
   const [order, setOrder] = useState("ASC");
   const [product_id, setProduct_id] = useState([]);
@@ -53,11 +53,18 @@ export default function ProductsComponent() {
   console.log(query);
 
   const handleChange = (e) => {
-    setQuery({ text: e.target.value });
+    setQuery({
+      ...query,
+      [e.target.name]: e.target.value
+    });
   };
   const handleSubmit = (e) => {
     e.preventDefault();
-    getCustomerList(page.current);
+    setPage({
+      ...page,
+      current: 0
+    })
+    getCustomerList(0);
   };
 
   useEffect(() => {
@@ -92,9 +99,10 @@ export default function ProductsComponent() {
 
   const getCustomerList = async (newPage) => {
     // setPage(newPage);
+    console.log(4343, query)
     try {
       const res = await axios.get(
-        `${url}?q=${query.text}&=${query.category_name}&page=${Number(newPage)}`
+        `${url}?q=${query.search ? query.search : ''}&category_id=${query.category_id ? query.category_id : ''}&page=${Number(newPage)}`
       );
       const { data, pages } = res.data;
       console.log("pages", pages);
@@ -303,28 +311,27 @@ export default function ProductsComponent() {
                     className="form-control"
                     id="exampleInputEmail1"
                     aria-describedby="texthelp"
-                    placeholder="Search "
-                    onChange={handleChange}
+                    placeholder="Search"
+                    onChange={(e) => handleChange(e)}
                   />
                   &nbsp;&nbsp;&nbsp;&nbsp;
                   <select
                     class="form-control"
                     id="exampleFormControlSelect1"
+                    name="category_id"
                     value={query.category_id}
                     onChange={(e) => {
                       handleChange(e);
                     }}
-                    name="category_id"
                   >
-                     <option value="">
-                      
+                    <option value="">
+
                       Select Category
-                     </option>
+                    </option>
                     {index.map((item) => {
                       return (
-                      
                         <option value={item.category_id}>
-                         
+
                           {item.category_name}
                         </option>
                       );
@@ -377,7 +384,7 @@ export default function ProductsComponent() {
                       type="checkbox"
                       checked={
                         first && first.length > 0 &&
-                         !first
+                        !first
                           .map((select) => {
                             if (select.isSelected === true) {
                               return 'checked';
@@ -439,7 +446,7 @@ export default function ProductsComponent() {
                         </div>
                       </td>
                       <td>{item.product_name}</td>
-                      <td>{item.product_type}</td>
+                      <td>{item.product_type === "i" ? "individual" : "parent" === "p" ? "parent" : "child"}</td>
                       <td>{item.category_name}</td>
                       <td>{item.product_qty}</td>
                       <td>
@@ -504,7 +511,10 @@ export default function ProductsComponent() {
                   {page.totalpages}{" "}
                 </p>
 
-                {paginationFunction}
+                {
+                  page.totalpages > 1 &&
+                  paginationFunction
+                }
               </div>
             </div>
           )}
@@ -532,4 +542,5 @@ export default function ProductsComponent() {
     </div>
   );
 }
+
 

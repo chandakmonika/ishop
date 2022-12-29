@@ -1,6 +1,9 @@
 import axios from "axios";
 import React, { useState, useEffect } from "react";
-import { Link, useParams } from "react-router-dom";
+import { Link, useParams,useNavigate } from "react-router-dom";
+import { toast } from 'react-toastify';
+import { toaster } from "../../utils/toaster";
+
 export default function Address_EditAddress() {
   const [first_name, setFirst_name] = useState("");
   const [last_name, setLast_name] = useState("");
@@ -43,6 +46,8 @@ export default function Address_EditAddress() {
     address_type: "",
     user_id: "",
   });
+
+  const navigate = useNavigate();
 
   useEffect(() => {
     axios
@@ -112,6 +117,10 @@ export default function Address_EditAddress() {
     }).then((result) => {
       result.json().then((resps) => {
         console.warn("resps", resps);
+        toaster(resps, 'Customer Added Successfully!')
+        if(resps === true ){
+            navigate("/customer/address/list")
+        }
       });
     });
   }
@@ -288,12 +297,12 @@ export default function Address_EditAddress() {
                 <option>No</option>
               </select>
             </div>
-            <Link to="/customer/address/list">
+            {/* <Link to="/customer/address/list"> */}
               <button type="button" class="btn btn-info" onClick={customerUser}>
                 Update
               </button>
               &nbsp;
-            </Link>
+            {/* </Link> */}
           </form>
 
           <br />

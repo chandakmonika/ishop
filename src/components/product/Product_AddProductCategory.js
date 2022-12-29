@@ -1,5 +1,9 @@
 import axios from "axios";
 import React, { useState, useEffect } from "react";
+import { Link,  useNavigate } from "react-router-dom";
+import { toast } from 'react-toastify';
+import { toaster } from "../../utils/toaster";
+
 import "./Product_AddProductCategory.css";
 
 export default function Product_AddProductCategory() {
@@ -13,7 +17,9 @@ export default function Product_AddProductCategory() {
   const [is_variant_key, setIs_variant_key] = useState("");
   const [attributes_group_name, setAttributes_group_name] = useState("");
   const [index, setIndex] = useState([]);
-  // const [attributes, setAttributes] = useState([]);
+
+  const navigate = useNavigate();
+
 
   useEffect(() => {
     axios
@@ -52,6 +58,10 @@ export default function Product_AddProductCategory() {
     }).then((result) => {
       result.json().then((resp) => {
         console.warn("resp", resp);
+        toaster(resp, 'Product Category Added Successfully!')
+        if(resp === true ){
+            navigate("/product/category/list")
+        }
       });
     });
   }
@@ -331,7 +341,7 @@ export default function Product_AddProductCategory() {
             <br />
             <div style={{ paddingLeft: "55rem" }}>
               <button type="submit" class="btn btn-info" onClick={productcategoryUser}>
-                Submit
+                Add Product Category
               </button>
             </div>
           </form>

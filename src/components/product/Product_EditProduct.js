@@ -999,7 +999,7 @@ export default function Product_AddProduct() {
 
         <div class="card" style={{ height: "auto" }}>
           <div class="card-body">
-            <h5>Pricing</h5>
+            <h5>SEO</h5>
             <div class="form-group row">
               <label for="inputColor" class="col-sm-2 col-form-label">
                 Meta Tags

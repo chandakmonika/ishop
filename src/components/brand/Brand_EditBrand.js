@@ -1,7 +1,9 @@
 import axios from "axios";
 import React, { useState, useEffect } from "react";
 import { useParams } from "react-router-dom";
-import { Link } from "react-router-dom";
+import { Link,useNavigate } from "react-router-dom";
+import { toast } from 'react-toastify';
+import { toaster } from "../../utils/toaster";
 
 export default function Brand_EditBrand() {
   const [brand_name, setBrand_name] = useState("");
@@ -15,6 +17,10 @@ export default function Brand_EditBrand() {
     brand_image: "",
     status: "",
   });
+
+  const navigate = useNavigate();
+
+
   const { brand_id } = useParams();
   useEffect(() => {
     axios
@@ -50,6 +56,10 @@ export default function Brand_EditBrand() {
     }).then((result) => {
       result.json().then((resps) => {
         console.warn("resps", resps);
+        toaster(resps, 'Brand Updated Successfully!')
+        if(resps === true ){
+            navigate("/brand/list")
+        }
       });
     });
   }

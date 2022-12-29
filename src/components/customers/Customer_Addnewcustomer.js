@@ -37,10 +37,7 @@ export default function Customer_Addnewcustomer() {
       });
     });
   }
-  // const submit = (e) => {
-  //   e.preventDefault();
-
-  // };
+ 
 
   return (
     <div style={{ paddingLeft: "10rem" }}>

@@ -153,7 +153,8 @@ export default function RoutingPage() {
               element={<Coupen_CoupenCodeEdit />}
             />
 
-            <Route path="/coupencode/add" element={<Coupen_CoupenCode />} />
+            <Route path="/coupencode/add" 
+            element={<Coupen_CoupenCode />} />
 
             <Route
               path="/customer/address/list/:user_id"

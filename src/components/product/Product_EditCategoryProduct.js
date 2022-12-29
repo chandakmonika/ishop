@@ -1,6 +1,9 @@
 import axios from "axios";
 import React, { useState, useEffect } from "react";
 import { useParams } from "react-router-dom";
+import { Link,useNavigate } from "react-router-dom";
+import { toaster } from "../../utils/toaster";
+
 export default function Product_EditCategoryProduct() {
   // const [parent_category_id, setParent_category_id] = useState("");
   // const [category_name, setCategory_name] = useState("");
@@ -12,6 +15,10 @@ export default function Product_EditCategoryProduct() {
   // const [is_variant_key, setIs_variant_key] = useState("");
   const [attributes_group_name, setAttributes_group_name] = useState("");
   const [index, setIndex] = useState([]);
+
+  // const navigate = useNavigate();
+
+
   const [userdata, setUser_data] = useState({
     parent_category_id: "",
     category_id: "",
@@ -108,6 +115,10 @@ export default function Product_EditCategoryProduct() {
     }).then((result) => {
       result.json().then((resps) => {
         console.warn("resps", resps);
+        // toaster(resps, 'Product Updated Successfully!')
+        // if(resps === true ){
+        //     navigate("/product/category/list")
+        // }
       });
     });
   }
@@ -349,9 +360,11 @@ export default function Product_EditCategoryProduct() {
             {/* <--------------------Dynamic Form end------------------> */}
             <br />
             <div style={{ paddingLeft: "55rem" }}>
+            <Link to="/product/category/list">
               <button type="submit" class="btn btn-info">
-                Submit
+                Update
               </button>
+              </Link>
             </div>
           </form>
         </div>

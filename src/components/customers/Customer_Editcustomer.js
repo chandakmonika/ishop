@@ -1,7 +1,8 @@
 import axios from "axios";
 import React, { useState, useEffect } from "react";
 import { useParams } from "react-router-dom";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
+import { toaster } from "../../utils/toaster";
 
 export default function Customer_Editcustomer() {
   const [first_name, setFirst_name] = useState("");
@@ -17,6 +18,10 @@ export default function Customer_Editcustomer() {
     gender: "",
   });
   const { user_id } = useParams();
+
+  const navigate = useNavigate();
+
+
   useEffect(() => {
     axios
       .get(
@@ -61,6 +66,10 @@ export default function Customer_Editcustomer() {
     }).then((result) => {
       result.json().then((resps) => {
         console.warn("resps", resps);
+        toaster(resps, 'Customer Updated Successfully!')
+        if(resps === true ){
+            navigate("/routing/customer/list")
+        }
       });
     });
   }
@@ -114,15 +123,7 @@ export default function Customer_Editcustomer() {
                 onChange={handleChange}
               />
 
-              {/* <label className="demo">Password</label>
-              <input
-                className="form-control"
-                name="password"
-                placeholder="Enter Password"
-                value={userdata.password}
-                onChange={handleChange}
-              /> */}
-
+           
               <label className="demo">Mobile Number</label>
               <input              
                 type="phone"
@@ -146,11 +147,11 @@ export default function Customer_Editcustomer() {
                 <option value="o">Other</option>
               </select>
             </div>
-            <Link to="/routing/customer/list">
+         
             <button type="button" class="btn btn-info" onClick={customerUser}>
               Update 
             </button>
-            </Link>
+            
             &nbsp;
           </form>
           <br />

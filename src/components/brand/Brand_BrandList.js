@@ -5,15 +5,18 @@ import Container from "react-bootstrap/Container";
 import Nav from "react-bootstrap/Nav";
 import Navbar from "react-bootstrap/Navbar";
 import "./Brand_BrandList.css";
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useNavigate,  useSearchParams, } from "react-router-dom";
 import Typography from "@mui/material/Typography";
 import Modal from "@mui/material/Modal";
 import TablePagination from "@mui/material/TablePagination";
 import Box from "@mui/material/Box";
+import EmptyPage from "../emptypage";
 
 export default function Brand_BrandList() {
+  const [searchParams, setSearchParams] = useSearchParams();
   const [parent_category_id, setParent_category_id] = useState("");
   const [index, setIndex] = useState([]);
+  const pageNo = searchParams.get("page");
   const [brand, setBrand] = useState([]);
   const [status, setStatus] = useState([]);
   const [order, setOrder] = useState("ASC");
@@ -29,6 +32,8 @@ export default function Brand_BrandList() {
     totalrecords: 0,
   });
 
+  const navigate = useNavigate();
+
   const [changeStatusId, setChangeStatusId] = useState({
     brand_id: "",
     status: "",
@@ -37,46 +42,61 @@ export default function Brand_BrandList() {
 
   const url = "http://admin.ishop.sunhimlabs.com/api/v1/products/brands/list";
 
+  // useEffect(() => {
+  //   axios
+  //     .get(`http://admin.ishop.sunhimlabs.com/api/v1/products/parentcategories`)
+  //     .then((res) => setIndex(res.data.data));
+  // }, []);
+
+  console.log(query);
+  const handleChange = (e) => {
+    setQuery({
+      ...query,
+      [e.target.name]: e.target.value
+    });
+  };
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    setPage({
+      ...page,
+      current: 0
+    })
+    getBrandList(0);
+  };
+
   useEffect(() => {
     axios
       .get(`http://admin.ishop.sunhimlabs.com/api/v1/products/parentcategories`)
       .then((res) => setIndex(res.data.data));
   }, []);
 
-  console.log(query);
-  const handleChange = (e) => {
-    console.log(454, e.target.name, e.target.value);
-    setQuery({ [e.target.name]: e.target.value });
-  };
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    console.log('query', query)
-    axios
-      .get(
-        `http://admin.ishop.sunhimlabs.com/api/v1/products/brands/list?q=${query.search}`
-      )
-      .then((res) => setBrand(res.data.data));
-  };
-
-  const getData = async () => {
-    try {
-      const res = await axios.get(`${url}`);
-      const { data, pages } = res.data;
-      setBrand(data);
-      setPage(pages);
-    } catch (error) {
-      console.log(error);
-    }
-  };
+  // const getData = async () => {
+  //   try {
+  //     const res = await axios.get(`${url}`);
+  //     const { data, pages } = res.data;
+  //     setBrand(data);
+  //     setPage(pages);
+  //   } catch (error) {
+  //     console.log(error);
+  //   }
+  // };
   useEffect(() => {
-    getData();
-  }, []);
+    getBrandList(pageNo);
+  }, [pageNo]);
 
   const handleChangePage = async (e, newPage) => {
+    navigate(`/brand/list?page=${newPage + 1}`);
     setPage(newPage);
+   
+  };
+
+  const getBrandList = async (newPage) => {
     try {
-      const res = await axios.get(`${url}?&page=${newPage + 1}`);
+      const res = await axios.get(
+        `${url}?q=${query.search ? query.search : ''}&category_id=${query.category_id ? query.category_id : ''}&page=${Number(newPage)}`
+      );
       const { data, pages } = res.data;
+      console.log("pages", pages);
       setBrand(data);
       setPage(pages);
     } catch (error) {
@@ -84,11 +104,6 @@ export default function Brand_BrandList() {
     }
   };
 
-  const getBrandList = () => {
-    axios
-      .get(`http://admin.ishop.sunhimlabs.com/api/v1/products/brands/list`)
-      .then((res) => setBrand(res.data.data));
-  };
   useEffect(() => {
     getBrandList();
   }, []);
@@ -98,7 +113,7 @@ export default function Brand_BrandList() {
     order === "ASC" ? setOrder("DESC") : setOrder("ASC");
     axios
       .get(
-        `http://admin.ishop.sunhimlabs.com/api/v1/products/brands/list?q=&category_name=&per_page=12&page=1&sort_by=brand_name&order_by=${order}`
+        `http://admin.ishop.sunhimlabs.com/api/v1/products/brands/list?q=&category_id=&per_page=12&page=1&sort_by=brand_name&order_by=${order}`
       )
       .then((res) => setBrand(res.data.data));
   };
@@ -336,6 +351,7 @@ export default function Brand_BrandList() {
                           .includes(false)
                       }
                       onChange={(e) => selectAllItems(e)}
+                      disabled={brand.length === 0}
                     />
                     <label for="customCheck"></label>
                   </div>
@@ -350,7 +366,7 @@ export default function Brand_BrandList() {
                   <i class="fas fa-arrow-down" onClick={update}></i>
                   <i class="fas fa-arrow-up" onClick={update}></i>
                 </th>
-                <th scope="col">Logo</th>
+                {/* <th scope="col">Logo</th> */}
                 <th scope="col">Status</th>
                 <th scope="col">Action</th>
               </tr>
@@ -374,8 +390,8 @@ export default function Brand_BrandList() {
                         </div>
                       </td>
                       <td>{item.category_name}</td>
-                      <td>{item.brand_name}</td>
-                      <td>{item.brand_logo}</td>
+                      <td>{item.brand_name} {item.brand_logo}</td>
+                      {/* <td>{item.brand_logo}</td> */}
                       <td>
                         <button
                           type="button"
@@ -399,8 +415,13 @@ export default function Brand_BrandList() {
                 })}
             </tbody>
           </table>
+          {brand.length <= 0 && (
+            <div className="text-center">
+              <EmptyPage />
+            </div>
+          )}
           {/* <-------------------------TableEnd----------------------> */}
-
+          {brand.length > 0 && (
           <div class="text-left">
             <div className="row">
               <div className="col-md-2">
@@ -432,10 +453,14 @@ export default function Brand_BrandList() {
                   {page.totalpages}{" "}
                 </p>
 
-                {paginationFunction}
+               {
+                  page.totalpages > 1 &&
+                  paginationFunction
+                }
               </div>
             </div>
           </div>
+            )}
         </div>
       </div>
       <Modal
@@ -461,152 +486,4 @@ export default function Brand_BrandList() {
   );
 }
 
-// ------------------------------------------------------------------------------------------------------------------------
 
-// import React, { useEffect, useState } from "react";
-// import Button from "react-bootstrap/Button";
-// import Container from "react-bootstrap/Container";
-// import Nav from "react-bootstrap/Nav";
-// import Navbar from "react-bootstrap/Navbar";
-// //import "./Brand_BrandList.css";
-// import * as moment from "moment";
-// import axios from "axios";
-// import { TableWithBrowserPagination, Column } from "react-rainbow-components";
-// const Brand_BrandList = () => {
-//   const [data, setData] = useState([]);
-//   const [query, setQuery] = useState({ text: "" });
-//   const [parent_category_id, setParent_category_id] = useState("");
-//   const [index, setIndex] = useState([]);
-
-//   const [tableData, setTableData] = useState([]);
-
-//   useEffect(() => {
-//     if (data) {
-//       let tableInitial = [];
-//       data.map((item) => {
-//         let obj = {
-//           id: item.id,
-//           brand_name: item.brand_name,
-//           brand_logo: item.brand_logo,
-//           inserted_date: moment(item.inserted_date).format(
-//             "Do MMM YYYY, HH:mm"
-//           ),
-//           product_category_id: item.product_category_id,
-//           store_id: item.store_id,
-//           status: item.status === 0 ? "inactive" : "active",
-//         };
-//         tableInitial = [...tableInitial, obj];
-//         return null;
-//       });
-//       setTableData(tableInitial);
-//     }
-//   }, [data]);
-
-//   useEffect(() => {
-//     axios
-//       .get("http://admin.ishop.sunhimlabs.com/api/v1/products/brands/list")
-//       .then((res) => setData(res.data.data));
-//   }, []);
-//   useEffect(() => {
-//     axios
-//       .get(`http://admin.ishop.sunhimlabs.com/api/v1/products/parentcategories`)
-//       .then((res) => setIndex(res.data.data));
-//   }, []);
-
-//   // console.log(query);
-//   const handleChange = (e) => {
-//     setQuery({ text: e.target.value });
-//   };
-//   const handleSubmit = (e) => {
-//     e.preventDefault();
-//     axios
-//       .get(
-//         `http://admin.ishop.sunhimlabs.com/api/v1/products/brands/list/?q=${query.text}`
-//       )
-//       .then((res) => setData(res.data));
-//   };
-//   return (
-//     <div>
-//       <Navbar expand="lg">
-//         <Container fluid>
-//           <Navbar.Brand href="#">Brand List</Navbar.Brand>
-
-//           <Navbar.Collapse id="navbarScroll">
-//             <Nav
-//               className="ml-auto my-4 my-lg-0"
-//               style={{ maxHeight: "100px" }}
-//               navbarScroll
-//             >
-//               <div className="d-flex ml-auto my-2 my-lg-0">
-//                 <Button variant="light">Import Brand</Button>&nbsp;&nbsp;&nbsp;
-//                 <Button variant="info">Add Brand</Button>&nbsp;&nbsp;&nbsp;
-//               </div>
-//               &nbsp;&nbsp;&nbsp;
-//             </Nav>
-//           </Navbar.Collapse>
-//         </Container>
-//       </Navbar>
-//       <div class="card" style={{ width: "100%" }}>
-//         <div class="card-body" style={{ width: "100%" }}>
-//           <div class="row">
-//             <div className="col-sm-5">
-//               <form onSubmit={handleSubmit}>
-//                 <div class="input-group">
-//                   <input
-//                     type="text"
-//                     name="search"
-//                     className="form-control"
-//                     id="exampleInputEmail1"
-//                     aria-describedby="texthelp"
-//                     placeholder="Search this blog"
-//                     onChange={handleChange}
-//                   />
-//                   &nbsp;&nbsp;&nbsp;&nbsp;
-//                   <select
-//                     class="form-control"
-//                     id="exampleFormControlSelect1"
-//                     value={parent_category_id}
-//                     onChange={(e) => {
-//                       setParent_category_id(e.target.value);
-//                     }}
-//                     name="parent_category_id"
-//                     category
-//                   >
-//                     {index.map((item) => {
-//                       return (
-//                         <option value={item.category_id}>
-//                           {item.category_name}
-//                         </option>
-//                       );
-//                     })}
-//                   </select>
-//                   &nbsp;&nbsp;
-//                   <Button variant="info" type="submit">
-//                     Search
-//                   </Button>
-//                 </div>
-//               </form>
-//             </div>
-//           </div>
-//           <br />
-//           <div className="rainbow-m-bottom_xx-large" >
-//             <TableWithBrowserPagination
-//               pageSize={5}
-//               showCheckboxColumn
-//               data={tableData}
-//               keyField="id"
-
-//             >
-//               <Column header="Category Name" field="id" />
-//               <Column header="brand Name" field="brand_name" />
-//               <Column header="brand logo status" field="brand_logo" />
-//               <Column header="status" field="status" />
-//             </TableWithBrowserPagination>
-//           </div>
-//         </div>
-//       </div>
-//     </div>
-//   );
-// };
-
-// export default Brand_BrandList;
