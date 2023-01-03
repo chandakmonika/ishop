@@ -1,8 +1,7 @@
 import axios from "axios";
 import React, { useState, useEffect } from "react";
 import { useParams } from "react-router-dom";
-import { Link,useNavigate } from "react-router-dom";
-import { toaster } from "../../utils/toaster";
+import { Link } from "react-router-dom";
 
 export default function Product_EditCategoryProduct() {
   // const [parent_category_id, setParent_category_id] = useState("");
@@ -55,20 +54,20 @@ export default function Product_EditCategoryProduct() {
         const groupsData = [];
         // if(getData.groups.length >0  ){
         getData.groups.forEach((grp) => {
-          if(grp.attributes.length >0 ){
-          grp.attributes.forEach((attr) => {
-            groupsData.push({
-              // ...grp,
-              attributes_group_name: grp.group_title,
-              attributes_label: attr.attributes_label,
-              attributes_name: attr.attributes_name,
-              attributes_type: attr.attributes_type,
-              attributes_value: attr.attributes_value,
-              is_variant_key: attr.is_variant_key,
+          if (grp.attributes.length > 0) {
+            grp.attributes.forEach((attr) => {
+              groupsData.push({
+                // ...grp,
+                attributes_group_name: grp.group_title,
+                attributes_label: attr.attributes_label,
+                attributes_name: attr.attributes_name,
+                attributes_type: attr.attributes_type,
+                attributes_value: attr.attributes_value,
+                is_variant_key: attr.is_variant_key,
+              });
             });
-          });
-        }
-        else{
+          }
+          else {
             groupsData.push({
               // ...grp,
               attributes_group_name: "",
@@ -81,7 +80,7 @@ export default function Product_EditCategoryProduct() {
           }
           // groupsData.push([...attrData]);
         });
-      
+
         console.log(29, groupsData);
         setFormFields(groupsData);
         setUser_data(getData);
@@ -221,7 +220,7 @@ export default function Product_EditCategoryProduct() {
             </div>
 
             {/* <---------------CustomerImage--------------> */}
-            <h6>Customer Image</h6>
+            <h6>Product Category Image</h6>
             <div class="card" style={{ height: "auto", width: "30rem" }}>
               <div class="card-body">
                 <div className="container" style={{ paddingTop: "38px" }}>
@@ -242,7 +241,7 @@ export default function Product_EditCategoryProduct() {
 
             {/* <--------------------Dynamic Form---------------> */}
             <h6>Custom Attribute</h6>
-            <div class="card" style={{ height: "auto", width: "60rem" }}>
+            <div class="card" style={{ height: "auto" }}>
               <div class="card-body">
                 {console.log(2, formFields)}
                 {formFields.map((form, index) => {
@@ -319,7 +318,7 @@ export default function Product_EditCategoryProduct() {
                       <label className="demo" style={{ width: "29rem" }}>
                         Is_Variant_Key
                       </label>
-                      <div style={{ paddingRight: "30rem" }}>
+                      <div>
                         <input
                           type="radio"
                           name="is_variant_key"
@@ -359,11 +358,11 @@ export default function Product_EditCategoryProduct() {
             </div>
             {/* <--------------------Dynamic Form end------------------> */}
             <br />
-            <div style={{ paddingLeft: "55rem" }}>
-            <Link to="/product/category/list">
-              <button type="submit" class="btn btn-info">
-                Update
-              </button>
+            <div className="float-right">
+              <Link to="/product/category/list">
+                <button type="submit" class="btn btn-info">
+                  Update
+                </button>
               </Link>
             </div>
           </form>
@@ -372,3 +371,4 @@ export default function Product_EditCategoryProduct() {
     </div>
   );
 }
+

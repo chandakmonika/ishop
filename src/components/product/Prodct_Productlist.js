@@ -30,10 +30,11 @@ export default function ProductsComponent() {
   const [product_id, setProduct_id] = useState([]);
   const [selectedcustomer, setSelectedcustomer] = useState([]);
   const [selectedStatus, setSelectedStatus] = useState("0");
+
   const [page, setPage] = useState({
     current: 0,
     previous: 0,
-    records_per_page: 0,
+    per_page: 15,
     totalpages: 0,
     totalrecords: 0,
   });
@@ -55,15 +56,15 @@ export default function ProductsComponent() {
   const handleChange = (e) => {
     setQuery({
       ...query,
-      [e.target.name]: e.target.value
+      [e.target.name]: e.target.value,
     });
   };
   const handleSubmit = (e) => {
     e.preventDefault();
     setPage({
       ...page,
-      current: 0
-    })
+      current: 0,
+    });
     getCustomerList(0);
   };
 
@@ -72,7 +73,6 @@ export default function ProductsComponent() {
       .get(`http://admin.ishop.sunhimlabs.com/api/v1/products/parentcategories`)
       .then((res) => setIndex(res.data.data));
   }, []);
-
 
   // const getData = async () => {
   //   try {
@@ -97,12 +97,14 @@ export default function ProductsComponent() {
     navigate(`/product/list?page=${newPage + 1}`);
   };
 
-  const getCustomerList = async (newPage) => {
+  const getCustomerList = async (newPage, recordsPerPage) => {
     // setPage(newPage);
-    console.log(4343, query)
+    console.log(4343, newPage, query, page);
     try {
       const res = await axios.get(
-        `${url}?q=${query.search ? query.search : ''}&category_id=${query.category_id ? query.category_id : ''}&page=${Number(newPage)}`
+        `${url}?q=${query.search ? query.search : ""}&category_id=${
+          query.category_id ? query.category_id : ""
+        }&page=${Number(newPage)}`
       );
       const { data, pages } = res.data;
       console.log("pages", pages);
@@ -132,9 +134,10 @@ export default function ProductsComponent() {
   const update = (e) => {
     e.preventDefault();
     order === "ASC" ? setOrder("DESC") : setOrder("ASC");
+
     axios
       .get(
-        `${process.env.REACT_APP_BACKEND_APIURL}api/v1/products/list?q=&category_id=&status=&per_page=12&page=1&sort_by=product_name&order_by=${order}`
+        `${process.env.REACT_APP_BACKEND_APIURL}api/v1/products/list?q=&category_id=&status=&per_page=3&page=1&sort_by=product_name&order_by=${order}`
       )
       .then((res) => setFirst(res.data.data));
   };
@@ -204,7 +207,6 @@ export default function ProductsComponent() {
     console.log(datas);
   };
 
-
   const applyStatus = () => {
     console.log(3, selectedcustomer, selectedStatus);
     const selectedData = first.filter((item) => item.isSelected === true);
@@ -257,13 +259,13 @@ export default function ProductsComponent() {
   const paginationFunction = useMemo(
     () => (
       <TablePagination
-        className="col-md-7"
+        className=""
         rowsPerPageOptions={[12]}
         component="div"
         count={page.totalrecords || 0}
         page={page.current - 1 || 0}
         onPageChange={handlePageChange}
-        rowsPerPage={page.records_per_page || 0}
+        rowsPerPage={page.per_page || 0}
       />
     ),
     [page]
@@ -275,6 +277,7 @@ export default function ProductsComponent() {
 
       <Navbar expand="lg">
         <Container fluid>
+          {console.log(98, page)}
           <Navbar.Brand href="#">Product</Navbar.Brand>
           <Navbar.Collapse id="navbarScroll">
             <Nav
@@ -324,14 +327,10 @@ export default function ProductsComponent() {
                       handleChange(e);
                     }}
                   >
-                    <option value="">
-
-                      Select Category
-                    </option>
+                    <option value="">Select Category</option>
                     {index.map((item) => {
                       return (
                         <option value={item.category_id}>
-
                           {item.category_name}
                         </option>
                       );
@@ -383,11 +382,12 @@ export default function ProductsComponent() {
                     <input
                       type="checkbox"
                       checked={
-                        first && first.length > 0 &&
+                        first &&
+                        first.length > 0 &&
                         !first
                           .map((select) => {
                             if (select.isSelected === true) {
-                              return 'checked';
+                              return "checked";
                             }
                             return false;
                           })
@@ -435,7 +435,7 @@ export default function ProductsComponent() {
                           <input
                             type="checkbox"
                             value={item.isSelected}
-                            checked={item.isSelected ? 'checked' : false}
+                            checked={item.isSelected ? "checked" : false}
                             onChange={(e) =>
                               onSelectCustomer(e, item.product_id)
                             }
@@ -446,7 +446,13 @@ export default function ProductsComponent() {
                         </div>
                       </td>
                       <td>{item.product_name}</td>
-                      <td>{item.product_type === "i" ? "individual" : "parent" === "p" ? "parent" : "child"}</td>
+                      <td>
+                        {item.product_type === "i"
+                          ? "Individual"
+                          : item.product_type === "p"
+                          ? "Parent"
+                          : "Child"}
+                      </td>
                       <td>{item.category_name}</td>
                       <td>{item.product_qty}</td>
                       <td>
@@ -480,8 +486,8 @@ export default function ProductsComponent() {
           {/* <-------------------------TableEnd----------------------> */}
           {first.length > 0 && (
             <div class="text-left">
-              <div className="row">
-                <div className="col-md-2">
+              <div className="d-flex justify-content-between">
+                <div className="w-25 mr-2">
                   <select
                     class="form-control"
                     id="exampleFormControlSelect1"
@@ -494,27 +500,51 @@ export default function ProductsComponent() {
                     <option value={"2"}>Delete</option>
                   </select>
                 </div>
-                <div className="row">
+                <div className="">
                   <button
                     type="button"
-                    class="btn btn-light col-md-2"
-                    style={{ width: "8rem" }}
+                    class="btn btn-light w-25"
+                    style={{ minWidth: "fit-content" }}
                     onClick={() => handleOpen(null, null, false)}
                   >
                     Apply
                   </button>
                 </div>
-
-                <p className="col-md-3">
-                  &nbsp; Pages:
-                  <b style={{ color: "black" }}> {page.current}</b> /{" "}
-                  {page.totalpages}{" "}
-                </p>
-
-                {
-                  page.totalpages > 1 &&
-                  paginationFunction
-                }
+                <div className="w-auto ml-auto">
+                  <span>Records per page: </span>
+                  <select
+                    class="form-control"
+                    id="exampleFormControlSelect1"
+                    placeholder="Action"
+                    onChange={(e) => {
+                      setPage({
+                        ...page,
+                        per_page: e.target.value,
+                      });
+                      handlePageChange(e, 1)
+                      getCustomerList(1, e.target.value);
+                    }}
+                  >
+                    {/* <option selected>Action</option> */}
+                    <option value={"5"}>5</option>
+                    <option value={"10"}>10</option>
+                    <option value={"15"} selected>
+                      15
+                    </option>
+                    <option value={"20"}>20</option>
+                    <option value={"30"}>30</option>
+                    <option value={"50"}>50</option>
+                    <option value={"100"}>100</option>
+                  </select>
+                </div>
+                <div className="ml-auto">
+                  {page.totalpages > 1 && paginationFunction}
+                </div>
+              </div>
+              <div className=" ">
+                &nbsp; Pages:
+                <b style={{ color: "black" }}> {page.current}</b> /{" "}
+                {page.totalpages}{" "}
               </div>
             </div>
           )}
@@ -542,5 +572,3 @@ export default function ProductsComponent() {
     </div>
   );
 }
-
-

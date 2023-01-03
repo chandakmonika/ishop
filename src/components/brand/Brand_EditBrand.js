@@ -22,6 +22,13 @@ export default function Brand_EditBrand() {
 
 
   const { brand_id } = useParams();
+
+  useEffect(() => {
+    axios
+      .get(`http://admin.ishop.sunhimlabs.com/api/v1/products/parentcategories`)
+      .then((res) => setIndex(res.data.data));
+  }, []);
+
   useEffect(() => {
     axios
       .get(

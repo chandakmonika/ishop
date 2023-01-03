@@ -1,6 +1,7 @@
 import axios from "axios";
 import React, { useState, useEffect } from "react";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
+import { toaster } from "../../utils/toaster";
 import Master_CMSEditor from "./Master_CMSEditor";
 
 const config = {
@@ -44,6 +45,7 @@ export default function M_CMSEditpage() {
     seo_page_description: ""
   });
   const { page_id } = useParams();
+  const navigate = useNavigate() 
   console.log('page_id', page_id)
   useEffect(() => {
     axios
@@ -85,19 +87,28 @@ export default function M_CMSEditpage() {
       seo_page_description
     );
 
+    const cmsPageData = {
+      ...userdata,
+      page_id
+    }
+
     fetch(
-      `http://admin.ishop.sunhimlabs.com/api/v1/cmspages/edit/${page_id}`,
+      `http://admin.ishop.sunhimlabs.com/api/v1/cmspages/edit`,
       {
         method: "POST",
         headers: {
           Accept: "application/json",
           "Content-Type": "Application/json",
         },
-        body: JSON.stringify(userdata),
+        body: JSON.stringify(cmsPageData),
       }
     ).then((result) => {
       result.json().then((resps) => {
         console.warn("resps", resps);
+        toaster(resps, 'CMS Sata Updated Successfully!')
+        if(resps === true ){
+            navigate(`/mastermanagement/cms/list`)
+        }
       });
     });
   }

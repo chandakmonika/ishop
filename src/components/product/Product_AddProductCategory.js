@@ -9,13 +9,17 @@ import "./Product_AddProductCategory.css";
 export default function Product_AddProductCategory() {
   const [parent_category_id, setParent_category_id] = useState("");
   const [category_name, setCategory_name] = useState("");
-  const [category_image, setCategory_image] = useState(null);
+  const [category_image, setCategory_image] = useState("");
   const [attributes_label, setAttributes_label] = useState("");
   const [attributes_name, setAttributes_name] = useState("");
   const [attributes_type, setAttributes_type] = useState("");
   const [attributes_value, setAttributes_value] = useState("");
   const [is_variant_key, setIs_variant_key] = useState("");
   const [attributes_group_name, setAttributes_group_name] = useState("");
+  const [media_id, setMedia_id] = useState({
+    id: '',
+    previewImg: ''
+  })
   const [index, setIndex] = useState([]);
 
   const navigate = useNavigate();
@@ -27,7 +31,7 @@ export default function Product_AddProductCategory() {
       .then((res) => setIndex(res.data.data));
   }, []);
 
-  function productcategoryUser() {
+  function productCategoryUser() {
     console.warn(
       parent_category_id,
       category_name,
@@ -42,8 +46,9 @@ export default function Product_AddProductCategory() {
     let data = {
       parent_category_id: Number(parent_category_id),
       category_name,
-      category_image: category_image?.logoFile ? category_image?.logoFile:"",
-      attributes: formFields
+      category_image,
+      attributes: formFields,
+      media_id: media_id.id
     };
     
     fetch("http://admin.ishop.sunhimlabs.com/api/v1/products/category/add", {
@@ -74,7 +79,7 @@ export default function Product_AddProductCategory() {
     attributes_type:"",
     attributes_value:"",
     is_variant_key:"",
-    attributes_group_name:"", 
+    attributes_group_name:""
   },
   ]);
 
@@ -109,7 +114,7 @@ export default function Product_AddProductCategory() {
 
 
 
-  const handleImageUpload = (event) => {
+  const handleImageUpload1 = (event) => {
     // setImgError('')
     const reader = new FileReader()
     const file = event.target.files
@@ -136,6 +141,18 @@ export default function Product_AddProductCategory() {
         // setImgError("Invalid image type")
     }
 }
+
+const handleImageUpload = (e) => {
+  const fileData = e.target.files[0]
+  console.log(37, fileData, e.target.files, URL.createObjectURL(e.target.files[0]));
+
+  setCategory_image(fileData.lastModified.toString())
+  setMedia_id({
+    id: fileData.lastModified.toString(),
+    previewImg: URL.createObjectURL(fileData)
+  });
+}
+
   return (
     <div>
       <h4>Add Product Category</h4>
@@ -182,7 +199,7 @@ export default function Product_AddProductCategory() {
             </div>
 
             {/* <---------------CustomerImage--------------> */}
-            <h6>Customer Image</h6>
+            <h6>Product Category Image</h6>
             <div class="card" style={{ height: "auto", width: "30rem" }}>
               <div class="card-body">
                 <div className="container" style={{ paddingTop: "38px" }}>
@@ -199,6 +216,7 @@ export default function Product_AddProductCategory() {
                     }}
 
                   />
+                  { media_id.previewImg && <img style={{width: '100%', height: '250px'}} src={media_id.previewImg} alt="preview" />}
                   {/* <input
                     type="file"
                     name="category_image"
@@ -214,13 +232,13 @@ export default function Product_AddProductCategory() {
 
             {/* <--------------------Dynamic Form---------------> */}
             <h6>Custom Attribute</h6>
-            <div class="card" style={{ height: "auto", width: "60rem" }}>
+            <div class="card" style={{ height: "auto" }}>
               <div class="card-body">
                 {console.log(2,formFields)}
                 {formFields.map((form, index) => {
                   return (   
                     <div key={index}>
-                      <label className="demo" style={{ width: "29rem" }}>
+                      <label className="demos" style={{ width: "29rem" }}>
                         Group Name
                       </label>
                       <input
@@ -232,7 +250,7 @@ export default function Product_AddProductCategory() {
                         style={{ width: "29rem" }}
                       />
                       <br />
-                      <label className="demo" style={{ width: "29rem" }}>
+                      <label className="demos" style={{ width: "29rem" }}>
                         Field Label
                       </label>
                       <input
@@ -246,7 +264,7 @@ export default function Product_AddProductCategory() {
                         style={{ width: "29rem" }}
                       />
                       <br />
-                      <label className="demo" style={{ width: "29rem" }}>
+                      <label className="demos" style={{ width: "29rem" }}>
                         Field Name
                       </label>
                       <input
@@ -258,7 +276,7 @@ export default function Product_AddProductCategory() {
                         style={{ width: "29rem" }}
                       />
                       <br />
-                      <label className="demo" style={{ width: "29rem" }}>
+                      <label className="demos" style={{ width: "29rem" }}>
                         Field Type
                       </label>
                       {/* <input
@@ -270,7 +288,7 @@ export default function Product_AddProductCategory() {
                         style={{ width: "29rem" }}
                       /> */}
                       <select
-                class="form-control"
+                class="demos"
                 id="exampleFormControlSelect1"
               
                 onChange={(e) => {
@@ -286,7 +304,7 @@ export default function Product_AddProductCategory() {
                  
               </select>
                       <br />
-                      <label className="demo" style={{ width: "29rem" }}>
+                      <label className="demos" style={{ width: "29rem" }}>
                         Field Value
                       </label>
                       <input
@@ -298,13 +316,13 @@ export default function Product_AddProductCategory() {
                         style={{ width: "29rem" }}
                       />
                       <br />
-                      <label className="demo" style={{ width: "29rem" }}>
+                      <label className="demos" style={{ width: "29rem" }}>
                         Is_Variant_Key
                       </label>
-                      <div style={{ paddingRight: "30rem" }}>
+                      {/* <div style={{ paddingRight: "30rem" }}> */}
                         <input
                           type="radio"
-                          name="is_variant_key"
+                          name={`is_variant_key`}
                           onChange={(e) => {
                             handleFormChange(e,index);
                           }}
@@ -313,14 +331,14 @@ export default function Product_AddProductCategory() {
                         Y &nbsp;&nbsp;
                         <input
                           type="radio"
-                          name="is_variant_key"
+                          name={`is_variant_key`}
                           onChange={(e) => {
                             handleFormChange(e,index);
                           }}
                           value={"n"}
                         />
                         N
-                      </div>
+                      {/* </div> */}
                       <br />
                       <br />
                       <button
@@ -339,9 +357,9 @@ export default function Product_AddProductCategory() {
             </div>
             {/* <--------------------Dynamic Form end------------------> */}
             <br />
-            <div style={{ paddingLeft: "55rem" }}>
-              <button type="submit" class="btn btn-info" onClick={productcategoryUser}>
-                Add Product Category
+            <div class="float-right">
+              <button type="submit" class="btn btn-info" onClick={productCategoryUser}>
+              Add Product Category
               </button>
             </div>
           </form>
@@ -350,3 +368,4 @@ export default function Product_AddProductCategory() {
     </div>
   );
 }
+

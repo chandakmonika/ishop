@@ -85,7 +85,7 @@ export default function Address_AddAddress() {
         console.warn("resps", resps);
         toaster(resps, 'Address Added Successfully!')
         if(resps === true ){
-            navigate("/customer/address/list/:user_id")
+            navigate(`/customer/address/list/${user_id}`)
         }
       });
     });
@@ -324,3 +324,4 @@ export default function Address_AddAddress() {
     </div>
   );
 }
+

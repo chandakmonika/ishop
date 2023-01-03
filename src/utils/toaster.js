@@ -14,7 +14,7 @@ export const toaster = (resps, successMessage) => {
           });
       }
       else{
-        toast.error(resps.errors.map((err)=>err.msg).join(", "), {
+        toast.error(resps.errors && resps.errors.length ? resps.errors.map((err)=>err.msg).join(", ") : resps.errors ? resps.errors : resps.message, {
           position: "bottom-right",
           autoClose: 5000,
           hideProgressBar: false,

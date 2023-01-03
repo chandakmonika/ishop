@@ -48,12 +48,6 @@ export default function Address_AddressList() {
       .then((res) => setFirst(res.data.data));
   };
 
-  useEffect(() => {
-    axios
-      .get(`http://admin.ishop.sunhimlabs.com/api/v1/customer/address/list/${user_id}`)
-      .then((res) => setFirst(res.data.data));
-  }, []);
-
   const handleChangePage = async (e, newPage) => {
     setPage(newPage);
     try {
@@ -67,8 +61,9 @@ export default function Address_AddressList() {
   };
 
   const getCustomerList = () => {
+    console.log('user_id', user_id)
     axios
-      .get(`http://admin.ishop.sunhimlabs.com/api/v1/customer/address/list/`)
+      .get(`http://admin.ishop.sunhimlabs.com/api/v1/customer/address/list/${user_id}`)
       .then((res) => setFirst(res.data.data));
   };
 
@@ -233,7 +228,6 @@ export default function Address_AddressList() {
                    aria-describedby="texthelp"
                    placeholder="Search "
                    onChange={handleChange}
-
                 />
 
                 <div class="input-group-append">
@@ -252,18 +246,7 @@ export default function Address_AddressList() {
             </div>
           </div>
           <br />
-          <table class="table table-bordered" style={{ width: "95%" }}>
-            {console.log(
-              2,
-              first
-                .map((select) => {
-                  if (select.isSelected === true) {
-                    return true;
-                  }
-                  return false;
-                })
-                .includes(false)
-            )}
+          <table class="table table-bordered">
             <thead style={{ backgroundColor: "#EBF1F3" }}>
               <tr>
                 <th scope="col">
@@ -321,8 +304,7 @@ export default function Address_AddressList() {
                         </div>
                       </td>
                       <td>
-                        {item.first_name}
-                        {item.last_name}
+                        {item.first_name} {item.last_name}
                       </td>
                       <td>{item.email}</td>
                       <td>

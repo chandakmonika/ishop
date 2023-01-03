@@ -6,14 +6,17 @@ import Nav from "react-bootstrap/Nav";
 import Navbar from "react-bootstrap/Navbar";
 import "./Customer_Customerlist.css";
 import { Link } from "react-router-dom";
-import { useParams, useNavigate } from "react-router-dom";
+import { useSearchParams, useNavigate } from "react-router-dom";
 import TablePagination from "@mui/material/TablePagination";
 import Box from "@mui/material/Box";
 import Typography from "@mui/material/Typography";
 import Modal from "@mui/material/Modal";
 import { toast } from "react-toastify";
+import EmptyPage from "../emptypage";
 
 export default function Customer_Customerlist() {
+  const [searchParams, setSearchParams] = useSearchParams();
+  const pageNo = searchParams.get("page");
   const [index, setIndex] = useState([]);
   const [query, setQuery] = useState({ text: "" });
   const [order, setOrder] = useState("ASC");
@@ -41,43 +44,52 @@ export default function Customer_Customerlist() {
 
   console.log(query);
   const handleChange = (e) => {
-    setQuery({ text: e.target.value });
+    setQuery({
+      ...query,
+      [e.target.name]: e.target.value
+    });
   };
   const handleSubmit = (e) => {
     e.preventDefault();
-    axios
-      .get(
-        `http://admin.ishop.sunhimlabs.com/api/v1/customer/list/?q=${query.text}`,{
-          method: "GET",
-          headers: {
-            Accept: "application/json",
-            "content-Type": "Application/json",
-            storename: "kbtrends",
-          },
-          // body: JSON.stringify(productInputData),
-        }
-      )
-      .then((res) => setIndex(res.data.data));
+    setPage({
+      ...page,
+      current: 0
+    })
+    // axios
+    //   .get(
+    //     `http://admin.ishop.sunhimlabs.com/api/v1/customer/list/?q=${query.text}`,{
+    //       method: "GET",
+    //       headers: {
+    //         Accept: "application/json",
+    //         "content-Type": "Application/json",
+    //         storename: "kbtrends",
+    //       },
+          
+    //     }
+    //   )
+    //   .then((res) => setIndex(res.data.data));
+    getData(0);
   };
-  // const getData = async () => {
-  //   try {
-  //     const res = await axios.get(`${url}`);
-  //     const { data, pages } = res.data;
-  //     setIndex(data);
-  //     setPage(pages);
-  //   } catch (error) {
-  //     console.log(error);
-  //   }
-  // };
-  // useEffect(() => {
-  //   getData();
 
-  // }, []);
+  useEffect(() => {
+    axios
+      .get(`http://admin.ishop.sunhimlabs.com/api/v1/customer/list`)
+      .then((res) => setIndex(res.data.data));
+  }, []);
+
+  useEffect(() => {
+    getData(pageNo);
+  }, [pageNo]);
 
   const handleChangePage = async (e, newPage) => {
+    navigate(`/routing/customer/list?page=${newPage + 1}`);
     setPage(newPage);
+    
+  };
+
+  const getData = async (newPage) => {
     try {
-      const res = await axios.get(`${url}?&page=${newPage + 1}`);
+      const res = await axios.get(`${url}?q=${query.search ? query.search : ''? query.category_id : ''}&page=${Number(newPage)}`);
       const { data, pages } = res.data;
       setIndex(data);
       setPage(pages);
@@ -85,25 +97,31 @@ export default function Customer_Customerlist() {
       console.log(error);
     }
   };
+  // useEffect(() => {
+  //   getData();
 
-  const getCustomerList = () => {
-    axios
-      .get(`http://admin.ishop.sunhimlabs.com/api/v1/customer/list/`,{
-        method: "GET",
-        headers: {
-          Accept: "application/json",
-          "content-Type": "Application/json",
-          storename: "kbtrends",
-        },
-        // body: JSON.stringify(productInputData),
-      })
+  // }, []);
+
+ 
+
+  // const getCustomerList = () => {
+  //   axios
+  //     .get(`http://admin.ishop.sunhimlabs.com/api/v1/customer/list/`,{
+  //       method: "GET",
+  //       headers: {
+  //         Accept: "application/json",
+  //         "content-Type": "Application/json",
+  //         storename: "kbtrends",
+  //       },
+  //       // body: JSON.stringify(productInputData),
+  //     })
       
-      .then((res) => setIndex(res.data.data));
-  };
+  //     .then((res) => setIndex(res.data.data));
+  // };
 
-  useEffect(() => {
-    getCustomerList();
-  }, []);
+  // useEffect(() => {
+  //   getCustomerList();
+  // }, []);
 
   const update = (e) => {
     e.preventDefault();
@@ -111,12 +129,7 @@ export default function Customer_Customerlist() {
     axios
       .get(
         `http://admin.ishop.sunhimlabs.com/api/v1/customer/list?q=&per_page=12&page=1&sort_by=first_name&email&order_by=${order}`,{
-          method: "POST",
-          headers: {
-            Accept: "application/json",
-            "content-Type": "Application/json",
-            storename: "kbtrends",
-          },
+          
           // body: JSON.stringify(productInputData),
         }
       )
@@ -138,7 +151,7 @@ export default function Customer_Customerlist() {
       result.json().then((resps) => {
         console.warn("resps", resps);
         handleClose();
-        getCustomerList();
+        getData();
       });
     });
   };
@@ -451,7 +464,10 @@ export default function Customer_Customerlist() {
                   {page.totalpages}{" "}
                 </p>
 
-                {paginationFunction}
+                {
+                  page.totalpages > 1 &&
+                  paginationFunction
+                }
               </div>
               
             </div>

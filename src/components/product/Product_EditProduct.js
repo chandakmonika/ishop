@@ -122,7 +122,7 @@ export default function Product_AddProduct() {
           if (
             productInputData.parent_category_id &&
             cat.category_id.toString() ===
-              productInputData.parent_category_id.toString()
+            productInputData.parent_category_id.toString()
           ) {
             const subCategory = cat.subcategories.map((subCat) => {
               console.log(
@@ -133,7 +133,7 @@ export default function Product_AddProduct() {
               if (
                 productInputData.category_id &&
                 subCat.category_id.toString() ===
-                  productInputData.category_id.toString()
+                productInputData.category_id.toString()
               ) {
                 return {
                   ...subCat,
@@ -171,7 +171,7 @@ export default function Product_AddProduct() {
       )
       .then((res) => {
         console.log(4343, res.data.data[0]);
-        if (res.data.data) {
+        if (res?.data?.data) {
           const {
             product_name,
             brand_id,
@@ -198,7 +198,7 @@ export default function Product_AddProduct() {
             status,
             // tax_amount,
             // updated_date,
-          } = res.data.data[0];
+          } = res?.data?.data[0];
 
           // const variant = res.data.product_variants;
           // const variData = variant.map((vari) => {
@@ -211,7 +211,7 @@ export default function Product_AddProduct() {
           // });
           // setVarientFormFields(variData);
 
-          const finalAddObject = res.data.product_variants.map((vr) => {
+          const finalAddObject = res?.data?.product_variants?.map((vr) => {
             return {
               ...vr,
               attributes_label: vr.attribute_key,
@@ -224,12 +224,12 @@ export default function Product_AddProduct() {
           setVarientFormFields([...varientFormFields, finalAddObject])
 
 
-          const attributes = res.data.product_attributes;
+          const attributes = res?.data?.product_attributes;
           const attrData = attributes.map((attr) => {
             return {
               ...attr,
-              attributes_label: attr.attribute_key,
-              attributes_name: attr.attribute_key,
+              attributes_label: attr.attributes_label ? attr.attributes_label : attr.attribute_key,
+              attributes_name: attr.attributes_label ? attr.attributes_label : attr.attribute_key,
               value: attr.attribute_value,
             };
           });
@@ -264,6 +264,22 @@ export default function Product_AddProduct() {
             attributes: attrData,
           });
           getAttrWithBrand(category_id)
+
+          const faqs = res?.data?.product_faq.map((faq) => {
+            return {
+              questions: faq.question,
+              answers: faq.answer
+            }
+          })
+          setProdFaqInput(faqs)
+
+          // const seo = res?.data?.seo[0]
+          // setProductInputData({
+          //   ...productInputData,
+          //   product_seo_title: seo.page_title,
+          //   product_seo_description: seo.page_description,
+          //   product_seo_keywords: seo.page_keywords
+          // })
         }
       });
   };
@@ -386,7 +402,7 @@ export default function Product_AddProduct() {
   };
 
   const addVarientFields = () => {
-    console.log(234, 
+    console.log(234,
       "varientFormFields",
       varientFormFields
     );
@@ -497,21 +513,21 @@ export default function Product_AddProduct() {
 
   return (
     <div>
-      {console.log(2324, varientFormFields)}
-      <div class="py-4">
-        <div class="d-flex justify-content-between">
-          <div class="">
+      {console.log(2324, productInputData)}
+      <div className="py-4">
+        <div className="d-flex justify-content-between">
+          <div className="">
             <button
               type="button"
-              class="btn"
+              className="btn"
               onClick={() => navigate("/product/list")}
             >
-              <i class="fas fa-arrow-left"></i>
+              <i className="fas fa-arrow-left"></i>
             </button>
             <span>Edit Product</span>
           </div>
           <div>
-            <button type="button" class="btn btn-info float-right">
+            <button type="button" className="btn btn-info float-right">
               Edit Product
             </button>
           </div>
@@ -519,18 +535,18 @@ export default function Product_AddProduct() {
       </div>
       <form onSubmit={submit}>
         <div className="form-group" controlId="formBasicFirstName">
-          <div class="row">
+          <div className="row">
             <div className="col-lg-8 col-mb-8">
               {/* <-----------------------------------Title From------------------------> */}
               {/* <div
-            class="col-lg-4 col-md-12 mb-4 mb-lg-0"
+            className="col-lg-4 col-md-12 mb-4 mb-lg-0"
             style={{ paddingLeft: "1rem" }}
           > */}
-              {/* <div class="card" style={{ height: "40rem", width: "50rem" }}> */}
-              <div class="card">
-                <div class="card-body">
+              {/* <div className="card" style={{ height: "40rem", width: "50rem" }}> */}
+              <div className="card">
+                <div className="card-body">
                   <div className="form-group">
-                    <label for="exampleInputPassword1" className="form-label">
+                    <label htmlFor="exampleInputPassword1" className="form-label">
                       Title
                     </label>
                     <input
@@ -568,9 +584,9 @@ export default function Product_AddProduct() {
               {/* <---------------------------------Title From End------------------------------------------> */}
 
               {/* <---------------------------------Media From----------------------------------> */}
-              {/* <div class="card" style={{ height: "24rem", width: "50rem" }}> */}
-              <div class="card">
-                <div class="card-body">
+              {/* <div className="card" style={{ height: "24rem", width: "50rem" }}> */}
+              <div className="card">
+                <div className="card-body">
                   <div className="container">
                     <h5>Media</h5>
                     <div className="add">
@@ -582,15 +598,15 @@ export default function Product_AddProduct() {
               </div>
             </div>
             {/* <--------------------------------------Product Status From Start---------------------------------> */}
-            <div class="col-lg-4 col-mb-4">
-              <div class="card">
-                <div class="card-body">
+            <div className="col-lg-4 col-mb-4">
+              <div className="card">
+                <div className="card-body">
                   <div className="form-group">
-                    <label for="exampleFormControlSelect1">
+                    <label htmlFor="exampleFormControlSelect1">
                       Product Status
                     </label>
                     <select
-                      class="form-control"
+                      className="form-control"
                       id="exampleFormControlSelect1"
                       name="product_status"
                       value={productInputData.product_status}
@@ -608,19 +624,19 @@ export default function Product_AddProduct() {
 
               {/* <-----------------------------------Product Organization From Start--------------------------------------> */}
 
-              <div class="card">
-                <div class="card-body">
+              <div className="card">
+                <div className="card-body">
                   <h5>Product Categories</h5>
                   <br />
 
                   <p>Category</p>
-                  <div class="list-group">
+                  <div className="list-group">
                     {categoryData &&
                       categoryData.length > 0 &&
                       categoryData.map((cat) => {
                         return (
-                          <div className="category-item">
-                            <div key={`category${cat.category_id}`}>
+                          <div key={`category${cat.category_id}`} className="category-item">
+                            <div>
                               {console.log("cat.isChecked", cat.isChecked)}
                               <input
                                 type="checkbox"
@@ -651,7 +667,7 @@ export default function Product_AddProduct() {
                                   setCategoryData(checkedData);
                                 }}
                               />
-                              <label for={cat.category_slug}>
+                              <label htmlFor={cat.category_slug}>
                                 {cat.isChecked ? (
                                   <span> - </span>
                                 ) : (
@@ -661,7 +677,7 @@ export default function Product_AddProduct() {
                               </label>
                               {cat.isChecked && (
                                 <div
-                                  class="list-group"
+                                  className="list-group"
                                   style={{ paddingLeft: "2rem" }}
                                 >
                                   {cat.subcategories.map((subCat) => {
@@ -679,7 +695,7 @@ export default function Product_AddProduct() {
                                             handleSubCategoryClick(e)
                                           }
                                         />
-                                        <label for={subCat.category_slug}>
+                                        <label htmlFor={subCat.category_slug}>
                                           {subCat.category_name}
                                         </label>
                                       </div>
@@ -704,7 +720,7 @@ export default function Product_AddProduct() {
                               <div key={`sub-category${brand.brand_id}`}>
                                 {/* <a
                                           href="#"
-                                          class="list-group-item"
+                                          className="list-group-item"
                                           style={{ border: "none" }}
                                         > */}
                                 <input
@@ -714,7 +730,7 @@ export default function Product_AddProduct() {
                                   value={brand.brand_id}
                                   onChange={(e) => productInputChange(e)}
                                 />
-                                <label for={brand.brand_name}>
+                                <label htmlFor={brand.brand_name}>
                                   {brand.brand_name}
                                 </label>
                                 {/* </a> */}
@@ -740,7 +756,7 @@ export default function Product_AddProduct() {
                       name="product_tags"
                     />
                     <br />
-                    <button type="button" class="btn btn-info">
+                    <button type="button" className="btn btn-info">
                       Add
                     </button>
                   </div>
@@ -755,8 +771,8 @@ export default function Product_AddProduct() {
 
         {/* <-----------------------Product Information From Start-------------------------------> */}
 
-        <div class="card" style={{ height: "13rem" }}>
-          <div class="card-body">
+        <div className="card" style={{ height: "13rem" }}>
+          <div className="card-body">
             <h5>Product Information</h5>
             <div className="form-group">
               <div className="row">
@@ -797,8 +813,8 @@ export default function Product_AddProduct() {
 
         {/* <--------------------------------Pricing From start-----------------------------------> */}
 
-        <div class="card" style={{ height: "11rem" }}>
-          <div class="card-body">
+        <div className="card" style={{ height: "11rem" }}>
+          <div className="card-body">
             <h5>Pricing</h5>
             <div className="form-group">
               <div className="row">
@@ -852,17 +868,17 @@ export default function Product_AddProduct() {
         {/* <-----------------------Product Attribute From Start-------------------------------> */}
 
         {prodAttributeInput && prodAttributeInput.length > 0 && (
-          <div class="card" style={{ minHeight: "23rem" }}>
-            <div class="card-body">
+          <div className="card" style={{ minHeight: "23rem" }}>
+            <div className="card-body">
               {console.log(657, prodAttributeInput)}
               <h5>Product Attribute</h5>
-              {prodAttributeInput.map((attr) => {
+              {prodAttributeInput.map((attr, i) => {
                 return (
-                  <div class="form-group row">
-                    <label for="inputColor" class="col-sm-2 col-form-label">
+                  <div key={`attr${i}`} className="form-group row">
+                    <label htmlFor="inputColor" className="col-sm-2 col-form-label">
                       {attr.attributes_label}
                     </label>
-                    <div class="col-sm-4">
+                    <div className="col-sm-4">
                       {attr.attributes_type === "select" ? (
                         <select
                           name={attr.attributes_label}
@@ -870,13 +886,13 @@ export default function Product_AddProduct() {
                           onChange={(e) => handleAttributeInputChange(e)}
                         >
                           {attr.attributes_value.split(",").map((opt) => (
-                            <option value={opt}>{opt}</option>
+                            <option key={opt} value={opt}>{opt}</option>
                           ))}
                         </select>
                       ) : (
                         <input
                           type="text"
-                          class="form-control"
+                          className="form-control"
                           name={attr.attributes_label}
                           id={attr.attributes_label}
                           placeholder=""
@@ -900,13 +916,13 @@ export default function Product_AddProduct() {
         }
         {varientFormFields &&
           varientFormFields.length > 0 && (
-            <div class="card" style={{ height: "auto" }}>
-              <div class="card-body">
+            <div className="card" style={{ height: "auto" }}>
+              <div className="card-body">
                 <h5>Product Varient</h5>
                 {/* {selectSubCatData.variants_fields.map((vari) => {
                return ( */}
                 <div>
-                  <table class="table table-bordered">
+                  <table className="table table-bordered">
                     <thead>
                       {prodVarientData.map((item) => (
                         <th scope="col">{item.attributes_label}</th>
@@ -922,7 +938,7 @@ export default function Product_AddProduct() {
                               console.log(4349, form)
                             }
                             {form && form.length > 0 && form.map((field, fieldIndex) => (
-                              <td>
+                              <td key={`field-val-${fieldIndex}`}>
                                 <input
                                   type="text"
                                   p
@@ -981,13 +997,13 @@ export default function Product_AddProduct() {
                       })}
                     </tbody>
                   </table>
-                    <button
+                  <button
                     className="float-right"
-                      onClick={() => addVarientFields()}
-                    >
-                      Add More..
-                    </button>
-                    <br />
+                    onClick={() => addVarientFields()}
+                  >
+                    Add More..
+                  </button>
+                  <br />
                 </div>
               </div>
             </div>
@@ -997,17 +1013,17 @@ export default function Product_AddProduct() {
 
         {/* <--------------------------------Pricing From start-----------------------------------> */}
 
-        <div class="card" style={{ height: "auto" }}>
-          <div class="card-body">
+        <div className="card" style={{ height: "auto" }}>
+          <div className="card-body">
             <h5>SEO</h5>
-            <div class="form-group row">
-              <label for="inputColor" class="col-sm-2 col-form-label">
+            <div className="form-group row">
+              <label htmlFor="inputColor" className="col-sm-2 col-form-label">
                 Meta Tags
               </label>
-              <div class="col-sm-4">
+              <div className="col-sm-4">
                 <input
                   type="text"
-                  class="form-control"
+                  className="form-control"
                   id="inputColor"
                   placeholder="Meta Tags"
                   value={productInputData.product_seo_title}
@@ -1018,14 +1034,14 @@ export default function Product_AddProduct() {
                 />
               </div>
             </div>
-            <div class="form-group row">
-              <label for="inputColor" class="col-sm-2 col-form-label">
+            <div className="form-group row">
+              <label htmlFor="inputColor" className="col-sm-2 col-form-label">
                 Description
               </label>
-              <div class="col-sm-4">
+              <div className="col-sm-4">
                 <input
                   type="text"
-                  class="form-control"
+                  className="form-control"
                   id="inputColor"
                   placeholder="Description"
                   value={productInputData.product_seo_description}
@@ -1036,14 +1052,14 @@ export default function Product_AddProduct() {
                 />
               </div>
             </div>
-            <div class="form-group row">
-              <label for="inputColor" class="col-sm-2 col-form-label">
+            <div className="form-group row">
+              <label htmlFor="inputColor" className="col-sm-2 col-form-label">
                 Keyword
               </label>
-              <div class="col-sm-4">
+              <div className="col-sm-4">
                 <input
                   type="text"
-                  class="form-control"
+                  className="form-control"
                   id="inputColor"
                   placeholder="Keyword"
                   value={productInputData.product_seo_keywords}
@@ -1058,11 +1074,11 @@ export default function Product_AddProduct() {
         </div>
         <br />
 
-        <div class="card" style={{ height: "auto" }}>
-          <div class="card-body">
+        <div className="card" style={{ height: "auto" }}>
+          <div className="card-body">
             <h5>FAQ</h5>
             <div style={{ overflow: "auto" }}>
-              <table class="table table-bordered">
+              <table className="table table-bordered">
                 <thead>
                   <th scope="col" style={{ width: "1rem" }}>
                     Question
@@ -1073,10 +1089,10 @@ export default function Product_AddProduct() {
                 <tbody>
                   {prodFaqInput.map((form, index) => {
                     return (
-                      <tr key={index}>
+                      <tr key={`faq${index}`}>
                         <td>
                           {/* <select
-                          class="form-control"
+                          className="form-control"
                           id="exampleFormControlSelect1"
                           style={{}}
                           name="questions"
@@ -1088,7 +1104,7 @@ export default function Product_AddProduct() {
                         </select> */}
                           <input
                             type="text"
-                            class="form-control"
+                            className="form-control"
                             id="inputColor"
                             placeholder=""
                             value={form.questions}
@@ -1101,7 +1117,7 @@ export default function Product_AddProduct() {
                         <td>
                           <input
                             type="text"
-                            class="form-control"
+                            className="form-control"
                             id="inputColor"
                             placeholder=""
                             value={form.answers}
@@ -1139,7 +1155,7 @@ export default function Product_AddProduct() {
         {/* <--------------------------------Pricing From End-----------------------------------> */}
         <button
           type="button"
-          class="btn btn-info float-right my-3"
+          className="btn btn-info float-right my-3"
           onClick={productUser}
         >
           Edit Product
@@ -1149,6 +1165,7 @@ export default function Product_AddProduct() {
     </div>
   );
 }
+
 
 
 

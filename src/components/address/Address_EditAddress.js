@@ -1,6 +1,6 @@
 import axios from "axios";
 import React, { useState, useEffect } from "react";
-import { Link, useParams,useNavigate } from "react-router-dom";
+import { Link, useParams, useNavigate } from "react-router-dom";
 import { toast } from 'react-toastify';
 import { toaster } from "../../utils/toaster";
 
@@ -48,27 +48,22 @@ export default function Address_EditAddress() {
   });
 
   const navigate = useNavigate();
+  const { address_id } = useParams();
 
   useEffect(() => {
     axios
-      .get(`http://admin.ishop.sunhimlabs.com/api/v1/allstates/${country}`)
+      .get(`http://admin.ishop.sunhimlabs.com/api/v1/allstates/${userdata.country}`)
       .then((res) => setIndexs(res.data.data));
-  }, [country_id]);
-
-  useEffect(() => {
     axios
-      .get(`http://admin.ishop.sunhimlabs.com/api/v1/allcities/${state}`)
+      .get(`http://admin.ishop.sunhimlabs.com/api/v1/allcities/${userdata.state}`)
       .then((res) => setIndexss(res.data.data));
-  }, [state]);
-
+  }, [userdata.country && userdata.state]);
+  
   useEffect(() => {
     axios
       .get(`http://admin.ishop.sunhimlabs.com/api/v1/allcountries/`)
       .then((res) => setIndex(res.data.data));
-  }, );
 
-  const { address_id } = useParams();
-  useEffect(() => {
     axios
       .get(
         `http://admin.ishop.sunhimlabs.com/api/v1/customer/address/details/${address_id}`
@@ -91,6 +86,7 @@ export default function Address_EditAddress() {
 
   function customerUser() {
     console.warn(
+      345,
       first_name,
       last_name,
       email,
@@ -107,7 +103,7 @@ export default function Address_EditAddress() {
       user_id
     );
 
-    fetch(`http://admin.ishop.sunhimlabs.com/customer/address/edit/`, {
+    fetch(`http://admin.ishop.sunhimlabs.com/api/v1/customer/address/edit`, {
       method: "POST",
       headers: {
         Accept: "application/json",
@@ -117,9 +113,9 @@ export default function Address_EditAddress() {
     }).then((result) => {
       result.json().then((resps) => {
         console.warn("resps", resps);
-        toaster(resps, 'Customer Added Successfully!')
-        if(resps === true ){
-            navigate("/customer/address/list")
+        toaster(resps, 'Address Edited Successfully!')
+        if (resps === true) {
+          navigate(`/customer/address/list/${userdata.user_id}`)
         }
       });
     });
@@ -298,10 +294,10 @@ export default function Address_EditAddress() {
               </select>
             </div>
             {/* <Link to="/customer/address/list"> */}
-              <button type="button" class="btn btn-info" onClick={customerUser}>
-                Update
-              </button>
-              &nbsp;
+            <button type="button" class="btn btn-info" onClick={customerUser}>
+              Update
+            </button>
+            &nbsp;
             {/* </Link> */}
           </form>
 
@@ -311,3 +307,4 @@ export default function Address_EditAddress() {
     </div>
   );
 }
+

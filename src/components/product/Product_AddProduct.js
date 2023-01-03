@@ -237,7 +237,7 @@ export default function Product_AddProduct() {
     const fin = finatm.map((varient) => {
       return varient.map((vs) => {
         return {
-          attribute_id: vs.attributes_id.toString(),
+          attributes_id: vs.attributes_id.toString(),
           attributes_value: vs.value,
           product_qty: vs?.product_qty,
           product_price: vs?.product_price,

@@ -19,12 +19,15 @@ export default function Customer_Addnewcustomer() {
       .then((res) => setIndex(res.data.data));
   }, []);
 
-  function brandrUser() {
+  function addBrandUser(e) {
+    e.preventDefault();
+
     console.warn(product_category_id, brand_name, brand_image, status);
     let datas = {
       product_category_id,
       brand_name,
       brand_image,
+      media_id: brand_image,
       status,
     };
     fetch("http://admin.ishop.sunhimlabs.com/api/v1/products/brands/add", {
@@ -44,9 +47,6 @@ export default function Customer_Addnewcustomer() {
       });
     });
   }
-  const submit = (e) => {
-    e.preventDefault();
-  };
 
   return (
     <div style={{ paddingLeft: "10rem" }}>
@@ -59,7 +59,7 @@ export default function Customer_Addnewcustomer() {
 
           <h6 style={{ paddingLeft: "2rem" }}>Brand Details</h6>
           <form
-            onSubmit={submit}
+            onSubmit={addBrandUser}
             style={{ Display: "float-right", paddingLeft: "2rem" }}
           >
             <div
@@ -104,7 +104,7 @@ export default function Customer_Addnewcustomer() {
                 type="file"
                 name="brand_image"
                 onChange={(e) => {
-                  setBrand_image(e.target.value);
+                  setBrand_image(e.target.files[0].lastModified.toString());
                 }}
               />
 
@@ -124,7 +124,7 @@ export default function Customer_Addnewcustomer() {
               </select>
             </div>
             {/* <Link to="/brand/list"> */}
-            <button type="button" class="btn btn-info" onClick={brandrUser}>
+            <button type="submit" class="btn btn-info">
               Add Brand
             </button>
             {/* </Link> */}
@@ -135,3 +135,4 @@ export default function Customer_Addnewcustomer() {
     </div>
   );
 }
+
