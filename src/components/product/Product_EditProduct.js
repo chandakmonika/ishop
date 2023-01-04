@@ -693,22 +693,18 @@ export default function Product_AddProduct() {
                           {selectSubCatData.brands.map((brand) => {
                             return (
                               <div key={`sub-category${brand.brand_id}`}>
-                                {/* <a
-                                          href="#"
-                                          className="list-group-item"
-                                          style={{ border: "none" }}
-                                        > */}
                                 <input
                                   type="radio"
                                   id={brand.brand_name}
                                   name="brand"
                                   value={brand.brand_id}
                                   onChange={(e) => productInputChange(e)}
+                                  checked={brand.brand_id == productInputData.brand ? "checked" : false}
                                 />
                                 <label htmlFor={brand.brand_name}>
                                   {brand.brand_name}
                                 </label>
-                                {/* </a> */}
+                                
                               </div>
                             );
                           })}

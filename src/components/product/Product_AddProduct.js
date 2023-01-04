@@ -75,7 +75,6 @@ export default function Product_AddProduct() {
     product_long_desc: "",
     product_image: [],
     product_status: "1",
-
     product_qty: "",
     attributes: [],
     faq: [],
