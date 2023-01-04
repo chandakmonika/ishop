@@ -24,7 +24,7 @@ export default function ProductsComponent() {
   const [index, setIndex] = useState([]);
   const pageNo = searchParams.get("page");
   const [first, setFirst] = useState([]);
-  const [query, setQuery] = useState({ search: "", category_name: "" });
+  const [query, setQuery] = useState({ search: "", category_name: "", status: "" });
   const [status, setStatus] = useState([]);
   const [order, setOrder] = useState("ASC");
   const [product_id, setProduct_id] = useState([]);
@@ -34,7 +34,7 @@ export default function ProductsComponent() {
   const [page, setPage] = useState({
     current: 0,
     previous: 0,
-    per_page: 15,
+    records_per_page: 15,
     totalpages: 0,
     totalrecords: 0,
   });
@@ -54,6 +54,7 @@ export default function ProductsComponent() {
   console.log(query);
 
   const handleChange = (e) => {
+    console.log(324, e)
     setQuery({
       ...query,
       [e.target.name]: e.target.value,
@@ -91,23 +92,22 @@ export default function ProductsComponent() {
 
   useEffect(() => {
     getCustomerList(pageNo);
-  }, [pageNo]);
+  }, [pageNo, page.records_per_page]);
 
   const handlePageChange = async (e, newPage) => {
     navigate(`/product/list?page=${newPage + 1}`);
   };
 
-  const getCustomerList = async (newPage, recordsPerPage) => {
+  const getCustomerList = async (newPage) => {
     // setPage(newPage);
     console.log(4343, newPage, query, page);
     try {
       const res = await axios.get(
-        `${url}?q=${query.search ? query.search : ""}&category_id=${
-          query.category_id ? query.category_id : ""
-        }&page=${Number(newPage)}`
+        `${url}?q=${query.search ? query.search : ""}&category_id=${query.category_id ? query.category_id : ""
+        }&status=${query.status}&page=${Number(newPage)}&per_page=${page.records_per_page}`
       );
       const { data, pages } = res.data;
-      console.log("pages", pages);
+      console.log(7634, "pages", pages);
       setFirst(data);
       setPage(pages);
     } catch (error) {
@@ -137,7 +137,7 @@ export default function ProductsComponent() {
 
     axios
       .get(
-        `${process.env.REACT_APP_BACKEND_APIURL}api/v1/products/list?q=&category_id=&status=&per_page=3&page=1&sort_by=product_name&order_by=${order}`
+        `${process.env.REACT_APP_BACKEND_APIURL}api/v1/products/list?q=&category_id=&status=&per_page=${page.records_per_page}&page=1&sort_by=product_name&order_by=${order}`
       )
       .then((res) => setFirst(res.data.data));
   };
@@ -257,17 +257,20 @@ export default function ProductsComponent() {
   };
 
   const paginationFunction = useMemo(
-    () => (
-      <TablePagination
-        className=""
-        rowsPerPageOptions={[12]}
-        component="div"
-        count={page.totalrecords || 0}
-        page={page.current - 1 || 0}
-        onPageChange={handlePageChange}
-        rowsPerPage={page.per_page || 0}
-      />
-    ),
+    () => {
+      console.log(9898, page)
+      return (
+        <TablePagination
+          className=""
+          rowsPerPageOptions={[12]}
+          component="div"
+          count={page.totalrecords || 0}
+          page={page.current - 1 || 0}
+          onPageChange={handlePageChange}
+          rowsPerPage={page.records_per_page || 0}
+        />
+      )
+    },
     [page]
   );
 
@@ -317,7 +320,6 @@ export default function ProductsComponent() {
                     placeholder="Search"
                     onChange={(e) => handleChange(e)}
                   />
-                  &nbsp;&nbsp;&nbsp;&nbsp;
                   <select
                     class="form-control"
                     id="exampleFormControlSelect1"
@@ -336,24 +338,20 @@ export default function ProductsComponent() {
                       );
                     })}
                   </select>
-                  &nbsp;&nbsp;&nbsp;&nbsp; &nbsp;
-                  <span>
-                    <Dropdown onChange={handleChange} name="status">
-                      <Dropdown.Toggle variant="light" id="dropdown-basic">
-                        Product Status
-                      </Dropdown.Toggle>
-                      <Dropdown.Menu>
-                        <Dropdown.Item value="active">Active</Dropdown.Item>
-                        <Dropdown.Item value="inactive">Inactive</Dropdown.Item>
-                      </Dropdown.Menu>
-                    </Dropdown>
-                  </span>
-                  <span>
-                    &nbsp;&nbsp;&nbsp;
+                  <select
+                    class="form-control"
+                    id="Product_Status"
+                    placeholder="Product Status"
+                    name="status"
+                    onChange={(e) => handleChange(e)}
+                  >
+                    <option selected value="">Product Status</option>
+                    <option value={"active"}>Active</option>
+                    <option value={"inactive"}>Inactive</option>
+                  </select>
                     <Button variant="info" type="submit">
                       Search
                     </Button>
-                  </span>
                 </div>
               </form>
             </div>
@@ -363,7 +361,7 @@ export default function ProductsComponent() {
           {/* <-----------------MainEnd-------------------> */}
 
           {/* <--------------------TableStart-------------------------> */}
-          <table class="table table-bordered" style={{ width: "95%" }}>
+          <table class="table table-bordered">
             {console.log(
               2,
               first
@@ -450,8 +448,8 @@ export default function ProductsComponent() {
                         {item.product_type === "i"
                           ? "Individual"
                           : item.product_type === "p"
-                          ? "Parent"
-                          : "Child"}
+                            ? "Parent"
+                            : "Child"}
                       </td>
                       <td>{item.category_name}</td>
                       <td>{item.product_qty}</td>
@@ -516,19 +514,19 @@ export default function ProductsComponent() {
                     class="form-control"
                     id="exampleFormControlSelect1"
                     placeholder="Action"
+                    defaultValue={page.records_per_page}
                     onChange={(e) => {
                       setPage({
                         ...page,
-                        per_page: e.target.value,
+                        records_per_page: e.target.value,
                       });
-                      handlePageChange(e, 1)
-                      getCustomerList(1, e.target.value);
+                      handlePageChange(e, 0)
                     }}
                   >
                     {/* <option selected>Action</option> */}
                     <option value={"5"}>5</option>
                     <option value={"10"}>10</option>
-                    <option value={"15"} selected>
+                    <option value={"15"}>
                       15
                     </option>
                     <option value={"20"}>20</option>
@@ -572,3 +570,4 @@ export default function ProductsComponent() {
     </div>
   );
 }
+

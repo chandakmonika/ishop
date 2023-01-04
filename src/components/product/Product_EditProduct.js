@@ -9,6 +9,7 @@ import {
   useSearchParams,
 } from "react-router-dom";
 import { getCardActionAreaUtilityClass } from "@mui/material";
+import { toaster } from "../../utils/toaster";
 const config = {
   buttons: [
     "bold",
@@ -40,24 +41,6 @@ export default function Product_AddProduct() {
   // const [value, s  etValue] = useState("");
   const [file, setFile] = useState();
   const [categoryData, setCategoryData] = useState([]);
-  // const [product_name, setProduct_name] = useState("");
-  // const [category_id, setCategory_id] = useState("");
-  // const [brand, setBrand] = useState("");
-  // const [variants, setVariants] = useState("");
-  // const [model_number, setModel_number] = useState("");
-  // const [product_short_desc, setProduct_short_desc] = useState("");
-  // const [product_long_desc, setProduct_long_desc] = useState("");
-  // const [product_image, setProduct_image] = useState("");
-  // const [product_other_images, setProduct_other_images] = useState("");
-  // const [product_qty, setProduct_qty] = useState("");
-  // const [sku, setSku] = useState("");
-  // const [price_base, setPrice_base] = useState("");
-  // const [price_sell, setPrice_sell] = useState("");
-  // const [price_mrp, setPrice_mrp] = useState("");
-  // const [product_tags, setProduct_tags] = useState("");
-  // const [product_seo_title, setProduct_seo_title] = useState("");
-  // const [product_seo_description, setProduct_seo_description] = useState("");
-  // const [product_seo_keywords, setProduct_seo_keywords] = useState("");
   const [prodVarientData, setProdVarientData] = useState([]);
   const [selectSubCatData, setSelectSubCatData] = useState([]);
   const [prodAttributeInput, setProdAttributeInput] = useState([]);
@@ -88,10 +71,15 @@ export default function Product_AddProduct() {
     price_sell: "",
     price_mrp: "",
     product_tags: "",
+    // product_seo_title: "",
+    // product_seo_description: "",
+    // product_seo_keywords: "",
+    varients: []
+  });
+  const [productSEOInputData, setProductSEOInputData] = useState({
     product_seo_title: "",
     product_seo_description: "",
-    product_seo_keywords: "",
-    varients: []
+    product_seo_keywords: ""
   });
 
   const { product_id } = useParams();
@@ -114,22 +102,12 @@ export default function Product_AddProduct() {
       .then((res) => {
         console.log(9898, res.data.data);
         const selectedCat = res.data.data.map((cat) => {
-          // console.log(
-          //   5467,
-          //   productInputData.category_id,
-          //   cat.category_id.toString()
-          // );
           if (
             productInputData.parent_category_id &&
             cat.category_id.toString() ===
             productInputData.parent_category_id.toString()
           ) {
             const subCategory = cat.subcategories.map((subCat) => {
-              console.log(
-                15467,
-                productInputData.category_id,
-                subCat.category_id.toString()
-              );
               if (
                 productInputData.category_id &&
                 subCat.category_id.toString() ===
@@ -152,7 +130,6 @@ export default function Product_AddProduct() {
             return cat;
           }
         });
-        console.log(545, "res.data.data", selectedCat);
         setCategoryData(selectedCat);
       });
   };
@@ -193,11 +170,11 @@ export default function Product_AddProduct() {
             product_tags,
             product_type,
             // product_unlimited,
-            // shipping_charges,
+            shipping_charges,
             sku,
             status,
-            // tax_amount,
-            // updated_date,
+            tax_amount,
+            product_weight,
           } = res?.data?.data[0];
 
           // const variant = res.data.product_variants;
@@ -219,7 +196,6 @@ export default function Product_AddProduct() {
               value: vr.attribute_value,
             };
           });
-          console.log(3245, finalAddObject)
           setProdVarientData(finalAddObject)
           setVarientFormFields([...varientFormFields, finalAddObject])
 
@@ -256,11 +232,11 @@ export default function Product_AddProduct() {
             product_tags,
             product_type,
             // product_unlimited,
-            // shipping_charges,
+            shipping_charges,
             sku,
             status,
-            // tax_amount,
-            // updated_date,
+            tax_amount,
+            product_weight,
             attributes: attrData,
           });
           getAttrWithBrand(category_id)
@@ -273,15 +249,22 @@ export default function Product_AddProduct() {
           })
           setProdFaqInput(faqs)
 
-          // const seo = res?.data?.seo[0]
-          // setProductInputData({
-          //   ...productInputData,
-          //   product_seo_title: seo.page_title,
-          //   product_seo_description: seo.page_description,
-          //   product_seo_keywords: seo.page_keywords
-          // })
+          const seoData = res?.data?.seo[0]
+          const seoDataObj = {
+            "product_seo_title": seoData?.page_title ? seoData?.page_title : "",
+            "product_seo_description": seoData?.page_description ? seoData?.page_description : "",
+            "product_seo_keywords": seoData?.page_keywords ? seoData?.page_keywords : ""
+          }
+          console.log(2323, seoData, seoDataObj, productInputData)
+          setProductSEOInputData({
+            ...productSEOInputData,
+            ...seoDataObj
+          })
         }
-      });
+      })
+      .catch(err => {
+        toaster(err.response.data)
+      })
   };
 
   useEffect(() => {
@@ -296,7 +279,9 @@ export default function Product_AddProduct() {
   function productUser() {
     const updatedProductData = {
       ...productInputData,
-      // brand: productInputData.brand_id
+      ...productSEOInputData, // seo data added to payload
+      faq: prodFaqInput,
+      varients: varientFormFields
     }
     fetch(`${process.env.REACT_APP_BACKEND_APIURL}api/v1/products/edit`, {
       method: "POST",
@@ -314,7 +299,6 @@ export default function Product_AddProduct() {
   }
 
   function handleChange(e) {
-    console.log(e.target.files);
     setFile(URL.createObjectURL(e.target.files[0]));
   }
   const productInputChange = (e, inputField, inputName) => {
@@ -327,6 +311,11 @@ export default function Product_AddProduct() {
       setProductInputData({
         ...productInputData,
         [inputName]: e,
+      });
+    } else if (inputField === "seo_data") {
+      setProductSEOInputData({
+        ...productSEOInputData,
+        [e.target.name]: e.target.value,
       });
     } else {
       setProductInputData({
@@ -377,9 +366,7 @@ export default function Product_AddProduct() {
 
     setVarientFormFields(finatm);
     const fin = finatm.map((varient) => {
-      console.log(65, varient);
       return varient.map((vs) => {
-        console.log(66, vs);
         return {
           attribute_id: vs.attributes_id,
           attributes_value: vs.value,
@@ -392,20 +379,13 @@ export default function Product_AddProduct() {
       ...productInputData,
       varients: fin,
     });
-
-    console.log("mainArray", fin);
   };
 
   const submit = (e) => {
     e.preventDefault();
-    console.log(varientFormFields);
   };
 
   const addVarientFields = () => {
-    console.log(234,
-      "varientFormFields",
-      varientFormFields
-    );
     const finalAddObject = prodVarientData.map((vr) => {
       return {
         ...vr,
@@ -413,7 +393,6 @@ export default function Product_AddProduct() {
         product_price: "",
       };
     });
-    console.log(434, finalAddObject)
     setVarientFormFields([...varientFormFields, finalAddObject]);
   };
 
@@ -438,7 +417,6 @@ export default function Product_AddProduct() {
   };
 
   const handleSubCategoryClick = (e) => {
-    console.log('handleSubCategoryClick', e.target.value);
     setProductInputData({
       ...productInputData,
       category_id: e.target.value
@@ -461,7 +439,6 @@ export default function Product_AddProduct() {
         }
       )
       .then((res) => {
-        console.log(27, res.data);
         // setProdAttributeInput(res.data.category_attrbutes);
         // setVarientFormFields([...varientFormFields, res.data.variants_fields]);
         setSelectSubCatData(res.data);
@@ -475,10 +452,8 @@ export default function Product_AddProduct() {
       }
       return attr;
     });
-    console.log(2122, prodAttrData);
     setProdAttributeInput(prodAttrData);
     const attrDatas = prodAttrData.map((attr) => {
-      console.log(7890, attr);
       return {
         attributes_id: attr.attribute_id,
         attributes_value: attr.value,
@@ -508,12 +483,13 @@ export default function Product_AddProduct() {
     //   ...productInputData,
     //   faq: faqData,
     // });
-    console.log(27, faqData);
   };
 
   return (
     <div>
-      {console.log(2324, productInputData)}
+      {
+        console.log(1232, productInputData)
+      }
       <div className="py-4">
         <div className="d-flex justify-content-between">
           <div className="">
@@ -637,7 +613,6 @@ export default function Product_AddProduct() {
                         return (
                           <div key={`category${cat.category_id}`} className="category-item">
                             <div>
-                              {console.log("cat.isChecked", cat.isChecked)}
                               <input
                                 type="checkbox"
                                 id={cat.category_slug}
@@ -776,7 +751,7 @@ export default function Product_AddProduct() {
             <h5>Product Information</h5>
             <div className="form-group">
               <div className="row">
-                <div className="col-md-4">
+                <div className="col-md-3">
                   <label className="demo">SKU</label>
                   <input
                     type="text"
@@ -790,7 +765,7 @@ export default function Product_AddProduct() {
                   />
                 </div>
 
-                <div className="col-md-4">
+                <div className="col-md-3">
                   <label className="demo">Model Number</label>
                   <input
                     type="text"
@@ -803,6 +778,20 @@ export default function Product_AddProduct() {
                     name="model_number"
                   />
                 </div>
+
+                <div className="col-md-3">
+                  <label className="demo">Product Quantity</label>
+                  <input
+                    type="text"
+                    className="form-control"
+                    id="product_qty"
+                    value={productInputData.product_qty}
+                    onChange={(e) => {
+                      productInputChange(e);
+                    }}
+                    name="product_qty"
+                  />
+                </div>
               </div>
             </div>
           </div>
@@ -810,6 +799,74 @@ export default function Product_AddProduct() {
         <br />
 
         {/* <-----------------------Product Information From End-------------------------------> */}
+
+        {/* <-----------------------------Shipping Information From Start --------------------------> */}
+
+        <div className="card" style={{ height: "13rem" }}>
+          <div className="card-body">
+            <h5>Shippping Information</h5>
+            <div className="form-group">
+              <div className="row">
+                <div className="col-md-4">
+                  <label className="demo">Shipping Charges</label>
+                  <input
+                    type="text"
+                    className="form-control"
+                    id="shipping_charges"
+                    value={productInputData.shipping_charges}
+                    onChange={(e) => {
+                      productInputChange(e);
+                    }}
+                    name="shipping_charges"
+                  />
+                </div>
+
+                <div className="col-md-4">
+                  <label className="demo">Product Weight</label>
+                  <input
+                    type="text"
+                    className="form-control"
+                    id="product_weight"
+                    value={productInputData.product_weight}
+                    onChange={(e) => {
+                      productInputChange(e);
+                    }}
+                    name="product_weight"
+                  />
+                </div>
+
+               
+              </div>
+            </div>
+          </div>
+        </div>
+        <br />
+
+        {/* <--------------------------Shipping Information From End --------------------------> */}
+
+        <div className="card" style={{ height: "13rem" }}>
+          <div className="card-body">
+            <h5>Tax Information</h5>
+            <div className="form-group">
+              <div className="row">
+                <div className="col-md-6">
+                  <label className="demo">Tax</label>
+                  <input
+                    type="text"
+                    className="form-control"
+                    id="tax_amount"
+                    value={productInputData.tax_amount}
+                    onChange={(e) => {
+                      productInputChange(e);
+                    }}
+                    name="tax_amount"
+                  />
+                </div>
+ 
+              </div>
+            </div>
+          </div>
+        </div>
 
         {/* <--------------------------------Pricing From start-----------------------------------> */}
 
@@ -868,9 +925,8 @@ export default function Product_AddProduct() {
         {/* <-----------------------Product Attribute From Start-------------------------------> */}
 
         {prodAttributeInput && prodAttributeInput.length > 0 && (
-          <div className="card" style={{ minHeight: "23rem" }}>
+          <div className="card">
             <div className="card-body">
-              {console.log(657, prodAttributeInput)}
               <h5>Product Attribute</h5>
               {prodAttributeInput.map((attr, i) => {
                 return (
@@ -911,11 +967,7 @@ export default function Product_AddProduct() {
         {/* <-----------------------Product Attribute From End-------------------------------> */}
 
         {/* <--------------------Dynamic Form---------------> */}
-        {
-          console.log(8767, 'varientFormFields', varientFormFields)
-        }
-        {varientFormFields &&
-          varientFormFields.length > 0 && (
+        {productInputData.product_type !== "v" && varientFormFields && varientFormFields.length > 0 && (
             <div className="card" style={{ height: "auto" }}>
               <div className="card-body">
                 <h5>Product Varient</h5>
@@ -934,9 +986,6 @@ export default function Product_AddProduct() {
                       {varientFormFields.map((form, index) => {
                         return (
                           <tr key={index}>
-                            {
-                              console.log(4349, form)
-                            }
                             {form && form.length > 0 && form.map((field, fieldIndex) => (
                               <td key={`field-val-${fieldIndex}`}>
                                 <input
@@ -971,7 +1020,6 @@ export default function Product_AddProduct() {
                                 }}
                                 value={form[index]?.product_qty}
                               />
-                              {console.log("form[index].", form[index])}
                             </td>
                             <td>
                               <input
@@ -1026,9 +1074,9 @@ export default function Product_AddProduct() {
                   className="form-control"
                   id="inputColor"
                   placeholder="Meta Tags"
-                  value={productInputData.product_seo_title}
+                  value={productSEOInputData.product_seo_title}
                   onChange={(e) => {
-                    productInputChange(e);
+                    productInputChange(e, 'seo_data');
                   }}
                   name="product_seo_title"
                 />
@@ -1044,9 +1092,9 @@ export default function Product_AddProduct() {
                   className="form-control"
                   id="inputColor"
                   placeholder="Description"
-                  value={productInputData.product_seo_description}
+                  value={productSEOInputData.product_seo_description}
                   onChange={(e) => {
-                    productInputChange(e);
+                    productInputChange(e, 'seo_data');
                   }}
                   name="product_seo_description"
                 />
@@ -1062,9 +1110,9 @@ export default function Product_AddProduct() {
                   className="form-control"
                   id="inputColor"
                   placeholder="Keyword"
-                  value={productInputData.product_seo_keywords}
+                  value={productSEOInputData.product_seo_keywords}
                   onChange={(e) => {
-                    productInputChange(e);
+                    productInputChange(e, 'seo_data');
                   }}
                   name="product_seo_keywords"
                 />
@@ -1165,6 +1213,7 @@ export default function Product_AddProduct() {
     </div>
   );
 }
+
 
 
 
