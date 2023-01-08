@@ -3,6 +3,7 @@ import axios from "axios";
 import { Link, useNavigate } from "react-router-dom";
 import { toast } from 'react-toastify';
 import { toaster } from "../../utils/toaster";
+import { validateEmail, validateMobileNumber } from "../../utils/form-validation";
 
 export default function Customer_Addnewcustomer() {
   const [product_category_id, setProduct_category_id] = useState("");

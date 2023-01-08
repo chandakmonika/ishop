@@ -13,10 +13,12 @@ import Typography from "@mui/material/Typography";
 import Modal from "@mui/material/Modal";
 import { toast } from "react-toastify";
 import EmptyPage from "../emptypage";
+import { toaster } from "../../utils/toaster";
 
 export default function Customer_Customerlist() {
   const [searchParams, setSearchParams] = useSearchParams();
   const pageNo = searchParams.get("page");
+  const searchQuery = searchParams.get("search");
   const [index, setIndex] = useState([]);
   const [query, setQuery] = useState({ text: "" });
   const [order, setOrder] = useState("ASC");
@@ -27,7 +29,7 @@ export default function Customer_Customerlist() {
   const [page, setPage] = useState({
     current: 0,
     previous: 0,
-    records_per_page: 0,
+    records_per_page: 15,
     totalpages: 0,
     totalrecords: 0,
   });
@@ -40,21 +42,21 @@ export default function Customer_Customerlist() {
   });
 
   const [isSingleStatusUpdate, setIsSingleStatusUpdate] = useState(true);
-  const url = "http://admin.ishop.sunhimlabs.com/api/v1/customer/list";
+  const url = `${process.env.REACT_APP_BACKEND_APIURL}api/v1/customer/list`;
 
   console.log(query);
   const handleChange = (e) => {
     setQuery({
       ...query,
-      [e.target.name]: e.target.value
+      [e.target.name]: e.target.value,
     });
   };
   const handleSubmit = (e) => {
     e.preventDefault();
     setPage({
       ...page,
-      current: 0
-    })
+      current: 0,
+    });
     // axios
     //   .get(
     //     `http://admin.ishop.sunhimlabs.com/api/v1/customer/list/?q=${query.text}`,{
@@ -64,32 +66,48 @@ export default function Customer_Customerlist() {
     //         "content-Type": "Application/json",
     //         storename: "kbtrends",
     //       },
-          
+
     //     }
     //   )
     //   .then((res) => setIndex(res.data.data));
-    getData(0);
+
+    navigate(
+      `/routing/customer/list?page=${page.current}&search=${
+        query.search ? query.search : ""
+      }`
+    );
   };
 
   useEffect(() => {
     axios
-      .get(`http://admin.ishop.sunhimlabs.com/api/v1/customer/list`)
+      .get(`${process.env.REACT_APP_BACKEND_APIURL}api/v1/customer/list`)
       .then((res) => setIndex(res.data.data));
   }, []);
 
   useEffect(() => {
     getData(pageNo);
-  }, [pageNo]);
+    setQuery({
+      ...query,
+      search: searchQuery,
+    });
+  }, [pageNo, page.records_per_page, searchQuery]);
 
   const handleChangePage = async (e, newPage) => {
-    navigate(`/routing/customer/list?page=${newPage + 1}`);
-    setPage(newPage);
-    
+    navigate(
+      `/routing/customer/list?page=${newPage + 1}&search=${
+        query.search ? query.search : ""
+      }`
+    );
+    // setPage(newPage);
   };
 
   const getData = async (newPage) => {
     try {
-      const res = await axios.get(`${url}?q=${query.search ? query.search : ''? query.category_id : ''}&page=${Number(newPage)}`);
+      const res = await axios.get(
+        `${url}?q=${query.search ? query.search : ""}&page=${Number(
+          newPage
+        )}&per_page=${page.records_per_page}`
+      );
       const { data, pages } = res.data;
       setIndex(data);
       setPage(pages);
@@ -102,8 +120,6 @@ export default function Customer_Customerlist() {
 
   // }, []);
 
- 
-
   // const getCustomerList = () => {
   //   axios
   //     .get(`http://admin.ishop.sunhimlabs.com/api/v1/customer/list/`,{
@@ -115,7 +131,7 @@ export default function Customer_Customerlist() {
   //       },
   //       // body: JSON.stringify(productInputData),
   //     })
-      
+
   //     .then((res) => setIndex(res.data.data));
   // };
 
@@ -123,13 +139,19 @@ export default function Customer_Customerlist() {
   //   getCustomerList();
   // }, []);
 
-  const update = (e) => {
+  const sortTableData = (e, sortBy) => {
     e.preventDefault();
     order === "ASC" ? setOrder("DESC") : setOrder("ASC");
     axios
       .get(
-        `http://admin.ishop.sunhimlabs.com/api/v1/customer/list?q=&per_page=12&page=1&sort_by=first_name&email&order_by=${order}`,{
-          
+        `${process.env.REACT_APP_BACKEND_APIURL}api/v1/customer/list?q=${
+          query.search ? query.search : ""
+        }&category_id=${query.category_id ? query.category_id : ""}&status=${
+          query.status
+        }&page=${Number(page.current)}&per_page=${
+          page.records_per_page
+        }&sort_by=${sortBy}&order_by=${order}`,
+        {
           // body: JSON.stringify(productInputData),
         }
       )
@@ -139,17 +161,22 @@ export default function Customer_Customerlist() {
   // ------------------------------Action api-------------
 
   const statusChange = (apidata) => {
-    fetch("http://admin.ishop.sunhimlabs.com/api/v1/customer/changestatus", {
-      method: "POST",
-      headers: {
-        Accept: "application/json",
-        "Content-Type": "Application/json",
-        storename: "kbtrends",
-      },
-      body: JSON.stringify(apidata),
-    }).then((result) => {
+    fetch(
+      `${process.env.REACT_APP_BACKEND_APIURL}api/v1/customer/changestatus`,
+      {
+        method: "POST",
+        headers: {
+          Accept: "application/json",
+          "Content-Type": "Application/json",
+          storename: "kbtrends",
+        },
+        body: JSON.stringify(apidata),
+      }
+    ).then((result) => {
       result.json().then((resps) => {
         console.warn("resps", resps);
+        toaster(resps, "Status Changed Successfully!");
+        setSelectedStatus("");
         handleClose();
         getData();
       });
@@ -189,7 +216,6 @@ export default function Customer_Customerlist() {
     const selectedData = datas.filter((item) => item.isSelected === true);
     console.log(selectedData, 10);
     setSelectedcustomer(selectedData);
-
     console.log(datas);
   };
 
@@ -242,10 +268,11 @@ export default function Customer_Customerlist() {
     setIndex(datas);
   };
 
-  const paginationFunction = useMemo(
-    () => (
+  const paginationFunction = useMemo(() => {
+    console.log(9898, page);
+    return (
       <TablePagination
-        className="col-md-7"
+        className=""
         rowsPerPageOptions={[12]}
         component="div"
         count={page.totalrecords || 0}
@@ -253,9 +280,8 @@ export default function Customer_Customerlist() {
         onPageChange={handleChangePage}
         rowsPerPage={page.records_per_page || 0}
       />
-    ),
-    [page]
-  );
+    );
+  }, [page]);
 
   return (
     <div>
@@ -270,8 +296,6 @@ export default function Customer_Customerlist() {
               navbarScroll
             >
               <div className="d-flex ml-auto my-2 my-lg-0">
-                <Button variant="light">Import Customer</Button>
-                &nbsp;&nbsp;&nbsp;
                 <Button variant="info">
                   <Link to="/customer/addnewcustomer">Add Customer</Link>
                 </Button>
@@ -282,7 +306,7 @@ export default function Customer_Customerlist() {
           </Navbar.Collapse>
         </Container>
       </Navbar>
-      
+
       <div class="card" style={{ width: "100%" }}>
         <div class="card-body" style={{ width: "100%" }}>
           <div class="row">
@@ -296,7 +320,8 @@ export default function Customer_Customerlist() {
                     id="exampleInputEmail1"
                     aria-describedby="texthelp"
                     placeholder="Search "
-                    onChange={handleChange}
+                    value={query.search}
+                    onChange={(e) => handleChange(e)}
                   />
                   <Button variant="info" type="submit">
                     Search
@@ -325,33 +350,45 @@ export default function Customer_Customerlist() {
                     <input
                       type="checkbox"
                       checked={
+                        index &&
+                        index.length > 0 &&
                         !index
                           .map((select) => {
                             if (select.isSelected === true) {
-                              return true;
+                              return "checked";
                             }
                             return false;
                           })
                           .includes(false)
                       }
                       onChange={(e) => selectAllItems(e)}
+                      disabled={index.length === 0}
                     />
                     <label for="customCheck"></label>
                   </div>
                 </th>
                 <th scope="col">
                   Customer Name &nbsp;
-                  <i class="fas fa-arrow-down" onClick={update}></i>
-                  <i class="fas fa-arrow-up" onClick={update}></i>
+                  <i
+                    class="fas fa-arrow-down"
+                    onClick={(e) => sortTableData(e, "first_name")}
+                  ></i>
+                  <i
+                    class="fas fa-arrow-up"
+                    onClick={(e) => sortTableData(e, "first_name")}
+                  ></i>
                 </th>
-                <th scope="col">
-                  Mobile Number&nbsp;
-                
-                </th>
+                <th scope="col">Mobile Number&nbsp;</th>
                 <th scope="col">
                   Email &nbsp;{" "}
-                  <i class="fas fa-arrow-down" onClick={update}></i>
-                  <i class="fas fa-arrow-up" onClick={update}></i>
+                  <i
+                    class="fas fa-arrow-down"
+                    onClick={(e) => sortTableData(e, "email")}
+                  ></i>
+                  <i
+                    class="fas fa-arrow-up"
+                    onClick={(e) => sortTableData(e, "email")}
+                  ></i>
                 </th>
                 <th scope="col">Orders Placed</th>
                 <th scope="col">Total Sales</th>
@@ -364,18 +401,17 @@ export default function Customer_Customerlist() {
                 index.length > 0 &&
                 index.map((item) => {
                   return (
-                    
                     <tr key={item.id}>
                       <td>
                         <div class="custom-control custom-checkbox">
                           <input
                             type="checkbox"
-                            checked={item.isSelected}
+                            value={item.isSelected}
+                            checked={item.isSelected ? "checked" : false}
                             onChange={(e) => onSelectCustomer(e, item.user_id)}
                           />
 
                           <label for="customCheck{item.id}">
-                            {" "}
                             {item.isSelected}
                           </label>
                         </div>
@@ -424,12 +460,11 @@ export default function Customer_Customerlist() {
                 })}
             </tbody>
           </table>
-          {
-            index && index.length <= 0 &&
-            <h3 class="d-flex justify-content-center my-2">
-            Records not found
-          </h3>
-          }
+          {index.length <= 0 && (
+            <div className="text-center">
+              <EmptyPage />
+            </div>
+          )}
           {/* <-------------------------TableEnd----------------------> */}
 
           <div class="text-left">
@@ -440,44 +475,65 @@ export default function Customer_Customerlist() {
                   id="exampleFormControlSelect1"
                   placeholder="Action"
                   onChange={(e) => setSelectedStatus(e.target.value)}
+                  value={selectedStatus}
                 >
                   <option selected>Action</option>
                   <option value={"1"}>Active</option>
                   <option value={"0"}>Inactive</option>
                   <option value={"2"}>Delete</option>
                 </select>
-                
               </div>
-              <div className="row">
+              <div className="">
                 <button
                   type="button "
                   class="btn btn-light col-md-2"
-                  style={{ width: "8rem" }}
+                  style={{ minWidth: "fit-content" }}
                   onClick={() => handleOpen(null, null, false)}
                 >
                   Apply
                 </button>
-
-                <p className="col-md-3">
-                  &nbsp; Pages:
-                  <b style={{ color: "black" }}> {page.current}</b> /{" "}
-                  {page.totalpages}{" "}
-                </p>
-
-                {
-                  page.totalpages > 1 &&
-                  paginationFunction
-                }
               </div>
-              
+
+              <div className="w-auto ml-auto">
+                <span>Records per page: </span>
+                <select
+                  class="form-control"
+                  id="exampleFormControlSelect1"
+                  placeholder="Action"
+                  defaultValue={page.records_per_page}
+                  onChange={(e) => {
+                    setPage({
+                      ...page,
+                      records_per_page: e.target.value,
+                    });
+                    handleChangePage(e, 0);
+                  }}
+                >
+                  {/* <option selected>Action</option> */}
+                  <option value={"5"}>5</option>
+                  <option value={"10"}>10</option>
+                  <option value={"15"}>15</option>
+                  <option value={"20"}>20</option>
+                  <option value={"30"}>30</option>
+                  <option value={"50"}>50</option>
+                  <option value={"100"}>100</option>
+                </select>
+              </div>
+
+              <div className="ml-auto">
+                {page.totalpages > 1 && paginationFunction}
+              </div>
+
+              <div className=" ">
+                &nbsp; Pages:
+                <b style={{ color: "black" }}> {page.current}</b> /{" "}
+                {page.totalpages}{" "}
+              </div>
             </div>
-            
           </div>
-          
         </div>
-        
       </div>
-      
+
       <Modal
         open={open}
         onClose={handleClose}
@@ -497,8 +553,6 @@ export default function Customer_Customerlist() {
           <Button onClick={() => handleStatusChange()}>Yes</Button>
         </Box>
       </Modal>
-      
     </div>
-    
   );
 }

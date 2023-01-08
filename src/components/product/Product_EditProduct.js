@@ -496,7 +496,7 @@ export default function Product_AddProduct() {
             <button
               type="button"
               className="btn"
-              onClick={() => navigate("/product/list")}
+              onClick={() => navigate(-1)}
             >
               <i className="fas fa-arrow-left"></i>
             </button>

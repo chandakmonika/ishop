@@ -11,23 +11,25 @@ import Modal from "@mui/material/Modal";
 import TablePagination from "@mui/material/TablePagination";
 import Box from "@mui/material/Box";
 import EmptyPage from "../emptypage";
+import { toaster } from "../../utils/toaster";
 
 export default function Brand_BrandList() {
   const [searchParams, setSearchParams] = useSearchParams();
   const [parent_category_id, setParent_category_id] = useState("");
   const [index, setIndex] = useState([]);
   const pageNo = searchParams.get("page");
+  const searchQuery = searchParams.get("search");
   const [brand, setBrand] = useState([]);
   const [status, setStatus] = useState([]);
   const [order, setOrder] = useState("ASC");
-  const [query, setQuery] = useState({ search: "", category_id: "" });
+  const [query, setQuery] = useState({ search: searchQuery, category_name: "" });
   const [brand_id, setBrand_id] = useState([]);
   const [selectedcustomer, setSelectedcustomer] = useState([]);
   const [selectedStatus, setSelectedStatus] = useState("0");
   const [page, setPage] = useState({
     current: 0,
     previous: 0,
-    records_per_page: 0,
+    records_per_page: 15,
     totalpages: 0,
     totalrecords: 0,
   });
@@ -40,7 +42,7 @@ export default function Brand_BrandList() {
   });
   const [isSingleStatusUpdate, setIsSingleStatusUpdate] = useState(true);
 
-  const url = "http://admin.ishop.sunhimlabs.com/api/v1/products/brands/list";
+  const url = `${process.env.REACT_APP_BACKEND_APIURL}api/v1/products/brands/list`;
 
   // useEffect(() => {
   //   axios
@@ -61,12 +63,14 @@ export default function Brand_BrandList() {
       ...page,
       current: 0
     })
-    getBrandList(0);
+    // getBrandList(0);
+
+    navigate(`/brand/list?page=${page.current}&search=${query.search ? query.search : "" }&categoryid=${query.category_id ? query.category_id : "" }`);
   };
 
   useEffect(() => {
     axios
-      .get(`http://admin.ishop.sunhimlabs.com/api/v1/products/parentcategories`)
+      .get(`${process.env.REACT_APP_BACKEND_APIURL}api/v1/products/parentcategories`)
       .then((res) => setIndex(res.data.data));
   }, []);
 
@@ -82,18 +86,22 @@ export default function Brand_BrandList() {
   // };
   useEffect(() => {
     getBrandList(pageNo);
-  }, [pageNo]);
+    setQuery({
+      ...query,
+      search: searchQuery
+    })
+  }, [pageNo, page.records_per_page, searchQuery]);
 
   const handleChangePage = async (e, newPage) => {
-    navigate(`/brand/list?page=${newPage + 1}`);
-    setPage(newPage);
+    navigate(`/brand/list?page=${newPage + 1}&search=${query.search ? query.search : ""}&categoryid=${query.category_id ? query.category_id : ""}`);
+    // setPage(newPage);
    
   };
 
   const getBrandList = async (newPage) => {
     try {
       const res = await axios.get(
-        `${url}?q=${query.search ? query.search : ''}&category_id=${query.category_id ? query.category_id : ''}&page=${Number(newPage)}`
+        `${url}?q=${query.search ? query.search : ''}&category_id=${query.category_id ? query.category_id : ''}&page=${Number(newPage)}&per_page=${page.records_per_page}`
       );
       const { data, pages } = res.data;
       console.log("pages", pages);
@@ -108,12 +116,13 @@ export default function Brand_BrandList() {
     getBrandList();
   }, []);
 
-  const update = (e) => {
+  const sortTableData = (e,sortBy) => {
     e.preventDefault();
     order === "ASC" ? setOrder("DESC") : setOrder("ASC");
     axios
       .get(
-        `http://admin.ishop.sunhimlabs.com/api/v1/products/brands/list?q=&category_id=&sort_by=brand_name&order_by=${order}`
+        `${process.env.REACT_APP_BACKEND_APIURL}api/v1/products/brands/listq=${query.search ? query.search : ""}&category_id=${query.category_id ? query.category_id : ""}&status=${query.status}&page=${Number(page.current)}&per_page=${page.records_per_page}&sort_by=${sortBy}&order_by=${order}`,{
+        }
       )
       .then((res) => setBrand(res.data.data));
   };
@@ -122,7 +131,7 @@ export default function Brand_BrandList() {
 
   const statusChange = (apidata) => {
     fetch(
-      "http://admin.ishop.sunhimlabs.com/api/v1/products/brands/changestatus",
+      `${process.env.REACT_APP_BACKEND_APIURL}api/v1/products/brands/changestatus`,
       {
         method: "POST",
         headers: {
@@ -134,6 +143,8 @@ export default function Brand_BrandList() {
     ).then((result) => {
       result.json().then((resps) => {
         console.warn("resps", resps);
+        toaster(resps, "Status Changed Successfully!");
+        setSelectedStatus("")
         handleClose();
         getBrandList();
       });
@@ -160,6 +171,7 @@ export default function Brand_BrandList() {
       statusChange(apidata);
     } else {
       applyStatus();
+
     }
   }
 
@@ -289,6 +301,7 @@ export default function Brand_BrandList() {
                     id="exampleInputEmail1"
                     aria-describedby="texthelp"
                     placeholder="Search"
+                    value={query.search}
                     onChange={(e) => handleChange(e)}
                   />
                   &nbsp;&nbsp;&nbsp;&nbsp;
@@ -344,7 +357,7 @@ export default function Brand_BrandList() {
                         !brand
                           .map((select) => {
                             if (select.isSelected === true) {
-                              return true;
+                              return "checked";
                             }
                             return false;
                           })
@@ -358,13 +371,13 @@ export default function Brand_BrandList() {
                 </th>
                 <th scope="col">
                   Category Name &nbsp;
-                  <i class="fas fa-arrow-down" onClick={update}></i>
-                  <i class="fas fa-arrow-up" onClick={update}></i>
+                  <i class="fas fa-arrow-down" onClick={(e) => sortTableData(e, 'category_name')}></i>
+                  <i class="fas fa-arrow-up" onClick={(e) => sortTableData(e, 'category_name')}></i>
                 </th>
                 <th scope="col">
                   Brand Name &nbsp;
-                  <i class="fas fa-arrow-down" onClick={update}></i>
-                  <i class="fas fa-arrow-up" onClick={update}></i>
+                  <i class="fas fa-arrow-down" onClick={(e) => sortTableData(e, 'brand_name')}></i>
+                  <i class="fas fa-arrow-up" onClick={(e) => sortTableData(e, 'brand_name')}></i>
                 </th>
                 {/* <th scope="col">Logo</th> */}
                 <th scope="col">Status</th>
@@ -381,7 +394,7 @@ export default function Brand_BrandList() {
                         <div class="custom-control custom-checkbox">
                           <input
                             type="checkbox"
-                            checked={item.isSelected}
+                            checked={item.isSelected ? "checked" : false}
                             onChange={(e) => onSelectBrand(e, item.brand_id)}
                           />
                           <label for="customCheck{item.id}">
@@ -421,7 +434,6 @@ export default function Brand_BrandList() {
             </div>
           )}
           {/* <-------------------------TableEnd----------------------> */}
-          {brand.length > 0 && (
           <div class="text-left">
             <div className="row">
               <div className="col-md-2">
@@ -430,39 +442,72 @@ export default function Brand_BrandList() {
                   id="exampleFormControlSelect1"
                   placeholder="Action"
                   onChange={(e) => setSelectedStatus(e.target.value)}
+                  value={selectedStatus}
                 >
                   <option selected>Action</option>
                   <option value={"1"}>Active</option>
                   <option value={"0"}>Inactive</option>
                   <option value={"2"}>Delete</option>
                 </select>
+                
               </div>
-              <div className="row">
+              <div className="">
                 <button
-                  type="button"
-                  class="btn btn-light"
-                  style={{ width: "8rem" }}
+                  type="button "
+                  class="btn btn-light col-md-2"
+                  style={{ minWidth: "fit-content" }}
                   onClick={() => handleOpen(null, null, false)}
                 >
                   Apply
                 </button>
-
-                <p className="col-md-3">
-                  &nbsp; Pages:
-                  <b style={{ color: "black" }}> {page.current}</b> /{" "}
-                  {page.totalpages}{" "}
-                </p>
-
-               {
-                  page.totalpages > 1 &&
-                  paginationFunction
-                }
               </div>
+
+              <div className="w-auto ml-auto">
+                  <span>Records per page: </span>
+                  <select
+                    class="form-control"
+                    id="exampleFormControlSelect1"
+                    placeholder="Action"
+                    defaultValue={page.records_per_page}
+                    onChange={(e) => {
+                      setPage({
+                        ...page,
+                        records_per_page: e.target.value,
+                      });
+                      handleChangePage(e, 0)
+                    }}
+                  >
+                    {/* <option selected>Action</option> */}
+                    <option value={"5"}>5</option>
+                    <option value={"10"}>10</option>
+                    <option value={"15"}>
+                      15
+                    </option>
+                    <option value={"20"}>20</option>
+                    <option value={"30"}>30</option>
+                    <option value={"50"}>50</option>
+                    <option value={"100"}>100</option>
+                  </select>
+                </div>
+
+                <div className="ml-auto">
+                  {page.totalpages > 1 && paginationFunction}
+                </div>
+          
+              <div className=" ">
+                &nbsp; Pages:
+                <b style={{ color: "black" }}> {page.current}</b> /{" "}
+                {page.totalpages}{" "}
+              </div>
+              
             </div>
+            
           </div>
-            )}
+          
         </div>
+        
       </div>
+      
       <Modal
         open={open}
         onClose={handleClose}
@@ -482,7 +527,9 @@ export default function Brand_BrandList() {
           <Button onClick={() => handleStatusChange()}>Yes</Button>
         </Box>
       </Modal>
+      
     </div>
+    
   );
 }
 

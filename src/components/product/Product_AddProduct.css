@@ -1,26 +1,33 @@
 /* .form-group{
    float: left;
 } */
-h6,h5,p{
+h6,
+h5,
+p {
    text-align: left;
 }
-.jodit-status-bar{
+
+.jodit-status-bar {
    visibility: hidden;
 }
 
-.add{
+.add {
    text-align: left;
 }
-.form-label{
+
+.form-label {
    /* text-align: left; */
    float: left;
 }
-.form-check{
+
+.form-check {
    float: left;
 }
-.demo{
+
+.demo {
    float: left;
 }
+
 .row {
    display: -ms-flexbox;
    display: flex;
@@ -29,34 +36,59 @@ h6,h5,p{
    /* margin-right: -505px !important; */
    margin-left: -15px;
 }
-.list-group > .list-group {
+
+.list-group>.list-group {
    display: none;
    margin-bottom: 0;
- }
- .list-group-item:focus-within + .list-group {
+}
+
+.list-group-item:focus-within+.list-group {
    display: block;
- }
- 
- .list-group > .list-group-item {
+}
+
+.list-group>.list-group-item {
    /* border-radius: 0;
    border-width: 1px 0 0 0; */
-   border:none;
- }
- 
- .list-group > .list-group-item:first-child {
+   border: none;
+}
+
+.list-group>.list-group-item:first-child {
    border-top-width: 0;
-   border:none;
-   
- }
- 
- .list-group  > .list-group > .list-group-item {
+   border: none;
+
+}
+
+.list-group>.list-group>.list-group-item {
    padding-left: 2.5rem;
- }
- table, th, td {
+}
+
+table,
+th,
+td {
    /* border: 1px solid black; */
    border-collapse: collapse;
- }
+}
 
- .category-item input[type=checkbox]{
+.category-item input[type=checkbox] {
    display: none;
- }
+}
+
+.image-container {
+   width: fit-content;
+   display: inline-block;
+   margin: 5px;
+   border-radius: 5px;
+   overflow: hidden;
+   border: 1px solid rgb(215, 215, 215);
+}
+
+.remove-file-icon {
+   position: absolute;
+   top: 5px;
+   right: 10px;
+   background-color: aliceblue;
+   padding: 0px 8px;
+   color: black;
+   cursor: pointer;
+   border-radius: 50%;
+}

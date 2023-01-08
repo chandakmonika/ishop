@@ -1,23 +1,29 @@
-
 import React, { useEffect, useState, useMemo } from "react";
 import Button from "react-bootstrap/Button";
 import Container from "react-bootstrap/Container";
 import Nav from "react-bootstrap/Nav";
 import Navbar from "react-bootstrap/Navbar";
 import axios from "axios";
-import { useParams, useNavigate, Link, useSearchParams, } from "react-router-dom";
+import {
+  useParams,
+  useNavigate,
+  Link,
+  useSearchParams,
+} from "react-router-dom";
 import TablePagination from "@mui/material/TablePagination";
 import Box from "@mui/material/Box";
 import Typography from "@mui/material/Typography";
 import Modal from "@mui/material/Modal";
 import "./Product_ProductCategoryList.css";
 import EmptyPage from "../emptypage";
+import { toaster } from "../../utils/toaster";
 
 export default function Product_ProductCategoryList() {
   const [searchParams, setSearchParams] = useSearchParams();
   const [first, setFirst] = useState([]);
   const pageNo = searchParams.get("page");
-  const [query, setQuery] = useState({ search: "", });
+  const searchQuery = searchParams.get("search");
+  const [query, setQuery] = useState({ search: "" });
   const [category_id, setCategory_id] = useState([]);
   const [selectedcustomer, setSelectedcustomer] = useState([]);
   const [selectedStatus, setSelectedStatus] = useState("0");
@@ -26,7 +32,7 @@ export default function Product_ProductCategoryList() {
   const [page, setPage] = useState({
     current: 0,
     previous: 0,
-    records_per_page: 0,
+    records_per_page: 15,
     totalpages: 0,
     totalrecords: 0,
   });
@@ -45,21 +51,27 @@ export default function Product_ProductCategoryList() {
   const handleChange = (e) => {
     setQuery({
       ...query,
-      [e.target.name]: e.target.value
+      [e.target.name]: e.target.value,
     });
   };
   const handleSubmit = (e) => {
     e.preventDefault();
     setPage({
       ...page,
-      current: 0
-    })
-    getCustomerList(0);
-    axios
-      .get(
-        `${process.env.REACT_APP_BACKEND_APIURL}api/v1/products/category/list/?q=${query.text}`
-      )
-      .then((res) => setFirst(res.data.data));
+      current: 0,
+    });
+    // getCustomerList(0);
+    // axios
+    //   .get(
+    //     `${process.env.REACT_APP_BACKEND_APIURL}api/v1/products/category/list/?q=${query.text}`
+    //   )
+    //   .then((res) => setFirst(res.data.data));
+
+    navigate(
+      `/product/category/list?page=${page.current}&search=${
+        query.search ? query.search : ""
+      }`
+    );
   };
 
   // const getData = async () => {
@@ -78,18 +90,26 @@ export default function Product_ProductCategoryList() {
 
   useEffect(() => {
     getCustomerList(pageNo);
-  }, [pageNo]);
+    setQuery({
+      ...query,
+      search: searchQuery,
+    });
+  }, [pageNo, page.records_per_page, searchQuery]);
 
   const handleChangePage = async (e, newPage) => {
-    setPage(newPage);
-    navigate(`/product/category/list?page=${newPage + 1}`);
+    // setPage(newPage);
+    navigate(
+      `/product/category/list?page=${newPage + 1}&search=${
+        query.search ? query.search : ""
+      }`
+    );
   };
 
   const getCustomerList = async (newPage) => {
-    console.log(4343, query)
+    console.log(4343, query);
     try {
       const res = await axios.get(
-        `${url}?q=${query.search ? query.search : ''}&category_id=${query.category_id ? query.category_id : ''}&page=${Number(newPage)}`
+        `${url}?q=${query.search ? query.search : ""}&page=${Number(newPage)}&per_page=${page.records_per_page}`
       );
       const { data, pages } = res.data;
       console.log("pages", pages);
@@ -107,12 +127,18 @@ export default function Product_ProductCategoryList() {
     getCustomerList();
   }, []);
 
-  const update = (e) => {
+  const sortTableData = (e, sortBy) => {
     e.preventDefault();
     order === "ASC" ? setOrder("DESC") : setOrder("ASC");
     axios
       .get(
-        `${process.env.REACT_APP_BACKEND_APIURL}api/v1/products/category/list?q=&per_page=12&page=1&sort_by=category_name&order_by=${order}`
+        `${
+          process.env.REACT_APP_BACKEND_APIURL
+        }api/v1/products/category/list?q=${
+          query.search ? query.search : ""
+        }&page=${Number(page.current)}&per_page=${
+          page.records_per_page
+        }&sort_by=${sortBy}&order_by=${order}`
       )
       .then((res) => setFirst(res.data.data));
   };
@@ -131,6 +157,8 @@ export default function Product_ProductCategoryList() {
     ).then((result) => {
       result.json().then((resps) => {
         console.warn("resps", resps);
+        toaster(resps, "Status Changed Successfully!");
+        setSelectedStatus("");
         handleClose();
         getCustomerList();
       });
@@ -219,21 +247,19 @@ export default function Product_ProductCategoryList() {
   };
   const handleClose = () => setOpen(false);
 
-const selectAllItems = (e) =>{
-  console.log(1, e.target.checked);
-  const datas =
+  const selectAllItems = (e) => {
+    console.log(1, e.target.checked);
+    const datas =
       first.length > 0 &&
       first.map((item) => {
-       
-          return {
-            ...item,
-            isSelected: e.target.checked,
-          };
-       
+        return {
+          ...item,
+          isSelected: e.target.checked,
+        };
       });
-      console.log(27, datas);
-      setFirst(datas);
-}
+    console.log(27, datas);
+    setFirst(datas);
+  };
 
   const paginationFunction = useMemo(
     () => (
@@ -285,6 +311,7 @@ const selectAllItems = (e) =>{
                     id="exampleInputEmail1"
                     aria-describedby="texthelp"
                     placeholder="Search"
+                    value={query.search}
                     onChange={(e) => handleChange(e)}
                   />
                   <Button variant="info" type="submit">
@@ -296,7 +323,7 @@ const selectAllItems = (e) =>{
           </div>
           <br />
           <table class="table table-bordered" style={{ width: "95%" }}>
-          {console.log(
+            {console.log(
               2,
               first
                 .map((select) => {
@@ -311,33 +338,47 @@ const selectAllItems = (e) =>{
               <tr>
                 <th scope="col">
                   <div class="custom-control custom-checkbox">
-                    <input type="checkbox" 
-                     checked={
-                      first && first.length > 0 &&
-                      !first
-                        .map((select) => {
-                          if (select.isSelected === true) {
-                            return true;
-                          }
-                          return false;
-                        })
-                        .includes(false)
-                    }
-                    onChange={(e) => selectAllItems(e)}
-                    disabled={first.length === 0}
+                    <input
+                      type="checkbox"
+                      checked={
+                        first &&
+                        first.length > 0 &&
+                        !first
+                          .map((select) => {
+                            if (select.isSelected === true) {
+                              return "checked";
+                            }
+                            return false;
+                          })
+                          .includes(false)
+                      }
+                      onChange={(e) => selectAllItems(e)}
+                      disabled={first.length === 0}
                     />
                     <label for="customCheck"></label>
                   </div>
                 </th>
                 <th scope="col">
                   Category Name
-                  <i class="fas fa-arrow-down" onClick={update}></i>
-                  <i class="fas fa-arrow-up" onClick={update}></i>
+                  <i
+                    class="fas fa-arrow-down"
+                    onClick={(e) => sortTableData(e, "category_name")}
+                  ></i>
+                  <i
+                    class="fas fa-arrow-up"
+                    onClick={(e) => sortTableData(e, "category_name")}
+                  ></i>
                 </th>
                 <th scope="col">
                   Parent Category Name
-                  <i class="fas fa-arrow-down" onClick={update}></i>
-                  <i class="fas fa-arrow-up" onClick={update}></i>
+                  <i
+                    class="fas fa-arrow-down"
+                    onClick={(e) => sortTableData(e, "parent_category_name")}
+                  ></i>
+                  <i
+                    class="fas fa-arrow-up"
+                    onClick={(e) => sortTableData(e, "parent_category_name")}
+                  ></i>
                 </th>
                 <th scope="col">Status</th>
                 <th scope="col">Action</th>
@@ -355,13 +396,13 @@ const selectAllItems = (e) =>{
                           <input
                             type="checkbox"
                             value={item.isSelected}
-                            checked={item.isSelected ? 'checked' : false}
+                            checked={item.isSelected ? "checked" : false}
                             onChange={(e) =>
                               onSelectCustomer(e, item.category_id)
                             }
                           />
                           <label for="customCheck{item.id}">
-                          {item.isSelected}
+                            {item.isSelected}
                           </label>
                         </div>
                       </td>
@@ -378,10 +419,12 @@ const selectAllItems = (e) =>{
                         </button>
                       </td>
                       <td>
-                        
-                      <Link to={`/product/category/edit/${item.category_id}`}>
-                        <i class="fas fa-edit" style={{ fontSize: "24px" }}></i>
-                      </Link>
+                        <Link to={`/product/category/edit/${item.category_id}`}>
+                          <i
+                            class="fas fa-edit"
+                            style={{ fontSize: "24px" }}
+                          ></i>
+                        </Link>
                       </td>
                     </tr>
                   );
@@ -394,7 +437,6 @@ const selectAllItems = (e) =>{
             </div>
           )}
           {/* <-------------------------TableEnd----------------------> */}
-          {first.length > 0 && (
           <div class="text-left">
             <div className="row">
               <div className="col-md-2">
@@ -403,6 +445,7 @@ const selectAllItems = (e) =>{
                   id="exampleFormControlSelect1"
                   placeholder="Action"
                   onChange={(e) => setSelectedStatus(e.target.value)}
+                  value={selectedStatus}
                 >
                   <option selected>Action</option>
                   <option value={"1"}>Active</option>
@@ -410,32 +453,57 @@ const selectAllItems = (e) =>{
                   <option value={"2"}>Delete</option>
                 </select>
               </div>
-              <div className="row">
+              <div className="">
                 <button
                   type="button "
                   class="btn btn-light col-md-2"
-                  style={{ width: "8rem" }}
+                  style={{ minWidth: "fit-content" }}
                   onClick={() => handleOpen(null, null, false)}
                 >
                   Apply
                 </button>
+              </div>
 
-                <p className="col-md-3">
-                  &nbsp; Pages:
-                  <b style={{ color: "black" }}> {page.current}</b> /{" "}
-                  {page.totalpages}{" "}
-                </p>
+              <div className="w-auto ml-auto">
+                <span>Records per page: </span>
+                <select
+                  class="form-control"
+                  id="exampleFormControlSelect1"
+                  placeholder="Action"
+                  defaultValue={page.records_per_page}
+                  onChange={(e) => {
+                    setPage({
+                      ...page,
+                      records_per_page: e.target.value,
+                    });
+                    handleChangePage(e, 0);
+                  }}
+                >
+                  {/* <option selected>Action</option> */}
+                  <option value={"5"}>5</option>
+                  <option value={"10"}>10</option>
+                  <option value={"15"}>15</option>
+                  <option value={"20"}>20</option>
+                  <option value={"30"}>30</option>
+                  <option value={"50"}>50</option>
+                  <option value={"100"}>100</option>
+                </select>
+              </div>
 
-                {
-                  page.totalpages > 1 &&
-                  paginationFunction
-                }
+              <div className="ml-auto">
+                {page.totalpages > 1 && paginationFunction}
+              </div>
+
+              <div className=" ">
+                &nbsp; Pages:
+                <b style={{ color: "black" }}> {page.current}</b> /{" "}
+                {page.totalpages}{" "}
               </div>
             </div>
           </div>
-            )}
         </div>
       </div>
+
       <Modal
         open={open}
         onClose={handleClose}
@@ -446,7 +514,7 @@ const selectAllItems = (e) =>{
           <Typography
             id="modal-modal-title"
             variant="h6"
-            component="h2" 
+            component="h2"
           ></Typography>
           <Typography id="modal-modal-description" sx={{ mt: 2 }}>
             Are you sure want to change the status?

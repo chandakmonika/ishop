@@ -18,13 +18,15 @@ import Typography from "@mui/material/Typography";
 import Modal from "@mui/material/Modal";
 //import "././Product_Productlist.css";
 import EmptyPage from "../emptypage";
+import { toaster } from "../../utils/toaster";
 
 export default function ProductsComponent() {
   const [searchParams, setSearchParams] = useSearchParams();
   const [index, setIndex] = useState([]);
   const pageNo = searchParams.get("page");
+  const searchQuery = searchParams.get("search");
   const [first, setFirst] = useState([]);
-  const [query, setQuery] = useState({ search: "", category_name: "", status: "" });
+  const [query, setQuery] = useState({ search: searchQuery, category_name: "", status: "" });
   const [status, setStatus] = useState([]);
   const [order, setOrder] = useState("ASC");
   const [product_id, setProduct_id] = useState([]);
@@ -39,8 +41,6 @@ export default function ProductsComponent() {
     totalrecords: 0,
   });
 
-  console.log(12123, pageNo);
-
   const navigate = useNavigate();
 
   const [changeStatusId, setChangeStatusId] = useState({
@@ -51,10 +51,7 @@ export default function ProductsComponent() {
 
   const url = `${process.env.REACT_APP_BACKEND_APIURL}api/v1/products/list`;
 
-  console.log(query);
-
   const handleChange = (e) => {
-    console.log(324, e)
     setQuery({
       ...query,
       [e.target.name]: e.target.value,
@@ -66,7 +63,7 @@ export default function ProductsComponent() {
       ...page,
       current: 0,
     });
-    getCustomerList(0);
+    navigate(`/product/list?page=${page.current}&search=${query.search ? query.search : "" }&categoryid=${query.category_id ? query.category_id : "" }`);
   };
 
   useEffect(() => {
@@ -92,22 +89,22 @@ export default function ProductsComponent() {
 
   useEffect(() => {
     getCustomerList(pageNo);
-  }, [pageNo, page.records_per_page]);
+    setQuery({
+      ...query,
+      search: searchQuery
+    })
+  }, [pageNo, page.records_per_page, searchQuery]);
 
   const handlePageChange = async (e, newPage) => {
-    navigate(`/product/list?page=${newPage + 1}`);
+    navigate(`/product/list?page=${newPage + 1}&search=${query.search ? query.search : ""}&categoryid=${query.category_id ? query.category_id : ""}`);
   };
 
   const getCustomerList = async (newPage) => {
-    // setPage(newPage);
-    console.log(4343, newPage, query, page);
     try {
       const res = await axios.get(
-        `${url}?q=${query.search ? query.search : ""}&category_id=${query.category_id ? query.category_id : ""
-        }&status=${query.status}&page=${Number(newPage)}&per_page=${page.records_per_page}`
+        `${url}?q=${query.search ? query.search : ""}&category_id=${query.category_id ? query.category_id : ""}&status=${query.status}&page=${Number(newPage)}&per_page=${page.records_per_page}`
       );
       const { data, pages } = res.data;
-      console.log(7634, "pages", pages);
       setFirst(data);
       setPage(pages);
     } catch (error) {
@@ -131,13 +128,12 @@ export default function ProductsComponent() {
   //   getCustomerList();
   // }, []);
 
-  const update = (e) => {
+  const sortTableData = (e, sortBy) => {
     e.preventDefault();
     order === "ASC" ? setOrder("DESC") : setOrder("ASC");
-
     axios
       .get(
-        `${process.env.REACT_APP_BACKEND_APIURL}api/v1/products/list?q=&category_id=&status=&per_page=${page.records_per_page}&page=1&sort_by=product_name&order_by=${order}`
+        `${process.env.REACT_APP_BACKEND_APIURL}api/v1/products/list?q=${query.search ? query.search : ""}&category_id=${query.category_id ? query.category_id : ""}&status=${query.status}&page=${Number(page.current)}&per_page=${page.records_per_page}&sort_by=${sortBy}&order_by=${order}`
       )
       .then((res) => setFirst(res.data.data));
   };
@@ -156,6 +152,8 @@ export default function ProductsComponent() {
     ).then((result) => {
       result.json().then((resps) => {
         console.warn("resps", resps);
+        toaster(resps, "Status Changed Successfully!");
+        setSelectedStatus("")
         handleClose();
         getCustomerList();
       });
@@ -202,9 +200,7 @@ export default function ProductsComponent() {
     setFirst(datas);
     console.log(e.target.checked, product_id);
     const selectedData = datas.filter((item) => item.isSelected === true);
-    console.log(selectedData, 10);
     setSelectedcustomer(selectedData);
-    console.log(datas);
   };
 
   const applyStatus = () => {
@@ -318,6 +314,7 @@ export default function ProductsComponent() {
                     id="exampleInputEmail1"
                     aria-describedby="texthelp"
                     placeholder="Search"
+                    value={query.search}
                     onChange={(e) => handleChange(e)}
                   />
                   <select
@@ -349,9 +346,9 @@ export default function ProductsComponent() {
                     <option value={"active"}>Active</option>
                     <option value={"inactive"}>Inactive</option>
                   </select>
-                    <Button variant="info" type="submit">
-                      Search
-                    </Button>
+                  <Button variant="info" type="submit">
+                    Search
+                  </Button>
                 </div>
               </form>
             </div>
@@ -399,23 +396,23 @@ export default function ProductsComponent() {
                 </th>
                 <th scope="col">
                   Product &nbsp;
-                  <i class="fas fa-arrow-down" onClick={update}></i>
-                  <i class="fas fa-arrow-up" onClick={update}></i>
+                  <i class="fas fa-arrow-down" onClick={(e) => sortTableData(e, 'product_name')}></i>
+                  <i class="fas fa-arrow-up" onClick={(e) => sortTableData(e, 'product_name')}></i>
                 </th>
                 <th scope="col">
                   Product Type &nbsp;
-                  <i class="fas fa-arrow-down" onClick={update}></i>
-                  <i class="fas fa-arrow-up" onClick={update}></i>
+                  <i class="fas fa-arrow-down" onClick={(e) => sortTableData(e, 'product_type')}></i>
+                  <i class="fas fa-arrow-up" onClick={(e) => sortTableData(e, 'product_type')}></i>
                 </th>
                 <th scope="col">
                   Category &nbsp;
-                  <i class="fas fa-arrow-down" onClick={update}></i>
-                  <i class="fas fa-arrow-up" onClick={update}></i>
+                  <i class="fas fa-arrow-down" onClick={(e) => sortTableData(e, 'category_name')}></i>
+                  <i class="fas fa-arrow-up" onClick={(e) => sortTableData(e, 'category_name')}></i>
                 </th>
                 <th scope="col">
                   Product Quantity &nbsp;
-                  <i class="fas fa-arrow-down" onClick={update}></i>
-                  <i class="fas fa-arrow-up" onClick={update}></i>
+                  <i class="fas fa-arrow-down" onClick={(e) => sortTableData(e, 'product_qty')}></i>
+                  <i class="fas fa-arrow-up" onClick={(e) => sortTableData(e, 'product_qty')}></i>
                 </th>
                 <th scope="col">Status</th>
                 <th scope="col">Action</th>
@@ -491,6 +488,7 @@ export default function ProductsComponent() {
                     id="exampleFormControlSelect1"
                     placeholder="Action"
                     onChange={(e) => setSelectedStatus(e.target.value)}
+                    value={selectedStatus}
                   >
                     <option selected>Action</option>
                     <option value={"1"}>Active</option>
@@ -561,7 +559,7 @@ export default function ProductsComponent() {
             component="h2"
           ></Typography>
           <Typography id="modal-modal-description" sx={{ mt: 2 }}>
-            Are you sure want to change the status?
+            Are you sure you want to change the status?
           </Typography>
           <Button onClick={() => handleClose()}> No </Button>&nbsp;&nbsp;
           <Button onClick={() => handleStatusChange()}>Yes</Button>
@@ -570,4 +568,5 @@ export default function ProductsComponent() {
     </div>
   );
 }
+
 

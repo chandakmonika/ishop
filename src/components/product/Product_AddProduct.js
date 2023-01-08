@@ -358,6 +358,12 @@ export default function Product_AddProduct() {
     });
   };
 
+  const removeMediaFile = (i) => {
+    let data = [...mediaFiles];
+    data.splice(i, 1);
+    setMediaFiles(data);
+  }
+
   return (
     <div>
       <div>
@@ -440,9 +446,14 @@ export default function Product_AddProduct() {
                           onChange={handleImageUpload}
                           multiple
                         />
-                        {mediaFiles.map((file) => (
-                          <img src={file.media_file} width={250} />
-                        ))}
+                        <div className="">
+                          {mediaFiles.map((file, i) => (
+                            <div className="position-relative image-container">
+                              <img src={file.media_file} width={250} height={250} />
+                              <div className="remove-file-icon" onClick={() => removeMediaFile(i)}>x</div>
+                            </div>
+                          ))}
+                        </div>
                       </div>
                     </div>
                   </div>
@@ -771,11 +782,11 @@ export default function Product_AddProduct() {
                       }}
                       name="product_weight"
                     />
-                  </div>                 
+                  </div>
                 </div>
               </div>
             </div>
-          </div><br/>
+          </div><br />
 
           {/* <------------------------------------Shipping Information From End------------------------------> */}
 
@@ -799,7 +810,7 @@ export default function Product_AddProduct() {
                       }}
                       name="tax_amount"
                     />
-                  </div>          
+                  </div>
                 </div>
               </div>
             </div>
@@ -1128,3 +1139,4 @@ export default function Product_AddProduct() {
     </div>
   );
 }
+
