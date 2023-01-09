@@ -5,11 +5,13 @@ import Button from "react-bootstrap/Button";
 import Container from "react-bootstrap/Container";
 import Nav from "react-bootstrap/Nav";
 import Navbar from "react-bootstrap/Navbar";
-import { useParams, useNavigate } from "react-router-dom";
+import { useParams, useNavigate,useSearchParams } from "react-router-dom";
 import TablePagination from "@mui/material/TablePagination";
 import Box from "@mui/material/Box";
 import Typography from "@mui/material/Typography";
 import Modal from "@mui/material/Modal";
+import EmptyPage from "../emptypage";
+import { toaster } from "../../utils/toaster";
 
 export default function Mastermange_CMSListpages() {
   const [first, setFirst] = useState([]);
@@ -19,11 +21,14 @@ export default function Mastermange_CMSListpages() {
   const [selectedcustomer, setSelectedcustomer] = useState([]);
   const [selectedStatus, setSelectedStatus] = useState("0");
   const [status, setStatus] = useState([]);
+  const [searchParams, setSearchParams] = useSearchParams();
+  const pageNo = searchParams.get("page");
+  const searchQuery = searchParams.get("search");
 
   const [page, setPage] = useState({
     current: 0,
     previous: 0,
-    records_per_page: 0,
+    records_per_page: 15,
     totalpages: 0,
     totalrecords: 0,
   });
@@ -36,47 +41,83 @@ export default function Mastermange_CMSListpages() {
   });
 
   const [isSingleStatusUpdate, setIsSingleStatusUpdate] = useState(true);
-  const url = "http://admin.ishop.sunhimlabs.com/api/v1/cmspages/list";
+  const url = `${process.env.REACT_APP_BACKEND_APIURL}aapi/v1/cmspages/list`;
 
   console.log(query);
   const handleChange = (e) => {
-    setQuery({ text: e.target.value });
+    setQuery({
+      ...query,
+      [e.target.name]: e.target.value
+    });
   };
   
   const handleSubmit = (e) => {
     e.preventDefault();
-    axios
-      .get(
-        `http://admin.ishop.sunhimlabs.com/api/v1/cmspages/list/?q=${query.text}`
-      )
-      .then((res) => setFirst(res.data.data));
+    // axios
+    //   .get(
+    //     `http://admin.ishop.sunhimlabs.com/api/v1/cmspages/list/?q=${query.text}`
+    //   )
+    //   .then((res) => setFirst(res.data.data));
+      setPage({
+        ...page,
+        current: 0
+      })
+      navigate(`/mastermanagement/cms/list?page=${page.current}&search=${query.search ? query.search : "" }`);
   };
 
-  const getCustomerList = () => {
+
+  const getCustomerList = async (newPage) => {
     axios
       .get(`http://admin.ishop.sunhimlabs.com/api/v1/cmspages/list`)
       .then((res) => setFirst(res.data.data));
+
+      try {
+        const res = await axios.get(
+          `${url}?q=${query.search ? query.search : ''}&category_id=${query.category_id ? query.category_id : ''}&page=${Number(newPage)}&per_page=${page.records_per_page}`
+        );
+        const { data, pages } = res.data;
+        console.log("pages", pages);
+        setFirst(data);
+        setPage(pages);
+      } catch (error) {
+        console.log(error);
+      }
   };
+
+
+  useEffect(() => {
+    getCustomerList(pageNo);
+    setQuery({
+      ...query,
+      search: searchQuery
+    })
+  }, [pageNo, page.records_per_page, searchQuery]);
+ 
+
+  const handleChangePage = async (e, newPage) => {
+    navigate(`/mastermanagement/cms/list?page=${newPage + 1}&search=${query.search ? query.search : ""} `);
+  };
+
 
   useEffect(() => {
     getCustomerList();
   }, []);
- 
 
-  const handleChangePage = async (e, newPage) => {
-    setPage(newPage);
-    try {
-      const res = await axios.get(`${url}?&page=${newPage + 1}`);
-      const { data, pages } = res.data;
-      setFirst(data);
-      setPage(pages);
-    } catch (error) {
-      console.log(error);
-    }
+  const sortTableData = (e,sortBy) => {
+    e.preventDefault();
+    order === "ASC" ? setOrder("DESC") : setOrder("ASC");
+    axios
+      .get(
+        `${process.env.REACT_APP_BACKEND_APIURL}api/v1/products/cmspages/listq=${query.search ? query.search : ""}&page=${Number(page.current)}&per_page=${page.records_per_page}&sort_by=${sortBy}&order_by=${order}`,{
+        }
+      )
+      .then((res) => setFirst(res.data.data));
   };
 
-  const statusChange = (apidata) => {
-    fetch("http://admin.ishop.sunhimlabs.com/api/v1/cmspages/changestatus", {
+
+  
+ const statusChange = (apidata) => {
+    fetch(`${process.env.REACT_APP_BACKEND_APIURL}api/v1/cmspages/changestatus`, {
       method: "POST",
       headers: {
         Accept: "application/json",
@@ -86,6 +127,8 @@ export default function Mastermange_CMSListpages() {
     }).then((result) => {
       result.json().then((resps) => {
         console.warn("resps", resps);
+        toaster(resps, "Status Changed Successfully!");
+        setSelectedStatus("")
         handleClose();
         getCustomerList();
       });
@@ -125,7 +168,6 @@ export default function Mastermange_CMSListpages() {
     const selectedData = datas.filter((item) => item.isSelected === true);
     console.log(selectedData, 10);
     setSelectedcustomer(selectedData);
-
     console.log(datas);
   };
 
@@ -223,6 +265,7 @@ export default function Mastermange_CMSListpages() {
                     id="exampleInputEmail1"
                     aria-describedby="texthelp"
                     placeholder="Search"
+                    value={query.search}
                     onChange={handleChange}
                   />
                   <Button variant="info" type="submit">
@@ -244,7 +287,7 @@ export default function Mastermange_CMSListpages() {
                         !first
                           .map((select) => {
                             if (select.isSelected === true) {
-                              return true;
+                              return "checked";
                             }
                             return false;
                           })
@@ -255,7 +298,10 @@ export default function Mastermange_CMSListpages() {
                     <label for="customCheck"></label>
                   </div>
                 </th>
-                <th scope="col">Page Title</th>
+                <th scope="col">Page Title
+                <i class="fas fa-arrow-down" onClick={(e) => sortTableData(e, 'page_title')}></i>
+                  <i class="fas fa-arrow-up" onClick={(e) => sortTableData(e, 'page_title')}></i>
+                </th>
                 <th scope="col">Status</th>
                 <th scope="col">Action</th>
               </tr>
@@ -302,7 +348,11 @@ export default function Mastermange_CMSListpages() {
               })}
             </tbody>
           </table>
-
+          {first.length <= 0 && (
+            <div className="text-center">
+              <EmptyPage />
+            </div>
+          )}
           {/* <-------------------------TableEnd----------------------> */}
 
           <div class="text-left">
@@ -313,35 +363,72 @@ export default function Mastermange_CMSListpages() {
                   id="exampleFormControlSelect1"
                   placeholder="Action"
                   onChange={(e) => setSelectedStatus(e.target.value)}
+                  value={selectedStatus}
                 >
                   <option selected>Action</option>
                   <option value={"1"}>Active</option>
                   <option value={"0"}>Inactive</option>
                   <option value={"2"}>Delete</option>
                 </select>
+                
               </div>
-              <div className="row">
+              <div className="">
                 <button
-                  type="button"
-                  class="btn btn-light"
-                  style={{ width: "8rem" }}
+                  type="button "
+                  class="btn btn-light col-md-2"
+                  style={{ minWidth: "fit-content" }}
                   onClick={() => handleOpen(null, null, false)}
                 >
                   Apply
                 </button>
               </div>
-              <h6>Pages:</h6>
-              <p>
-                &nbsp;
+
+              <div className="w-auto ml-auto">
+                  <span>Records per page: </span>
+                  <select
+                    class="form-control"
+                    id="exampleFormControlSelect1"
+                    placeholder="Action"
+                    defaultValue={page.records_per_page}
+                    onChange={(e) => {
+                      setPage({
+                        ...page,
+                        records_per_page: e.target.value,
+                      });
+                      handleChangePage(e, 0)
+                    }}
+                  >
+                    {/* <option selected>Action</option> */}
+                    <option value={"5"}>5</option>
+                    <option value={"10"}>10</option>
+                    <option value={"15"}>
+                      15
+                    </option>
+                    <option value={"20"}>20</option>
+                    <option value={"30"}>30</option>
+                    <option value={"50"}>50</option>
+                    <option value={"100"}>100</option>
+                  </select>
+                </div>
+
+                <div className="ml-auto">
+                  {page.totalpages > 1 && paginationFunction}
+                </div>
+          
+              <div className=" ">
+                &nbsp; Pages:
                 <b style={{ color: "black" }}> {page.current}</b> /{" "}
                 {page.totalpages}{" "}
-              </p>
-              {paginationFunction}
+              </div>
               
             </div>
+            
           </div>
+          
         </div>
+        
       </div>
+      
       <Modal
         open={open}
         onClose={handleClose}
@@ -361,6 +448,7 @@ export default function Mastermange_CMSListpages() {
           <Button onClick={() => handleStatusChange()}>Yes</Button>
         </Box>
       </Modal>
+      
     </div>
   );
 }

@@ -1,15 +1,13 @@
-import React, { useState, useEffect } from "react";
-import Product_Editor from "./Product_Editor";
-import axios from "axios";
 import "./Product_AddProduct.css";
+import React, { useEffect, useState } from "react";
 import {
   useNavigate,
-  useParams,
-  useLocation,
-  useSearchParams,
+  useParams
 } from "react-router-dom";
-import { getCardActionAreaUtilityClass } from "@mui/material";
+import Product_Editor from "./Product_Editor";
+import axios from "axios";
 import { toaster } from "../../utils/toaster";
+
 const config = {
   buttons: [
     "bold",
@@ -42,10 +40,10 @@ export default function Product_AddProduct() {
   const [file, setFile] = useState();
   const [categoryData, setCategoryData] = useState([]);
   const [prodVarientData, setProdVarientData] = useState([]);
-  const [selectSubCatData, setSelectSubCatData] = useState([]);
+  const [selectSubCatData, setSelectSubCatData] = useState({});
   const [prodAttributeInput, setProdAttributeInput] = useState([]);
   const [varientFormFields, setVarientFormFields] = useState([]);
-  // const [prodVarientInput, setProdVarientInput] = useState([]);
+  const [prodVarientInput, setProdVarientInput] = useState([]);
   const [prodFaqInput, setProdFaqInput] = useState([
     {
       questions: "",
@@ -60,7 +58,11 @@ export default function Product_AddProduct() {
     model_number: "",
     product_short_desc: "",
     product_long_desc: "",
-    product_image: "",
+    product_image: [
+      {
+        media_id: ""
+      }
+    ],
     product_status: "1",
     // product_other_images: "",
     product_qty: "",
@@ -74,7 +76,7 @@ export default function Product_AddProduct() {
     // product_seo_title: "",
     // product_seo_description: "",
     // product_seo_keywords: "",
-    varients: []
+    variants: []
   });
   const [productSEOInputData, setProductSEOInputData] = useState({
     product_seo_title: "",
@@ -188,16 +190,18 @@ export default function Product_AddProduct() {
           // });
           // setVarientFormFields(variData);
 
-          const finalAddObject = res?.data?.product_variants?.map((vr) => {
-            return {
-              ...vr,
-              attributes_label: vr.attribute_key,
-              attributes_name: vr.attribute_key,
-              value: vr.attribute_value,
-            };
-          });
-          setProdVarientData(finalAddObject)
-          setVarientFormFields([...varientFormFields, finalAddObject])
+          setProdVarientInput(res?.data?.product_variants)
+
+          // const finalAddObject = res?.data?.product_variants?.map((vr) => {
+          //   return {
+          //     ...vr,
+          //     attributes_label: vr.attribute_key,
+          //     attributes_name: vr.attribute_key,
+          //     value: vr.attribute_value,
+          //   };
+          // });
+          // setProdVarientData(finalAddObject)
+          // setVarientFormFields([...varientFormFields, finalAddObject])
 
 
           const attributes = res?.data?.product_attributes;
@@ -209,6 +213,7 @@ export default function Product_AddProduct() {
               value: attr.attribute_value,
             };
           });
+          console.log(8345, attrData)
           setProdAttributeInput(attrData);
           setProductInputData({
             ...productInputData,
@@ -223,7 +228,11 @@ export default function Product_AddProduct() {
             price_mrp: price_mrp ? price_mrp?.toString() : "",
             price_sell: price_sell ? price_sell?.toString() : "",
             product_id: product_id ? product_id?.toString() : "",
-            product_image,
+            product_image: [
+              {
+                media_id: product_image
+              }
+            ],
             product_long_desc,
             // product_name_slug,
             // product_other_images,
@@ -234,7 +243,7 @@ export default function Product_AddProduct() {
             // product_unlimited,
             shipping_charges,
             sku,
-            status,
+            product_status: status,
             tax_amount,
             product_weight,
             attributes: attrData,
@@ -277,11 +286,30 @@ export default function Product_AddProduct() {
   }, [productInputData.category_id, productInputData.sub_category_id]);
 
   function productUser() {
+    const varientData = varientFormFields.map((vri) => {
+      return vri.map((vr) => {
+        return {
+          attributes_id: vr.attribute_id?.toString(),
+          attributes_value: vr.value,
+          product_qty: vr.product_qty ? vr.product_qty : "0",
+          product_price: vr.product_price ? vr.product_price : "0",
+        }
+      })
+    })
+
+    const attributeData = prodAttributeInput.map((attr) => {
+      return {
+        attributes_id: attr.attribute_id.toString(),
+        attributes_value: attr.value,
+      }
+    })
     const updatedProductData = {
       ...productInputData,
       ...productSEOInputData, // seo data added to payload
       faq: prodFaqInput,
-      varients: varientFormFields
+      variants: varientData,
+      attributes: attributeData,
+      parent_category_id: productInputData.parent_category_id.toString()
     }
     fetch(`${process.env.REACT_APP_BACKEND_APIURL}api/v1/products/edit`, {
       method: "POST",
@@ -377,7 +405,7 @@ export default function Product_AddProduct() {
     });
     setProductInputData({
       ...productInputData,
-      varients: fin,
+      variants: fin,
     });
   };
 
@@ -441,9 +469,52 @@ export default function Product_AddProduct() {
       .then((res) => {
         // setProdAttributeInput(res.data.category_attrbutes);
         // setVarientFormFields([...varientFormFields, res.data.variants_fields]);
+        console.log(6564, res.data)
         setSelectSubCatData(res.data);
       });
   }
+
+  useEffect(() => {
+    console.log(656, selectSubCatData)
+    if (selectSubCatData) {
+      if (prodAttributeInput && selectSubCatData?.category_attrbutes) {
+        const attrData = prodAttributeInput?.map((attr, i) => {
+          return selectSubCatData?.category_attrbutes?.map((catAtt) => {
+            return {
+              ...attr,
+              attributes_label: attr.attributes_label ? attr.attributes_label : attr.attribute_key,
+              attributes_name: attr.attributes_label ? attr.attributes_label : attr.attribute_key,
+              value: attr.attribute_value,
+              attributes_option: catAtt.attributes_value,
+              attributes_type: catAtt.attributes_type
+            };
+          })[i]
+        });
+        console.log(65123, attrData)
+        setProdAttributeInput(attrData);
+      }
+
+      console.log(9823, prodVarientInput, selectSubCatData)
+      if (prodVarientInput && selectSubCatData?.variants_fields) {
+
+        const finalAddObject = prodVarientInput && prodVarientInput.length > 0 && prodVarientInput?.map((vr, i) => {
+          return selectSubCatData?.variants_fields?.map((varField) => {
+            return {
+              ...vr,
+              attributes_label: vr.attribute_key,
+              attributes_name: vr.attribute_key,
+              value: vr.attribute_value,
+              attributes_option: varField.attributes_value,
+              attributes_type: varField.attributes_type
+            };
+          })[i]
+        });
+        setProdVarientData(finalAddObject)
+        setVarientFormFields([...varientFormFields, finalAddObject].splice(0, 1))
+      }
+    }
+
+  }, [prodVarientInput, selectSubCatData])
 
   const handleAttributeInputChange = (e) => {
     const prodAttrData = prodAttributeInput.map((attr) => {
@@ -704,7 +775,7 @@ export default function Product_AddProduct() {
                                 <label htmlFor={brand.brand_name}>
                                   {brand.brand_name}
                                 </label>
-                                
+
                               </div>
                             );
                           })}
@@ -831,7 +902,7 @@ export default function Product_AddProduct() {
                   />
                 </div>
 
-               
+
               </div>
             </div>
           </div>
@@ -858,7 +929,7 @@ export default function Product_AddProduct() {
                     name="tax_amount"
                   />
                 </div>
- 
+
               </div>
             </div>
           </div>
@@ -924,20 +995,23 @@ export default function Product_AddProduct() {
           <div className="card">
             <div className="card-body">
               <h5>Product Attribute</h5>
-              {prodAttributeInput.map((attr, i) => {
+              {console.log(98123, prodAttributeInput)}
+              {prodAttributeInput?.map((attr, i) => {
                 return (
                   <div key={`attr${i}`} className="form-group row">
                     <label htmlFor="inputColor" className="col-sm-2 col-form-label">
                       {attr.attributes_label}
                     </label>
                     <div className="col-sm-4">
-                      {attr.attributes_type === "select" ? (
+                      {attr.attributes_type === "select" || attr.attributes_type === "s" ? (
                         <select
                           name={attr.attributes_label}
                           id={attr.attributes_label}
                           onChange={(e) => handleAttributeInputChange(e)}
+                          className="form-control"
+                          value={attr.value}
                         >
-                          {attr.attributes_value.split(",").map((opt) => (
+                          {attr?.attributes_option?.split(",").map((opt) => (
                             <option key={opt} value={opt}>{opt}</option>
                           ))}
                         </select>
@@ -964,94 +1038,116 @@ export default function Product_AddProduct() {
 
         {/* <--------------------Dynamic Form---------------> */}
         {productInputData.product_type !== "v" && varientFormFields && varientFormFields.length > 0 && (
-            <div className="card" style={{ height: "auto" }}>
-              <div className="card-body">
-                <h5>Product Varient</h5>
-                {/* {selectSubCatData.variants_fields.map((vari) => {
+          <div className="card" style={{ height: "auto" }}>
+            <div className="card-body">
+              <h5>Product Varient</h5>
+              {/* {selectSubCatData.variants_fields.map((vari) => {
                return ( */}
-                <div>
-                  <table className="table table-bordered">
-                    <thead>
-                      {prodVarientData.map((item) => (
-                        <th scope="col">{item.attributes_label}</th>
+              <div>
+                <table className="table table-bordered">
+                  <thead>
+                    <tr>
+                      {prodVarientData && prodVarientData.length > 0 && prodVarientData?.map((item, i) => (
+                        <th key={`varient-field-${i}`} scope="col">{item.attributes_label}</th>
                       ))}
                       <th scope="col">Inventory</th>
                       <th scope="col">Price</th>
-                    </thead>
-                    <tbody>
-                      {varientFormFields.map((form, index) => {
-                        return (
-                          <tr key={index}>
-                            {form && form.length > 0 && form.map((field, fieldIndex) => (
-                              <td key={`field-val-${fieldIndex}`}>
-                                <input
-                                  type="text"
-                                  p
-                                  placeholder={field.attributes_label}
-                                  onChange={(e) => {
-                                    handleVarientFormChange(
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {varientFormFields.map((form, index) => {
+                      return (
+                        <tr key={index}>
+                          {form && form.length > 0 && form.map((field, fieldIndex) => (
+                            <td key={`field-val-${fieldIndex}`}>
+                              {
+                                field.attributes_type === "select" || field.attributes_type === "s" ?
+                                  <select
+                                    name={field.attributes_label}
+                                    id={field.attributes_label}
+                                    onChange={(e) => handleVarientFormChange(
                                       "product_varient_input",
                                       e,
                                       index,
                                       fieldIndex
-                                    );
-                                  }}
-                                  value={field.value ? field.value : ""}
-                                  className="form-control"
-                                  id="product_varient_input"
-                                />
-                              </td>
-                            ))}
-                            <td>
-                              <input
-                                type="text"
-                                className="form-control"
-                                id="inventory"
-                                onChange={(e) => {
-                                  handleVarientFormChange(
-                                    "inventory",
-                                    e,
-                                    index
-                                  );
-                                }}
-                                value={form[index]?.product_qty}
-                              />
+                                    )}
+                                    className="form-control"
+                                    value={field.value}
+                                  >
+                                    {field?.attributes_option?.split(",").map((opt) => (
+                                      <option key={opt} value={opt}>{opt}</option>
+                                    ))}
+                                  </select>
+                                  :
+                                  <input
+                                    type="text"
+                                    p
+                                    placeholder={field.attributes_label}
+                                    onChange={(e) => {
+                                      handleVarientFormChange(
+                                        "product_varient_input",
+                                        e,
+                                        index,
+                                        fieldIndex
+                                      );
+                                    }}
+                                    value={field.value ? field.value : ""}
+                                    className="form-control"
+                                    id="product_varient_input"
+                                  />
+                              }
                             </td>
-                            <td>
-                              <input
-                                type="text"
-                                className="form-control"
-                                id="price"
-                                onChange={(e) => {
-                                  handleVarientFormChange("price", e, index);
-                                }}
-                                value={form[index]?.product_price}
-                              />
-                            </td>
-                            <button
-                              className="pt-1"
-                              onClick={() => removeVarientFields(index)}
-                              style={{ marginLeft: "1rem" }}
-                              disabled={varientFormFields.length <= 1}
-                            >
-                              Remove
-                            </button>
-                          </tr>
-                        );
-                      })}
-                    </tbody>
-                  </table>
-                  <button
-                    className="float-right"
-                    onClick={() => addVarientFields()}
-                  >
-                    Add More..
-                  </button>
-                  <br />
-                </div>
+                          ))}
+                          <td>
+                            <input
+                              type="text"
+                              className="form-control"
+                              id="inventory"
+                              onChange={(e) => {
+                                handleVarientFormChange(
+                                  "inventory",
+                                  e,
+                                  index
+                                );
+                              }}
+                              value={form[index]?.product_qty}
+                            />
+                          </td>
+                          <td>
+                            <input
+                              type="text"
+                              className="form-control"
+                              id="price"
+                              onChange={(e) => {
+                                handleVarientFormChange("price", e, index);
+                              }}
+                              value={form[index]?.product_price}
+                            />
+                          </td>
+                          <button
+                            className="pt-1"
+                            onClick={() => removeVarientFields(index)}
+                            style={{ marginLeft: "1rem" }}
+                            disabled={varientFormFields.length <= 1}
+                          >
+                            Remove
+                          </button>
+                        </tr>
+                      );
+                    })}
+                  </tbody>
+                </table>
+                <button
+                  className="float-right"
+                  onClick={() => addVarientFields()}
+                >
+                  Add More..
+                </button>
+                <br />
               </div>
             </div>
-          )}
+          </div>
+        )}
         <br />
         {/* <--------------------Dynamic Form end------------------> */}
 
@@ -1209,6 +1305,7 @@ export default function Product_AddProduct() {
     </div>
   );
 }
+
 
 
 

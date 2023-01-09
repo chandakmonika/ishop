@@ -5,16 +5,21 @@ import Container from "react-bootstrap/Container";
 import Nav from "react-bootstrap/Nav";
 import Navbar from "react-bootstrap/Navbar";
 import { Link } from "react-router-dom";
-import { useParams, useNavigate } from "react-router-dom";
+import { useParams,useSearchParams, useNavigate } from "react-router-dom";
 import TablePagination from "@mui/material/TablePagination";
 import Box from "@mui/material/Box";
 import Typography from "@mui/material/Typography";
 import Modal from "@mui/material/Modal";
+import EmptyPage from "../emptypage";
+import { toaster } from "../../utils/toaster";
 
 export default function Faq_AddCategoryList() {
   const [index, setIndex] = useState([]);
   const [first, setFirst] = useState([]);
-  const [query, setQuery] = useState({ text: "" });
+  const [searchParams, setSearchParams] = useSearchParams();
+  const pageNo = searchParams.get("page");
+  const searchQuery = searchParams.get("search");
+  const [query, setQuery] = useState({search: searchQuery });
   const [order, setOrder] = useState("ASC");
   const [faq_category_id, setFaq_category_id] = useState([]);
   const [selectedcustomer, setSelectedcustomer] = useState([]);
@@ -23,7 +28,7 @@ export default function Faq_AddCategoryList() {
   const [page, setPage] = useState({
     current: 0,
     previous: 0,
-    records_per_page: 0,
+    records_per_page: 15,
     totalpages: 0,
     totalrecords: 0,
   });
@@ -35,58 +40,74 @@ export default function Faq_AddCategoryList() {
   });
 
   const [isSingleStatusUpdate, setIsSingleStatusUpdate] = useState(true);
-  const url = "http://admin.ishop.sunhimlabs.com/api/v1/faq/categories/list";
+  const url = `${process.env.REACT_APP_BACKEND_APIURL}api/v1/faq/categories/list`;
 
   console.log(query);
   const handleChange = (e) => {
-    setQuery({ text: e.target.value });
+    setQuery({
+      ...query,
+      [e.target.name]: e.target.value
+    });
   };
   const handleSubmit = (e) => {
     e.preventDefault();
-    axios
-      .get(
-        `http://admin.ishop.sunhimlabs.com/api/v1/faq/categories/list/?q=${query.text}`
-      )
-      .then((res) => setFirst(res.data.data));
+    setPage({
+      ...page,
+      current: 0
+    })
+
+    navigate(`/mastermanagement/faq/category/list?page=${page.current}&search=${query.search ? query.search : "" }&categoryid=${query.category_id ? query.category_id : "" }`);
   };
 
-  const getCustomerList = () => {
-    axios
-      .get(`http://admin.ishop.sunhimlabs.com/api/v1/faq/categories/list`)
-      .then((res) => setFirst(res.data.data));
+  // const getCustomerList = () => {
+  //   axios
+  //     .get(`http://admin.ishop.sunhimlabs.com/api/v1/faq/categories/list`)
+  //     .then((res) => setFirst(res.data.data));
+  // };
+
+  useEffect(() => {
+    getCustomerList(pageNo);
+    setQuery({
+      ...query,
+      search: searchQuery
+    })
+  }, [pageNo, page.records_per_page, searchQuery]);
+
+
+  const handleChangePage = async (e, newPage) => {
+    navigate(`/mastermanagement/faq/category/list?page=${newPage + 1}&search=${query.search ? query.search : ""}`);
   };
 
+  const getCustomerList = async (newPage) => {
+    try {
+      const res = await axios.get(
+        `${url}?q=${query.search ? query.search : ''}&page=${Number(newPage)}&per_page=${page.records_per_page}`
+      );
+      const { data, pages } = res.data;
+      console.log("pages", pages);
+      setFirst(data);
+      setPage(pages);
+    } catch (error) {
+      console.log(error);
+    }
+  };
   useEffect(() => {
     getCustomerList();
   }, []);
 
-  const getData = async () => {
-    try {
-      const res = await axios.get(`${url}`);
-      const { data, pages } = res.data;
-      setFirst(data);
-      setPage(pages);
-    } catch (error) {
-      console.log(error);
-    }
-  };
-  useEffect(() => {
-    getData();
-  }, []);
+  // const handleChangePage = async (e, newPage) => {
+  //   setPage(newPage);
+  //   try {
+  //     const res = await axios.get(`${url}?&page=${newPage + 1}`);
+  //     const { data, pages } = res.data;
+  //     setFirst(data);
+  //     setPage(pages);
+  //   } catch (error) {
+  //     console.log(error);
+  //   }
+  // };
 
-  const handleChangePage = async (e, newPage) => {
-    setPage(newPage);
-    try {
-      const res = await axios.get(`${url}?&page=${newPage + 1}`);
-      const { data, pages } = res.data;
-      setFirst(data);
-      setPage(pages);
-    } catch (error) {
-      console.log(error);
-    }
-  };
-
-  const update = (e) => {
+  const sortTableData = (e) => {
     e.preventDefault();
     order === "ASC" ? setOrder("DESC") : setOrder("ASC");
     axios
@@ -110,6 +131,8 @@ export default function Faq_AddCategoryList() {
     ).then((result) => {
       result.json().then((resps) => {
         console.warn("resps", resps);
+        toaster(resps, "Status Changed Successfully!");
+        setSelectedStatus("")
         handleClose();
         getCustomerList();
       });
@@ -260,7 +283,8 @@ export default function Faq_AddCategoryList() {
                     id="exampleInputEmail1"
                     aria-describedby="texthelp"
                     placeholder="Search"
-                    onChange={handleChange}
+                    value={query.search}
+                    onChange={(e) => handleChange(e)}
                   />
                   <div class="input-group-append">
                     <Button variant="info" type="submit">
@@ -283,21 +307,22 @@ export default function Faq_AddCategoryList() {
                         !first
                           .map((select) => {
                             if (select.isSelected === true) {
-                              return true;
+                              return "checked";
                             }
                             return false;
                           })
                           .includes(false)
                       }
                       onChange={(e) => selectAllItems(e)}
+                      disabled={first.length === 0}
                     />
                     <label for="customCheck"></label>
                   </div>
                 </th>
                 <th scope="col">
                   Category Name
-                  <i class="fas fa-arrow-down" onClick={update}></i>
-                  <i class="fas fa-arrow-up" onClick={update}></i>
+                  <i class="fas fa-arrow-down" onClick={(e) => sortTableData(e, 'category_name')}></i>
+                  <i class="fas fa-arrow-up" onClick={(e) => sortTableData(e, 'category_name')}></i>
                 </th>
                 <th scope="col">Status</th>
                 <th scope="col">Action</th>
@@ -348,6 +373,11 @@ export default function Faq_AddCategoryList() {
                 })}
             </tbody>
           </table>
+          {first.length <= 0 && (
+            <div className="text-center">
+              <EmptyPage />
+            </div>
+          )}
           {/* <-------------------------TableEnd----------------------> */}
 
           <div class="text-left">
@@ -358,34 +388,72 @@ export default function Faq_AddCategoryList() {
                   id="exampleFormControlSelect1"
                   placeholder="Action"
                   onChange={(e) => setSelectedStatus(e.target.value)}
+                  value={selectedStatus}
                 >
                   <option selected>Action</option>
                   <option value={"1"}>Active</option>
                   <option value={"0"}>Inactive</option>
                   <option value={"2"}>Delete</option>
                 </select>
+                
               </div>
-              <div className="row">
+              <div className="">
                 <button
-                  type="button"
-                  class="btn btn-light"
-                  style={{ width: "8rem" }}
+                  type="button "
+                  class="btn btn-light col-md-2"
+                  style={{ minWidth: "fit-content" }}
                   onClick={() => handleOpen(null, null, false)}
                 >
                   Apply
                 </button>
-                <p className="col-md-3">
-                  &nbsp; Pages:
-                  <b style={{ color: "black" }}> {page.current}</b> /{" "}
-                  {page.totalpages}{" "}
-                </p>
-
-                {paginationFunction}
               </div>
+
+              <div className="w-auto ml-auto">
+                  <span>Records per page: </span>
+                  <select
+                    class="form-control"
+                    id="exampleFormControlSelect1"
+                    placeholder="Action"
+                    defaultValue={page.records_per_page}
+                    onChange={(e) => {
+                      setPage({
+                        ...page,
+                        records_per_page: e.target.value,
+                      });
+                      handleChangePage(e, 0)
+                    }}
+                  >
+                    {/* <option selected>Action</option> */}
+                    <option value={"5"}>5</option>
+                    <option value={"10"}>10</option>
+                    <option value={"15"}>
+                      15
+                    </option>
+                    <option value={"20"}>20</option>
+                    <option value={"30"}>30</option>
+                    <option value={"50"}>50</option>
+                    <option value={"100"}>100</option>
+                  </select>
+                </div>
+
+                <div className="ml-auto">
+                  {page.totalpages > 1 && paginationFunction}
+                </div>
+          
+              <div className=" ">
+                &nbsp; Pages:
+                <b style={{ color: "black" }}> {page.current}</b> /{" "}
+                {page.totalpages}{" "}
+              </div>
+              
             </div>
+            
           </div>
+          
         </div>
+        
       </div>
+      
       <Modal
         open={open}
         onClose={handleClose}
@@ -405,6 +473,8 @@ export default function Faq_AddCategoryList() {
           <Button onClick={() => handleStatusChange()}>Yes</Button>
         </Box>
       </Modal>
+      
     </div>
+    
   );
 }

@@ -1,9 +1,10 @@
-import React, { useState, useEffect } from "react";
+import "./Product_AddProduct.css";
+import React, { useEffect, useState } from "react";
 import Product_Editor from "./Product_Editor";
 import axios from "axios";
-import "./Product_AddProduct.css";
-import { useNavigate } from "react-router-dom";
 import { toaster } from "../../utils/toaster";
+import { useNavigate } from "react-router-dom";
+
 const config = {
   buttons: [
     "bold",
@@ -35,29 +36,11 @@ export default function Product_AddProduct() {
   // const [value, setValue] = useState("");
   const [mediaFiles, setMediaFiles] = useState([]);
   const [categoryData, setCategoryData] = useState([]);
-  // const [product_name, setProduct_name] = useState("");
-  // const [category_id, setCategory_id] = useState("");
-  // const [brand, setBrand] = useState("");
-  // const [variants, setVariants] = useState("");
-  // const [model_number, setModel_number] = useState("");
-  // const [product_short_desc, setProduct_short_desc] = useState("");
-  // const [product_long_desc, setProduct_long_desc] = useState("");
-  // const [product_image, setProduct_image] = useState("");
-  // const [product_other_images, setProduct_other_images] = useState("");
-  // const [product_qty, setProduct_qty] = useState("");
-  // const [sku, setSku] = useState("");
-  // const [price_base, setPrice_base] = useState("");
-  // const [price_sell, setPrice_sell] = useState("");
-  // const [price_mrp, setPrice_mrp] = useState("");
-  // const [product_tags, setProduct_tags] = useState("");
-  // const [product_seo_title, setProduct_seo_title] = useState("");
-  // const [product_seo_description, setProduct_seo_description] = useState("");
-  // const [product_seo_keywords, setProduct_seo_keywords] = useState("");
-  // const [index, setIndex] = useState([]);
+
   const [selectSubCatData, setSelectSubCatData] = useState([]);
   const [prodAttributeInput, setProdAttributeInput] = useState([]);
   const [varientFormFields, setVarientFormFields] = useState([]);
-  // const [prodVarientInput, setProdVarientInput] = useState([]);
+
   const [prodFaqInput, setProdFaqInput] = useState([
     {
       questions: "",
@@ -69,7 +52,7 @@ export default function Product_AddProduct() {
     parent_category_id: "",
     category_id: "",
     brand: "",
-    // brand_id: 0,
+
     model_number: "",
     product_short_desc: "",
     product_long_desc: "",
@@ -89,25 +72,12 @@ export default function Product_AddProduct() {
     product_weight: "",
     variants: [],
   });
-  // useEffect(() => {
-  //   axios
-  //     .post(`${process.env.REACT_APP_BACKEND_APIURL}api/v1/product/add`, {
-  //       method: "POST",
-  //       headers: {
-  //         Accept: "application/json",
-  //         "Content-Type": "Application/json",
-  //         storename: "kbtrends",
-  //       },
-  //     })
-  //     .then((res) => setIndex(res.data.data));
-  // }, []);
 
   const navigate = useNavigate();
 
   function productUser() {
     const productData = {
       ...productInputData,
-      // brand: productInputData.brand_id.toString(),
     };
     fetch(`${process.env.REACT_APP_BACKEND_APIURL}api/v1/products/add`, {
       method: "POST",
@@ -362,7 +332,7 @@ export default function Product_AddProduct() {
     let data = [...mediaFiles];
     data.splice(i, 1);
     setMediaFiles(data);
-  }
+  };
 
   return (
     <div>
@@ -449,8 +419,17 @@ export default function Product_AddProduct() {
                         <div className="">
                           {mediaFiles.map((file, i) => (
                             <div className="position-relative image-container">
-                              <img src={file.media_file} width={250} height={250} />
-                              <div className="remove-file-icon" onClick={() => removeMediaFile(i)}>x</div>
+                              <img
+                                src={file.media_file}
+                                width={250}
+                                height={250}
+                              />
+                              <div
+                                className="remove-file-icon"
+                                onClick={() => removeMediaFile(i)}
+                              >
+                                x
+                              </div>
                             </div>
                           ))}
                         </div>
@@ -786,7 +765,8 @@ export default function Product_AddProduct() {
                 </div>
               </div>
             </div>
-          </div><br />
+          </div>
+          <br />
 
           {/* <------------------------------------Shipping Information From End------------------------------> */}
 
@@ -832,11 +812,13 @@ export default function Product_AddProduct() {
                           {attr.attributes_label}
                         </label>
                         <div class="col-sm-4">
-                          {attr.attributes_type === "select" ? (
+                          {attr.attributes_type === "select" ||
+                          attr.attributes_type === "s" ? (
                             <select
                               name={attr.attributes_label}
                               id={attr.attributes_label}
                               onChange={(e) => handleAttributeInputChange(e)}
+                              className="form-control"
                             >
                               {attr.attributes_value.split(",").map((opt) => (
                                 <option value={opt}>{opt}</option>
@@ -1139,4 +1121,3 @@ export default function Product_AddProduct() {
     </div>
   );
 }
-
