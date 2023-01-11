@@ -15,16 +15,17 @@ import { toaster } from "../../utils/toaster";
 
 export default function Mastermange_CMSListpages() {
   const [first, setFirst] = useState([]);
-  const [query, setQuery] = useState({ text: "" });
-  const [order, setOrder] = useState("ASC");
-  const [faq_id, setFaq_id] = useState([]);
-  const [selectedcustomer, setSelectedcustomer] = useState([]);
-  const [selectedStatus, setSelectedStatus] = useState("0");
-  const [status, setStatus] = useState([]);
   const [searchParams, setSearchParams] = useSearchParams();
   const pageNo = searchParams.get("page");
   const searchQuery = searchParams.get("search");
-
+  const [query, setQuery] = useState({search: searchQuery });
+  const [order, setOrder] = useState("ASC");
+  const [faq_id, setFaq_id] = useState([]);
+  const [selectedcustomer, setSelectedcustomer] = useState([]);
+  const [selectedStatus, setSelectedStatus] = useState("");
+  const [status, setStatus] = useState([]);
+  
+  
   const [page, setPage] = useState({
     current: 0,
     previous: 0,
@@ -41,7 +42,7 @@ export default function Mastermange_CMSListpages() {
   });
 
   const [isSingleStatusUpdate, setIsSingleStatusUpdate] = useState(true);
-  const url = `${process.env.REACT_APP_BACKEND_APIURL}aapi/v1/cmspages/list`;
+  const url = `${process.env.REACT_APP_BACKEND_APIURL}api/v1/cmspages/list`;
 
   console.log(query);
   const handleChange = (e) => {
@@ -53,37 +54,13 @@ export default function Mastermange_CMSListpages() {
   
   const handleSubmit = (e) => {
     e.preventDefault();
-    // axios
-    //   .get(
-    //     `http://admin.ishop.sunhimlabs.com/api/v1/cmspages/list/?q=${query.text}`
-    //   )
-    //   .then((res) => setFirst(res.data.data));
+    
       setPage({
         ...page,
         current: 0
       })
       navigate(`/mastermanagement/cms/list?page=${page.current}&search=${query.search ? query.search : "" }`);
   };
-
-
-  const getCustomerList = async (newPage) => {
-    axios
-      .get(`http://admin.ishop.sunhimlabs.com/api/v1/cmspages/list`)
-      .then((res) => setFirst(res.data.data));
-
-      try {
-        const res = await axios.get(
-          `${url}?q=${query.search ? query.search : ''}&category_id=${query.category_id ? query.category_id : ''}&page=${Number(newPage)}&per_page=${page.records_per_page}`
-        );
-        const { data, pages } = res.data;
-        console.log("pages", pages);
-        setFirst(data);
-        setPage(pages);
-      } catch (error) {
-        console.log(error);
-      }
-  };
-
 
   useEffect(() => {
     getCustomerList(pageNo);
@@ -92,10 +69,24 @@ export default function Mastermange_CMSListpages() {
       search: searchQuery
     })
   }, [pageNo, page.records_per_page, searchQuery]);
- 
 
   const handleChangePage = async (e, newPage) => {
     navigate(`/mastermanagement/cms/list?page=${newPage + 1}&search=${query.search ? query.search : ""} `);
+  };
+
+  const getCustomerList = async (newPage) => {
+   
+      try {
+        const res = await axios.get(
+          `${url}?q=${query.search ? query.search : ''}&page=${Number(newPage)}&per_page=${page.records_per_page}`
+        );
+        const { data, pages } = res.data;
+        console.log("pages", pages);
+        setFirst(data);
+        setPage(pages);
+      } catch (error) {
+        console.log(error);
+      }
   };
 
 
@@ -135,9 +126,9 @@ export default function Mastermange_CMSListpages() {
     });
   };
 
-  function handleStatusChange(page_id, status) {
+  function handleStatusChange(pageId, status) {
     if (isSingleStatusUpdate) {
-      console.warn(page_id, status);
+      // console.warn(page_id, status);
       let apidata = {
         page_id: changeStatusId.page_id,
         status: changeStatusId.status === "0" ? "1" : "0",
@@ -266,7 +257,7 @@ export default function Mastermange_CMSListpages() {
                     aria-describedby="texthelp"
                     placeholder="Search"
                     value={query.search}
-                    onChange={handleChange}
+                    onChange={(e) => handleChange(e)}
                   />
                   <Button variant="info" type="submit">
                     Search
@@ -294,13 +285,14 @@ export default function Mastermange_CMSListpages() {
                           .includes(false)
                       }
                       onChange={(e) => selectAllItems(e)}
+                      disabled={first.length === 0}
                     />
                     <label for="customCheck"></label>
                   </div>
                 </th>
                 <th scope="col">Page Title
                 <i class="fas fa-arrow-down" onClick={(e) => sortTableData(e, 'page_title')}></i>
-                  <i class="fas fa-arrow-up" onClick={(e) => sortTableData(e, 'page_title')}></i>
+                <i class="fas fa-arrow-up" onClick={(e) => sortTableData(e, 'page_title')}></i>
                 </th>
                 <th scope="col">Status</th>
                 <th scope="col">Action</th>
@@ -317,7 +309,7 @@ export default function Mastermange_CMSListpages() {
                           <input
                             type="checkbox"
                             value={item.isSelected}
-                            checked={item.isSelected ? 'checked' : false}
+                            checked={item.isSelected ? "checked" : false}
                             onChange={(e) => onSelectCustomer(e, item.page_id)}
                           />
                           <label for="customCheck{item.id}">
@@ -365,7 +357,7 @@ export default function Mastermange_CMSListpages() {
                   onChange={(e) => setSelectedStatus(e.target.value)}
                   value={selectedStatus}
                 >
-                  <option selected>Action</option>
+                  <option selected value={""}>Action</option>
                   <option value={"1"}>Active</option>
                   <option value={"0"}>Inactive</option>
                   <option value={"2"}>Delete</option>

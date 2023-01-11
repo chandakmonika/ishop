@@ -26,7 +26,7 @@ export default function Product_ProductCategoryList() {
   const [query, setQuery] = useState({ search: "" });
   const [category_id, setCategory_id] = useState([]);
   const [selectedcustomer, setSelectedcustomer] = useState([]);
-  const [selectedStatus, setSelectedStatus] = useState("0");
+  const [selectedStatus, setSelectedStatus] = useState("");
   const [order, setOrder] = useState("ASC");
   const [status, setStatus] = useState([]);
   const [page, setPage] = useState({
@@ -447,7 +447,7 @@ export default function Product_ProductCategoryList() {
                   onChange={(e) => setSelectedStatus(e.target.value)}
                   value={selectedStatus}
                 >
-                  <option selected>Action</option>
+                  <option selected value={""}>Action</option>
                   <option value={"1"}>Active</option>
                   <option value={"0"}>Inactive</option>
                   <option value={"2"}>Delete</option>

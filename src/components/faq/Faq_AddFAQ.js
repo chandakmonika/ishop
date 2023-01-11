@@ -48,7 +48,7 @@ export default function Faq_AddFAQ() {
               }}
               name="category_id">
               <option value="1">Home</option>
-              <option value="1">About</option>
+              <option value="2">About</option>
             </select >
             <br />
 

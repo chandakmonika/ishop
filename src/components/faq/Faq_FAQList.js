@@ -340,15 +340,16 @@ export default function Faq_FAQList() {
                     <label for="customCheck"></label>
                   </div>
                 </th>
-                <th scope="col">
-                  FAQ Category
-                  <i class="fas fa-arrow-down" onClick={(e) => sortTableData(e, 'category_name')}></i>
-                  <i class="fas fa-arrow-up" onClick={(e) => sortTableData(e, 'category_name')}></i>
-                </th>
+                
                 <th scope="col">
                   Questions
                   <i class="fas fa-arrow-down" onClick={(e) => sortTableData(e, 'question')}></i>
                   <i class="fas fa-arrow-up" onClick={(e) => sortTableData(e, 'question')}></i>
+                </th>
+                <th scope="col">
+                  FAQ Category
+                  <i class="fas fa-arrow-down" onClick={(e) => sortTableData(e, 'category_name')}></i>
+                  <i class="fas fa-arrow-up" onClick={(e) => sortTableData(e, 'category_name')}></i>
                 </th>
                 <th scope="col">Status</th>
                 <th scope="col">Action</th>
@@ -374,8 +375,9 @@ export default function Faq_FAQList() {
                           </label>
                         </div>
                       </td>
-                      <td>{item.category_name}</td>
                       <td>{item.question}</td>
+                      <td>{item.category_name}</td>
+                     
                       <td>
               
                         <button

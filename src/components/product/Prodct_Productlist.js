@@ -31,7 +31,7 @@ export default function ProductsComponent() {
   const [order, setOrder] = useState("ASC");
   const [product_id, setProduct_id] = useState([]);
   const [selectedcustomer, setSelectedcustomer] = useState([]);
-  const [selectedStatus, setSelectedStatus] = useState("0");
+  const [selectedStatus, setSelectedStatus] = useState("");
 
   const [page, setPage] = useState({
     current: 0,
@@ -490,7 +490,7 @@ export default function ProductsComponent() {
                     onChange={(e) => setSelectedStatus(e.target.value)}
                     value={selectedStatus}
                   >
-                    <option selected>Action</option>
+                    <option selected value={""}>Action</option>
                     <option value={"1"}>Active</option>
                     <option value={"0"}>Inactive</option>
                     <option value={"2"}>Delete</option>

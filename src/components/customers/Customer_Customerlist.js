@@ -25,7 +25,7 @@ export default function Customer_Customerlist() {
   const [status, setStatus] = useState([]);
   const [user_id, setUser_id] = useState([]);
   const [selectedcustomer, setSelectedcustomer] = useState([]);
-  const [selectedStatus, setSelectedStatus] = useState("0");
+  const [selectedStatus, setSelectedStatus] = useState("");
   const [page, setPage] = useState({
     current: 0,
     previous: 0,
@@ -477,7 +477,7 @@ export default function Customer_Customerlist() {
                   onChange={(e) => setSelectedStatus(e.target.value)}
                   value={selectedStatus}
                 >
-                  <option selected>Action</option>
+                  <option selected value={""}>Action</option>
                   <option value={"1"}>Active</option>
                   <option value={"0"}>Inactive</option>
                   <option value={"2"}>Delete</option>

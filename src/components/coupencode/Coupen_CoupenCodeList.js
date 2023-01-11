@@ -11,10 +11,13 @@ import TablePagination from "@mui/material/TablePagination";
 import Box from "@mui/material/Box";
 import Typography from "@mui/material/Typography";
 import Modal from "@mui/material/Modal";
+import EmptyPage from "../emptypage";
+import { toaster } from "../../utils/toaster";
 
 export default function Coupen_CoupenCodeList() {
   const [searchParams, setSearchParams] = useSearchParams();
   const pageNo = searchParams.get("page");
+  const searchQuery = searchParams.get("search");
   const [first, setFirst] = useState([]);
   const [query, setQuery] = useState({ text: "" });
   const [faq_id, setFaq_id] = useState([]);
@@ -22,11 +25,11 @@ export default function Coupen_CoupenCodeList() {
   const [status, setStatus] = useState([]);
   const [coupon_id, setCoupon_id] = useState([]);
   const [selectedcustomer, setSelectedcustomer] = useState([]);
-  const [selectedStatus, setSelectedStatus] = useState("0");
+  const [selectedStatus, setSelectedStatus] = useState("");
   const [page, setPage] = useState({
     current: 0,
     previous: 0,
-    records_per_page: 0,
+    records_per_page: 15,
     totalpages: 0,
     totalrecords: 0,
   });
@@ -39,57 +42,42 @@ export default function Coupen_CoupenCodeList() {
   });
 
   const [isSingleStatusUpdate, setIsSingleStatusUpdate] = useState(true);
-  const url = "http://admin.ishop.sunhimlabs.com/api/v1/coupons/list";
+  const url = `${process.env.REACT_APP_BACKEND_APIURL}api/v1/coupons/list`;
 
   console.log(query);
   const handleChange = (e) => {
-    setQuery({ text: e.target.value });
+    setQuery({
+      ...query,
+      [e.target.name]: e.target.value
+    });
   };
   const handleSubmit = (e) => {
     e.preventDefault();
-    getCustomerList(page.current);
-    // axios
-    //   .get(
-    //     `http://admin.ishop.sunhimlabs.com/api/v1/coupons/list/?q=${query.text}`,
-    //     {
-    //       method: "GET",
-    //       headers: {
-    //         Accept: "application/json",
-    //         "content-Type": "Application/json",
-    //         storename: "kbtrends",
-    //       },
-    //       // body: JSON.stringify(productInputData),
-    //     }
-    //   )
-    //   .then((res) => setFirst(res.data.data));
+    setPage({
+      ...page,
+      current: 0
+    })
+    navigate(`/coupencode/list?page=${page.current}&search=${query.search ? query.search : "" }`);
+    
   };
 
-  // const getCustomerList = () => {
-  //   axios
-  //     .get(`http://admin.ishop.sunhimlabs.com/api/v1/coupons/list`, {
-  //       method: "GET",
-  //       headers: {
-  //         Accept: "application/json",
-  //         "content-Type": "Application/json",
-  //         storename: "kbtrends",
-  //       },
-   
-  //     })
-  //     .then((res) => setFirst(res.data.data));
-  // };
   useEffect(() => {
     getCustomerList(pageNo);
-  }, [pageNo]);
+    setQuery({
+      ...query,
+      search: searchQuery
+    })
+  }, [pageNo, page.records_per_page, searchQuery]);
 
   const handlePageChange = async (e, newPage) => {
-    navigate(`/coupons/list?page=${newPage + 1}`);
+    navigate(`/coupencode/list?page=${newPage + 1}&search=${query.search ? query.search : ""}`);
   };
 
   const getCustomerList = async (newPage) => {
     // setPage(newPage);
     try {
       const res = await axios.get(
-        `${url}?q=${query.text}&page=${Number(newPage)}`
+        `${url}?q=${query.search ? query.search : ''}&page=${Number(newPage)}&per_page=${page.records_per_page}`
       );
       const { data, pages } = res.data;
       console.log("pages", pages);
@@ -100,8 +88,23 @@ export default function Coupen_CoupenCodeList() {
     }
   };
 
+  useEffect(() => {
+    getCustomerList();
+  }, []);
+
+  const sortTableData = (e,sortBy) => {
+    e.preventDefault();
+    order === "ASC" ? setOrder("DESC") : setOrder("ASC");
+    axios
+      .get(
+        `${process.env.REACT_APP_BACKEND_APIURL}api/v1/coupons/listq=${query.search ? query.search : ""}&page=${Number(page.current)}&per_page=${page.records_per_page}&sort_by=${sortBy}&order_by=${order}`,{
+        }
+      )
+      .then((res) => setFirst(res.data.data));
+  };
+
   const statusChange = (apidata) => {
-    fetch("http://admin.ishop.sunhimlabs.com/api/v1/coupons/changestatus", {
+    fetch(`${process.env.REACT_APP_BACKEND_APIURL}api/v1/coupons/changestatus`, {
       method: "POST",
       headers: {
         Accept: "application/json",
@@ -112,11 +115,16 @@ export default function Coupen_CoupenCodeList() {
     }).then((result) => {
       result.json().then((resps) => {
         console.warn("resps", resps);
+        console.warn("resps", resps);
+        toaster(resps, "Status Changed Successfully!");
+        setSelectedStatus("")
         handleClose();
         getCustomerList();
       });
     });
   };
+
+
 
   function handleStatusChange(couponId, status) {
     if (isSingleStatusUpdate) {
@@ -247,7 +255,8 @@ export default function Coupen_CoupenCodeList() {
                     id="exampleInputEmail1"
                     aria-describedby="texthelp"
                     placeholder="Search"
-                    onChange={handleChange}
+                    value={query.search}
+                    onChange={(e) => handleChange(e)}
                   />
                   <div class="input-group-append">
                     <Button variant="info" type="submit">
@@ -271,13 +280,14 @@ export default function Coupen_CoupenCodeList() {
                       !first
                         .map((select) => {
                           if (select.isSelected === true) {
-                            return true;
+                            return "checked";
                           }
                           return false;
                         })
                         .includes(false)
                     }
                     onChange={(e) => selectAllItems(e)}
+                    disabled={first.length === 0}
                   />
                   <label for="customCheck"></label>
                 </div>
@@ -300,8 +310,9 @@ export default function Coupen_CoupenCodeList() {
                       <div class="custom-control custom-checkbox">
                         <input
                           type="checkbox"
-                          checked={item.isSelected}
-                          onChange={(e) => onSelectCustomer(e, item.coupon_id)}
+                          value={item.isSelected}
+                            checked={item.isSelected ? "checked" : false}
+                            onChange={(e) => onSelectCustomer(e, item.coupon_id)}
                         />
 
                         <label for="customCheck{item.id}">
@@ -334,65 +345,104 @@ export default function Coupen_CoupenCodeList() {
               })}
           </tbody>
         </table>
-        {first && first.length <= 0 && (
-          <h3 class="d-flex justify-content-center my-2">Records not found</h3>
-        )}
+        {first.length <= 0 && (
+            <div className="text-center">
+              <EmptyPage />
+            </div>
+          )}
         {/* <-------------------------TableEnd----------------------> */}
         <div class="text-left">
-          <div className="row">
-            <div className="col-md-2">
-              <select
-                class="form-control"
-                id="exampleFormControlSelect1"
-                placeholder="Action"
-                onChange={(e) => setSelectedStatus(e.target.value)}
-              >
-                <option selected>Action</option>
-                <option value={"1"}>Active</option>
-                <option value={"0"}>Inactive</option>
-                <option value={"2"}>Delete</option>
-              </select>
-            </div>
             <div className="row">
-              <button
-                type="button "
-                class="btn btn-light col-md-2"
-                style={{ width: "8rem" }}
-                onClick={() => handleOpen(null, null, false)}
-              >
-                Apply
-              </button>
+              <div className="col-md-2">
+                <select
+                  class="form-control"
+                  id="exampleFormControlSelect1"
+                  placeholder="Action"
+                  onChange={(e) => setSelectedStatus(e.target.value)}
+                  value={selectedStatus}
+                >
+                  <option selected value={""}>Action</option>
+                  <option value={"1"}>Active</option>
+                  <option value={"0"}>Inactive</option>
+                  <option value={"2"}>Delete</option>
+                </select>
+                
+              </div>
+              <div className="">
+                <button
+                  type="button "
+                  class="btn btn-light col-md-2"
+                  style={{ minWidth: "fit-content" }}
+                  onClick={() => handleOpen(null, null, false)}
+                >
+                  Apply
+                </button>
+              </div>
 
-              <p className="col-md-3">
+              <div className="w-auto ml-auto">
+                  <span>Records per page: </span>
+                  <select
+                    class="form-control"
+                    id="exampleFormControlSelect1"
+                    placeholder="Action"
+                    defaultValue={page.records_per_page}
+                    onChange={(e) => {
+                      setPage({
+                        ...page,
+                        records_per_page: e.target.value,
+                      });
+                      handlePageChange(e, 0)
+                    }}
+                  >
+                    {/* <option selected>Action</option> */}
+                    <option value={"5"}>5</option>
+                    <option value={"10"}>10</option>
+                    <option value={"15"}>
+                      15
+                    </option>
+                    <option value={"20"}>20</option>
+                    <option value={"30"}>30</option>
+                    <option value={"50"}>50</option>
+                    <option value={"100"}>100</option>
+                  </select>
+                </div>
+
+                <div className="ml-auto">
+                  {page.totalpages > 1 && paginationFunction}
+                </div>
+          
+              <div className=" ">
                 &nbsp; Pages:
                 <b style={{ color: "black" }}> {page.current}</b> /{" "}
                 {page.totalpages}{" "}
-              </p>
-
-              {paginationFunction}
+              </div>
+              
             </div>
+            
           </div>
-        </div>
-      </div>
-      <Modal
-        open={open}
-        onClose={handleClose}
-        aria-labelledby="modal-modal-title"
-        aria-describedby="modal-modal-description"
-      >
-        <Box sx={style}>
-          <Typography
-            id="modal-modal-title"
-            variant="h6"
-            component="h2"
-          ></Typography>
-          <Typography id="modal-modal-description" sx={{ mt: 2 }}>
-            Are you sure want to change the status?
-          </Typography>
-          <Button onClick={() => handleClose()}> No </Button>&nbsp;&nbsp;
-          <Button onClick={() => handleStatusChange()}>Yes</Button>
-        </Box>
-      </Modal>
+          </div>
+        
+       
+        
+        <Modal
+          open={open}
+          onClose={handleClose}
+          aria-labelledby="modal-modal-title"
+          aria-describedby="modal-modal-description"
+        >
+          <Box sx={style}>
+            <Typography
+              id="modal-modal-title"
+              variant="h6"
+              component="h2"
+            ></Typography>
+            <Typography id="modal-modal-description" sx={{ mt: 2 }}>
+              Are you sure want to change the status?
+            </Typography>
+            <Button onClick={() => handleClose()}> No </Button>&nbsp;&nbsp;
+            <Button onClick={() => handleStatusChange()}>Yes</Button>
+          </Box>
+        </Modal>
     </div>
   );
 }

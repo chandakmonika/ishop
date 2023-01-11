@@ -104,7 +104,7 @@ export default function Product_EditCategoryProduct() {
       attributes: formFields,
     };
 
-    fetch(`http://admin.ishop.sunhimlabs.com/api/v1/products/category/edit/`, {
+    fetch(`http://admin.ishop.sunhimlabs.com/api/v1/products/category/edit`, {
       method: "POST",
       headers: {
         Accept: "application/json",
@@ -169,12 +169,16 @@ export default function Product_EditCategoryProduct() {
     setFormFields(data);
   };
 
+  const submit = (e) => {
+    e.preventDefault();
+  };
+
   return (
     <div style={{ paddingLeft: "10rem" }}>
       <h4>Edit Product Category</h4>
       <div class="card">
         <div class="card-body">
-          <form onSubmit={(e) => handleCatEdit(e)}>
+          <form  onSubmit={submit} >
             <div className="form-group" style={{ width: "30rem" }}>
               <label for="exampleFormControlSelect1">Product Category</label>
               {/* <input
@@ -360,7 +364,7 @@ export default function Product_EditCategoryProduct() {
             <br />
             <div className="float-right">
               <Link to="/product/category/list">
-                <button type="submit" class="btn btn-info">
+                <button type="submit" class="btn btn-info" onClick={handleCatEdit}>
                   Update
                 </button>
               </Link>
