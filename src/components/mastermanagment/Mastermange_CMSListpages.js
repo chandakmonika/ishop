@@ -14,6 +14,7 @@ import EmptyPage from "../emptypage";
 import { toaster } from "../../utils/toaster";
 
 export default function Mastermange_CMSListpages() {
+  const storename = localStorage.getItem("USER_NAME")
   const [first, setFirst] = useState([]);
   const [searchParams, setSearchParams] = useSearchParams();
   const pageNo = searchParams.get("page");
@@ -54,7 +55,6 @@ export default function Mastermange_CMSListpages() {
   
   const handleSubmit = (e) => {
     e.preventDefault();
-    
       setPage({
         ...page,
         current: 0
@@ -113,6 +113,7 @@ export default function Mastermange_CMSListpages() {
       headers: {
         Accept: "application/json",
         "Content-Type": "Application/json",
+        storename:storename,
       },
       body: JSON.stringify(apidata),
     }).then((result) => {

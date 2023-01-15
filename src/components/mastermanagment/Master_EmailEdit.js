@@ -29,6 +29,7 @@ const config = {
     ],
   };
 export default function Master_EmailEdit() {
+  const storename = localStorage.getItem("USER_NAME")
     const [text, setText] = useState("");
     const [email_title, setEmail_title] = useState("");
     const [from_name, setFrom_name] = useState("");
@@ -47,7 +48,13 @@ export default function Master_EmailEdit() {
     useEffect(() => {
       axios
         .get(
-          `http://admin.ishop.sunhimlabs.com/api/v1/emailtemplates/details/${template_id}`
+          `http://admin.ishop.sunhimlabs.com/api/v1/emailtemplates/details/${template_id}`,{
+            headers: {
+              Accept: "application/json",
+              "Content-Type": "Application/json",
+              storename:storename,
+            },
+          }
         )
         .then((res) => {
           const getData = res.data.data;
@@ -73,6 +80,7 @@ export default function Master_EmailEdit() {
         headers: {
           Accept: "application/json",
           "Content-Type": "Application/json",
+          storename:storename,
         },
         body: JSON.stringify(userdata),
       }).then((result) => {

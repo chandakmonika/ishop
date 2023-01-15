@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 
 export default function Faq_AddCategoryListFAQ() {
+  const storename = localStorage.getItem("USER_NAME")
   const [category_name, setCategory_name] = useState("");
   function customerUser() {
     console.warn(category_name);
@@ -10,6 +11,7 @@ export default function Faq_AddCategoryListFAQ() {
       headers: {
         Accept: "application/json",
         "Content-Type": "Application/json",
+        storename:storename,
       },
       body: JSON.stringify(datas),
     }).then((result) => {

@@ -11,6 +11,7 @@ import Typography from "@mui/material/Typography";
 import Modal from "@mui/material/Modal";
 
 export default function Master_StateList() {
+  const storename = localStorage.getItem("USER_NAME")
   const [first, setFirst] = useState([]);
   const[stateData, setStateData] = useState([]);
   const [country, setCountry] = useState([]);
@@ -46,7 +47,13 @@ export default function Master_StateList() {
   const url = "http://admin.ishop.sunhimlabs.com/api/v1/";
  
   useEffect(() => {
-    axios.get(`${`http://admin.ishop.sunhimlabs.com/api/v1/`}/allcountries/`).then((res) => setCountry(res.data.data));
+    axios.get(`${`http://admin.ishop.sunhimlabs.com/api/v1/`}/allcountries/`,{
+      headers: {
+        Accept: "application/json",
+        "Content-Type": "Application/json",
+        storename:storename
+      },
+    }).then((res) => setCountry(res.data.data));
   }, []);
 
   const handlePageChange = async (e, newPage) => {
@@ -99,7 +106,11 @@ const handleChangePage = async (e, newPage) => {
   const getStateList = () => {
     axios
       .get(
-        `${url}/states/list/?country_id=`
+        `${url}/states/list/?country_id=`,{headers: {
+          Accept: "application/json",
+          "Content-Type": "Application/json",
+          storename:storename
+        },}
       )
       .then((res) => setStateData(res.data.data));
   };
@@ -114,6 +125,7 @@ const handleChangePage = async (e, newPage) => {
       headers: {
         Accept: "application/json",
         "Content-Type": "Application/json",
+        storename:storename
       },
       body: JSON.stringify(apidata),
     }).then((result) => {

@@ -30,7 +30,7 @@ export default function Product_ProductCategoryList() {
   const [order, setOrder] = useState("ASC");
   const [status, setStatus] = useState([]);
   const [page, setPage] = useState({
-    current: 0,
+    current: 1,
     previous: 0,
     records_per_page: 15,
     totalpages: 0,

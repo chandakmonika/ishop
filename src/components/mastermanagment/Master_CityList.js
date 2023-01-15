@@ -11,6 +11,7 @@ import Box from "@mui/material/Box";
 import Typography from "@mui/material/Typography";
 
 export default function Master_CityList() {
+  const storename = localStorage.getItem("USER_NAME")
   const [first, setFirst] = useState([]);
   const [country, setCountry] = useState([]);
   const [states, setStates] = useState([]);
@@ -44,7 +45,13 @@ export default function Master_CityList() {
   useEffect(() => {
     axios
       .get(
-        `${`http://admin.ishop.sunhimlabs.com/api/v1/`}/allstates/${country_id}`
+        `${`http://admin.ishop.sunhimlabs.com/api/v1/`}/allstates/${country_id}`,{
+          headers: {
+            Accept: "application/json",
+            "Content-Type": "Application/json",
+            storename:storename
+          }
+        }
       )
       .then((res) => setStates(res.data.data));
   }, [country_id]);
@@ -52,7 +59,13 @@ export default function Master_CityList() {
   useEffect(() => {
     handleChangePage("e", 1);
     axios
-      .get(`${`http://admin.ishop.sunhimlabs.com/api/v1/`}/allcountries/`)
+      .get(`${`http://admin.ishop.sunhimlabs.com/api/v1/`}/allcountries/`,{
+        headers: {
+          Accept: "application/json",
+          "Content-Type": "Application/json",
+          storename:storename
+        }
+      })
       .then((res) => setCountry(res.data.data));
   }, []);
   const handleChangePage = async (e, newPage) => {
@@ -100,7 +113,13 @@ export default function Master_CityList() {
 
   const getCustomerList = () => {
     axios
-      .get(`http://admin.ishop.sunhimlabs.com/api/v1/countries/list/`)
+      .get(`http://admin.ishop.sunhimlabs.com/api/v1/countries/list/`,{
+        headers: {
+          Accept: "application/json",
+          "Content-Type": "Application/json",
+          storename:storename
+        }
+      })
       .then((res) => setFirst(res.data.data));
   };
 
@@ -114,6 +133,7 @@ export default function Master_CityList() {
       headers: {
         Accept: "application/json",
         "Content-Type": "Application/json",
+        storename:storename
       },
       body: JSON.stringify(apidata),
     }).then((result) => {

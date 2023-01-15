@@ -4,6 +4,7 @@ import { useParams } from "react-router-dom";
 import { Link } from "react-router-dom";
 
 export default function Faq_EditCategoryFaq() {
+  const storename = localStorage.getItem("USER_NAME")
   const [category_name, setCategory_name] = useState(""); 
   const [userdata, setUserdata] = useState({
     category_name: ""
@@ -13,7 +14,13 @@ export default function Faq_EditCategoryFaq() {
   useEffect(() => {
     axios
       .get(
-        `http://admin.ishop.sunhimlabs.com/api/v1/faq/categories/details/${faq_category_id}`
+        `http://admin.ishop.sunhimlabs.com/api/v1/faq/categories/details/${faq_category_id}`,{
+          headers: {
+            Accept: "application/json",
+            "Content-Type": "Application/json",
+            storename:storename,
+          },
+        }
       )
       .then((res) => {
         const getData = res.data.data;

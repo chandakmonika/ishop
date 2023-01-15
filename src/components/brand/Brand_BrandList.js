@@ -14,6 +14,7 @@ import EmptyPage from "../emptypage";
 import { toaster } from "../../utils/toaster";
 
 export default function Brand_BrandList() {
+  const storename = localStorage.getItem("USER_NAME")
   const [searchParams, setSearchParams] = useSearchParams();
   const [parent_category_id, setParent_category_id] = useState("");
   const [index, setIndex] = useState([]);
@@ -137,6 +138,7 @@ export default function Brand_BrandList() {
         headers: {
           Accept: "application/json",
           "Content-Type": "Application/json",
+          storename:storename,
         },
         body: JSON.stringify(apidata),
       }

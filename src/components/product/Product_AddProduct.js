@@ -33,14 +33,13 @@ const config = {
 };
 
 export default function Product_AddProduct() {
-  // const [value, setValue] = useState("");
+  const storename = localStorage.getItem("USER_NAME")
+
   const [mediaFiles, setMediaFiles] = useState([]);
   const [categoryData, setCategoryData] = useState([]);
-
   const [selectSubCatData, setSelectSubCatData] = useState([]);
   const [prodAttributeInput, setProdAttributeInput] = useState([]);
   const [varientFormFields, setVarientFormFields] = useState([]);
-
   const [prodFaqInput, setProdFaqInput] = useState([
     {
       questions: "",
@@ -52,7 +51,6 @@ export default function Product_AddProduct() {
     parent_category_id: "",
     category_id: "",
     brand: "",
-
     model_number: "",
     product_short_desc: "",
     product_long_desc: "",
@@ -84,7 +82,7 @@ export default function Product_AddProduct() {
       headers: {
         Accept: "application/json",
         "content-Type": "Application/json",
-        storename: "kbtrends",
+        storename: storename,
       },
       body: JSON.stringify(productData),
     })
@@ -112,9 +110,9 @@ export default function Product_AddProduct() {
           headers: {
             Accept: "application/json",
             "content-Type": "Application/json",
-            storename: "kbtrends",
+            storename: storename,
           },
-          // body: JSON.stringify(productInputData),
+         
         }
       )
       .then((res) => {

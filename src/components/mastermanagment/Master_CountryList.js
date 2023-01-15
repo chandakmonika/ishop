@@ -12,6 +12,7 @@ import Box from '@mui/material/Box';
 import Typography from '@mui/material/Typography';
 import Modal from '@mui/material/Modal';
 export default function Master_CountryList() {
+  const storename = localStorage.getItem("USER_NAME")
   const [first, setFirst] = useState([]);
   const [query, setQuery] = useState({ text: "" });
   const [order, setOrder] = useState("ASC");
@@ -45,7 +46,13 @@ export default function Master_CountryList() {
     e.preventDefault();
     axios
       .get(
-        `http://admin.ishop.sunhimlabs.com/api/v1/countries/list/1/?q=${query.text}`
+        `http://admin.ishop.sunhimlabs.com/api/v1/countries/list/1/?q=${query.text}`,{
+          headers: {
+            Accept: "application/json",
+            "Content-Type": "Application/json",
+            storename:storename,
+          },
+        }
       )
       .then((res) => setFirst(res.data.data));
   };
@@ -79,7 +86,13 @@ export default function Master_CountryList() {
 
   const getCustomerList = () => {
     axios
-    .get(`http://admin.ishop.sunhimlabs.com/api/v1/countries/list/`)
+    .get(`http://admin.ishop.sunhimlabs.com/api/v1/countries/list/`,{
+      headers: {
+        Accept: "application/json",
+        "Content-Type": "Application/json",
+        storename:storename,
+      },
+    })
       .then((res) => setFirst(res.data.data));
   };
 
@@ -93,7 +106,13 @@ export default function Master_CountryList() {
     order === "ASC" ? setOrder("DESC") : setOrder("ASC");
     axios
       .get(
-        `http://admin.ishop.sunhimlabs.com/api/v1/countries/list?q=&per_page=12&page=1&sort_by=country_name&order_by=${order}`
+        `http://admin.ishop.sunhimlabs.com/api/v1/countries/list?q=&per_page=12&page=1&sort_by=country_name&order_by=${order}`,{
+          headers: {
+            Accept: "application/json",
+            "Content-Type": "Application/json",
+            storename:storename,
+          },
+        }
       )
       .then((res) => setFirst(res.data.data));
   };
@@ -106,6 +125,7 @@ export default function Master_CountryList() {
       headers: {
         Accept: "application/json",
         "Content-Type": "Application/json",
+        storename:storename,
       },
       body: JSON.stringify(apidata),
     }).then((result) => {

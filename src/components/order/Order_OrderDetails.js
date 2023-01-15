@@ -4,6 +4,7 @@ import Button from "react-bootstrap/Button";
 import { useParams } from "react-router-dom";
 import "./Order_OrderDetails.css";
 export default function Order_OrderDetails() {
+  const storename = localStorage.getItem("USER_NAME")
   const [orderDetails, setOrderDetails] = useState();
   const { order_id } = useParams();
 
@@ -11,7 +12,14 @@ export default function Order_OrderDetails() {
     console.log(23, order_id);
     axios
       .get(
-        `http://admin.ishop.sunhimlabs.com/api/v1/orders/details/${order_id}`
+        `http://admin.ishop.sunhimlabs.com/api/v1/orders/details/${order_id}`,
+        {
+          headers: {
+            Accept: "application/json",
+            "content-Type": "Application/json",
+            storename: storename,
+          },
+        }
       )
       .then((res) => {
         setOrderDetails(res.data);

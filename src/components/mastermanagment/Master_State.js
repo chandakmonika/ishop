@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react'
 import axios from "axios";
 
 export default function Master_State() {
+  const storename = localStorage.getItem("USER_NAME")
   const [index, setIndex] = useState([]);
   const [country_name, setCountry_name] = useState("");
   const [country_id, setCountry_id] = useState("");
@@ -10,7 +11,13 @@ export default function Master_State() {
 
   useEffect(() => {
     axios
-      .get(`http://admin.ishop.sunhimlabs.com/api/v1/allcountries/`)
+      .get(`http://admin.ishop.sunhimlabs.com/api/v1/allcountries/`,{
+        headers: {
+          Accept: "application/json",
+          "Content-Type": "Application/json",
+          storename:storename,
+        },
+      })
       .then((res) => setIndex(res.data.data));
   }, []);
 
@@ -26,6 +33,7 @@ export default function Master_State() {
       headers: {
         Accept: "application/json",
         "Content-Type": "Application/json",
+        storename:storename,
       },
       body: JSON.stringify(datas),
     }).then((result) => {

@@ -14,6 +14,7 @@ import EmptyPage from "../emptypage";
 import { toaster } from "../../utils/toaster";
 
 export default function Faq_AddCategoryList() {
+  const storename = localStorage.getItem("USER_NAME")
   const [index, setIndex] = useState([]);
   const [first, setFirst] = useState([]);
   const [searchParams, setSearchParams] = useSearchParams();
@@ -125,6 +126,7 @@ export default function Faq_AddCategoryList() {
         headers: {
           Accept: "application/json",
           "Content-Type": "Application/json",
+          storename:storename,
         },
         body: JSON.stringify(apidata),
       }

@@ -4,6 +4,7 @@ import { useParams } from "react-router-dom";
 import { Link } from "react-router-dom";
 
 export default function Master_EditCountry() {
+  const storename = localStorage.getItem("USER_NAME")
   const [country_name, setCountry_name] = useState("");
 
   const [userdata, setUser_data] = useState({
@@ -13,7 +14,13 @@ export default function Master_EditCountry() {
   useEffect(() => {
     axios
       .get(
-        `http://admin.ishop.sunhimlabs.com/api/v1/countries/details/${country_id}`
+        `http://admin.ishop.sunhimlabs.com/api/v1/countries/details/${country_id}`,{
+          headers: {
+            Accept: "application/json",
+            "Content-Type": "Application/json",
+            storename:storename,
+          },
+        }
       )
       .then((res) => {
         const getData = res.data.data;
@@ -39,6 +46,7 @@ export default function Master_EditCountry() {
       headers: {
         Accept: "application/json",
         "Content-Type": "Application/json",
+        storename:storename,
       },
       body: JSON.stringify(userdata),
     }).then((result) => {

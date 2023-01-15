@@ -30,6 +30,7 @@ const config = {
 };
 
 export default function Master_AddCMS() {
+  const storename = localStorage.getItem("USER_NAME")
   const [page_title, setPage_title] = useState("");
   const [page_description, setPage_description] = useState("");
   const [featured_image, setFeatured_image] = useState("");
@@ -59,6 +60,7 @@ export default function Master_AddCMS() {
       headers: {
         Accept: "application/json",
         "Content-Type": "Application/json",
+        storename:storename,
       },
       body: JSON.stringify(datas),
     }).then((result) => {

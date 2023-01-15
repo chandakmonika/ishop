@@ -1,5 +1,4 @@
 
-
 import React from "react";
 import Button from "react-bootstrap/Button";
 import Container from "react-bootstrap/Container";
@@ -94,7 +93,7 @@ export default function DashboardPage() {
                         data-bs-parent="#menu"
                       >
                         <li>
-                          <Link to="/order/orderlist">Order List</Link>
+                          <Link to={`/order/orderlist/all`}>Order List</Link>
                         </li>
                         <br />
                         <li>

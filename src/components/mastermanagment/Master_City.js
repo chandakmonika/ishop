@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import axios from "axios";
 
 export default function Master_City() {
+  const storename = localStorage.getItem("USER_NAME")
   const [countryName, setCountryName] = useState("");
   const [countryId, setCountryId] = useState("");
   const [state_id, setState_id] = useState("");
@@ -13,13 +14,25 @@ export default function Master_City() {
 
   useEffect(() => {
     axios
-      .get(`http://admin.ishop.sunhimlabs.com/api/v1/allstates/${countryId}`)
+      .get(`http://admin.ishop.sunhimlabs.com/api/v1/allstates/${countryId}`,{
+        headers: {
+          Accept: "application/json",
+          "Content-Type": "Application/json",
+          storename:storename,
+        }
+      })
       .then((res) => setIndexs(res.data.data));
   }, [countryId]);
 
   useEffect(() => {
     axios
-      .get(`http://admin.ishop.sunhimlabs.com/api/v1/allcountries/`)
+      .get(`http://admin.ishop.sunhimlabs.com/api/v1/allcountries/`,{
+        headers: {
+          Accept: "application/json",
+          "Content-Type": "Application/json",
+          storename:storename,
+        }
+      })
       .then((res) => setIndex(res.data.data));
   }, []);
 
@@ -37,6 +50,7 @@ export default function Master_City() {
       headers: {
         Accept: "application/json",
         "Content-Type": "Application/json",
+        storename:storename,
       },
       body: JSON.stringify(datas),
     }).then((result) => {

@@ -6,6 +6,7 @@ import { toast } from 'react-toastify';
 import { toaster } from "../../utils/toaster";
 
 export default function Brand_EditBrand() {
+  const storename = localStorage.getItem("USER_NAME")
   const [brand_name, setBrand_name] = useState("");
   const [product_category_id, setProduct_category_id] = useState("");
   const [brand_image, setBrand_image] = useState("");
@@ -58,6 +59,7 @@ export default function Brand_EditBrand() {
       headers: {
         Accept: "application/json",
         "Content-Type": "Application/json",
+        storename:storename,
       },
       body: JSON.stringify(userdata),
     }).then((result) => {

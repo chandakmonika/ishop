@@ -5,6 +5,7 @@ import { toast } from 'react-toastify';
 import { toaster } from "../../utils/toaster";
 
 export default function Address_EditAddress() {
+  const storename = localStorage.getItem("USER_NAME")
   const [first_name, setFirst_name] = useState("");
   const [last_name, setLast_name] = useState("");
   const [email, setEmail] = useState("");
@@ -52,21 +53,45 @@ export default function Address_EditAddress() {
 
   useEffect(() => {
     axios
-      .get(`http://admin.ishop.sunhimlabs.com/api/v1/allstates/${userdata.country}`)
+      .get(`http://admin.ishop.sunhimlabs.com/api/v1/allstates/${userdata.country}`,{
+        headers: {
+          Accept: "application/json",
+          "Content-Type": "Application/json",
+          storename:storename
+        },
+      })
       .then((res) => setIndexs(res.data.data));
     axios
-      .get(`http://admin.ishop.sunhimlabs.com/api/v1/allcities/${userdata.state}`)
+      .get(`http://admin.ishop.sunhimlabs.com/api/v1/allcities/${userdata.state}`,{
+        headers: {
+          Accept: "application/json",
+          "Content-Type": "Application/json",
+          storename:storename
+        },
+      })
       .then((res) => setIndexss(res.data.data));
   }, [userdata.country && userdata.state]);
   
   useEffect(() => {
     axios
-      .get(`http://admin.ishop.sunhimlabs.com/api/v1/allcountries/`)
+      .get(`http://admin.ishop.sunhimlabs.com/api/v1/allcountries/`,{
+        headers: {
+          Accept: "application/json",
+          "Content-Type": "Application/json",
+          storename:storename
+        },
+      })
       .then((res) => setIndex(res.data.data));
 
     axios
       .get(
-        `http://admin.ishop.sunhimlabs.com/api/v1/customer/address/details/${address_id}`
+        `http://admin.ishop.sunhimlabs.com/api/v1/customer/address/details/${address_id}`,{
+          headers: {
+            Accept: "application/json",
+            "Content-Type": "Application/json",
+            storename:storename
+          },
+        }
       )
       .then((res) => {
         const getData = res.data.data;
@@ -108,6 +133,7 @@ export default function Address_EditAddress() {
       headers: {
         Accept: "application/json",
         "Content-Type": "Application/json",
+        storename:storename
       },
       body: JSON.stringify(userdata),
     }).then((result) => {

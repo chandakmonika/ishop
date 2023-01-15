@@ -4,6 +4,7 @@ import { useParams } from "react-router-dom";
 import { Link } from "react-router-dom";
 
 export default function FAQ_EditFAQ() {
+  const storename = localStorage.getItem("USER_NAME")
   const [question, setQuestion] = useState("");
   const [answer, setAnswer] = useState("");
   const [category_id, setCategory_id] = useState("");
@@ -18,7 +19,13 @@ export default function FAQ_EditFAQ() {
   useEffect(() => {
     axios
       .get(
-        `http://admin.ishop.sunhimlabs.com/api/v1/faq/details/${faq_id}`
+        `http://admin.ishop.sunhimlabs.com/api/v1/faq/details/${faq_id}`,{
+          headers: {
+            Accept: "application/json",
+            "Content-Type": "Application/json",
+            storename:storename,
+          },
+        }
       )
       .then((res) => {
         const getData = res.data.data;
@@ -44,6 +51,7 @@ export default function FAQ_EditFAQ() {
       headers: {
         Accept: "application/json",
         "Content-Type": "Application/json",
+        storename:storename,
       },
       body: JSON.stringify(userdata),
     }).then((result) => {

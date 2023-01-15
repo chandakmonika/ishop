@@ -16,6 +16,7 @@ import EmptyPage from "../emptypage";
 import { toaster } from "../../utils/toaster";
 
 export default function Customer_Customerlist() {
+  const storename = localStorage.getItem("USER_NAME")
   const [searchParams, setSearchParams] = useSearchParams();
   const pageNo = searchParams.get("page");
   const searchQuery = searchParams.get("search");
@@ -80,7 +81,18 @@ export default function Customer_Customerlist() {
 
   useEffect(() => {
     axios
-      .get(`${process.env.REACT_APP_BACKEND_APIURL}api/v1/customer/list`)
+      .get(`${process.env.REACT_APP_BACKEND_APIURL}api/v1/customer/list`,
+      {
+       
+        headers: {
+          Accept: "application/json",
+          "Content-Type": "Application/json",
+          storename: storename,
+        },
+       
+      }
+      )
+      
       .then((res) => setIndex(res.data.data));
   }, []);
 
@@ -146,8 +158,6 @@ export default function Customer_Customerlist() {
       .get(
         `${process.env.REACT_APP_BACKEND_APIURL}api/v1/customer/list?q=${
           query.search ? query.search : ""
-        }&category_id=${query.category_id ? query.category_id : ""}&status=${
-          query.status
         }&page=${Number(page.current)}&per_page=${
           page.records_per_page
         }&sort_by=${sortBy}&order_by=${order}`,
@@ -168,7 +178,7 @@ export default function Customer_Customerlist() {
         headers: {
           Accept: "application/json",
           "Content-Type": "Application/json",
-          storename: "kbtrends",
+          storename: storename,
         },
         body: JSON.stringify(apidata),
       }

@@ -5,6 +5,7 @@ import { toaster } from "../../utils/toaster";
 import "./Coupen_CoupenCode.css";
 
 export default function Coupen_CoupenCode() {
+  const storename = localStorage.getItem("USER_NAME")
   const [couponcode, setCouponcode] = useState({
     value: '',
     error: ''
@@ -45,6 +46,7 @@ export default function Coupen_CoupenCode() {
         headers: {
           Accept: "application/json",
           "Content-Type": "Application/json",
+          storename:storename,
         },
         body: JSON.stringify(datas),
       }).then((result) => {

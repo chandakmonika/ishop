@@ -12,6 +12,7 @@ import Typography from "@mui/material/Typography";
 import Modal from "@mui/material/Modal";
 
 export default function Address_AddressList() {
+  const storename = localStorage.getItem("USER_NAME")
   const [first, setFirst] = useState([]);
   const [order, setOrder] = useState("ASC");
   const [query, setQuery] = useState({ text: "" });
@@ -34,7 +35,7 @@ export default function Address_AddressList() {
   });
   
   const [isSingleStatusUpdate, setIsSingleStatusUpdate] = useState(true);
-  const url = "http://admin.ishop.sunhimlabs.com/api/v1/customer/address/list";
+  const url = `${process.env.REACT_APP_BACKEND_APIURL}api/v1/customer/address/list`;
 
   const handleChange = (e) => {
     setQuery({ text: e.target.value });
@@ -43,7 +44,14 @@ export default function Address_AddressList() {
     e.preventDefault();
     axios
       .get(
-        `http://admin.ishop.sunhimlabs.com/api/v1/customer/address/list/13/q=${query.text}`
+        `${process.env.REACT_APP_BACKEND_APIURL}api/v1/customer/address/list/13/q=${query.text}`,
+        {
+          headers: {
+            Accept: "application/json",
+            "Content-Type": "Application/json",
+            storename:storename,
+          }
+        }
       )
       .then((res) => setFirst(res.data.data));
   };
@@ -63,7 +71,13 @@ export default function Address_AddressList() {
   const getCustomerList = () => {
     console.log('user_id', user_id)
     axios
-      .get(`http://admin.ishop.sunhimlabs.com/api/v1/customer/address/list/${user_id}`)
+      .get(`${process.env.REACT_APP_BACKEND_APIURL}api/v1/customer/address/list/${user_id}`,{
+        headers: {
+          Accept: "application/json",
+          "Content-Type": "Application/json",
+          storename:storename,
+        }
+      })
       .then((res) => setFirst(res.data.data));
   };
 
@@ -76,18 +90,19 @@ export default function Address_AddressList() {
     order === "ASC" ? setOrder("DESC") : setOrder("ASC");
     axios
       .get(
-        `http://admin.ishop.sunhimlabs.com/api/v1/customer/address/list?q=&per_page=12&page=1&sort_by=first_name&order_by=${order}`
+        `${process.env.REACT_APP_BACKEND_APIURL}api/v1/customer/address/list?q=&per_page=12&page=1&sort_by=first_name&order_by=${order}`
       )
       .then((res) => setFirst(res.data.data));
   };
 
 
   const statusChange = (apidata) => {
-    fetch("http://admin.ishop.sunhimlabs.com/api/v1/address/changestatus", {
+    fetch(`${process.env.REACT_APP_BACKEND_APIURL}api/v1/address/changestatus`, {
       method: "POST",
       headers: {
         Accept: "application/json",
         "Content-Type": "Application/json",
+        storename:storename,
       },
       body: JSON.stringify(apidata),
     }).then((result) => {

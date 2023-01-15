@@ -4,6 +4,7 @@ import { Link, useParams,useNavigate } from "react-router-dom";
 import { toaster } from "../../utils/toaster";
 
 export default function Address_AddAddress() {
+  const storename = localStorage.getItem("USER_NAME")
   const [first_name, setFirst_name] = useState("");
   const [last_name, setLast_name] = useState("");
   const [email, setEmail] = useState("");
@@ -36,19 +37,39 @@ export default function Address_AddAddress() {
 
   useEffect(() => {
     axios
-      .get(`http://admin.ishop.sunhimlabs.com/api/v1/allstates/${country}`)
+      .get(`http://admin.ishop.sunhimlabs.com/api/v1/allstates/${country}`,{
+        headers: {
+          Accept: "application/json",
+          "Content-Type": "Application/json",
+          storename:storename,
+        }
+      })
       .then((res) => setIndexs(res.data.data));
   }, [country]);
 
   useEffect(() => {
     axios
-      .get(`http://admin.ishop.sunhimlabs.com/api/v1/allcities/${state}`)
+      .get(`http://admin.ishop.sunhimlabs.com/api/v1/allcities/${state}`,{
+        headers: {
+          Accept: "application/json",
+          "Content-Type": "Application/json",
+          storename:storename,
+        }
+
+      })
       .then((res) => setIndexss(res.data.data));
   }, [state]);
 
   useEffect(() => {
     axios
-      .get(`http://admin.ishop.sunhimlabs.com/api/v1/allcountries/`)
+      .get(`http://admin.ishop.sunhimlabs.com/api/v1/allcountries/`,{
+        headers: {
+          Accept: "application/json",
+          "Content-Type": "Application/json",
+          storename:storename,
+        }
+
+      })
       .then((res) => setIndex(res.data.data));
       console.log(2,params);
       setUser_id(params.user_id);
@@ -78,6 +99,7 @@ export default function Address_AddAddress() {
       headers: {
         Accept: "application/json",
         "Content-Type": "Application/json",
+        storename:storename,
       },
       body: JSON.stringify(datas),
     }).then((result) => {

@@ -1,6 +1,7 @@
 import React,{ useState} from 'react'
 
 export default function Master_Country() {
+  const storename = localStorage.getItem("USER_NAME")
   const [country_name, setCountry_name] = useState("");
 
 
@@ -14,6 +15,7 @@ export default function Master_Country() {
       headers: {
         Accept: "application/json",
         "Content-Type": "Application/json",
+        storename:storename,
       },
       body: JSON.stringify(datas),
     }).then((result) => {

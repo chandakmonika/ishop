@@ -501,7 +501,7 @@ export default function Product_AddProduct() {
           return selectSubCatData?.variants_fields?.map((varField) => {
             return {
               ...vr,
-              attributes_label: vr.attribute_key,
+              attributes_label: varField.attributes_label,
               attributes_name: vr.attribute_key,
               value: vr.attribute_value,
               attributes_option: varField.attributes_value,

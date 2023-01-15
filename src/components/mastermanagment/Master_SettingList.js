@@ -7,6 +7,7 @@ import Navbar from "react-bootstrap/Navbar";
 import { Link } from "react-router-dom";
 
 export default function Master_SettingList() {
+  const storename = localStorage.getItem("USER_NAME")
   const [first, setFirst] = useState([]);
   const [query, setQuery] = useState({ text: "" });
 
@@ -20,7 +21,13 @@ export default function Master_SettingList() {
     e.preventDefault();
     axios
       .get(
-        `http://admin.ishop.sunhimlabs.com/api/v1/getAllSiteOptions/?q=${query.text}`
+        `http://admin.ishop.sunhimlabs.com/api/v1/getAllSiteOptions/?q=${query.text}`,{
+          headers: {
+            Accept: "application/json",
+            "Content-Type": "Application/json",
+            storename:storename,
+          },
+        }
       )
       .then((res) => setFirst(res.data.data));
   };
@@ -28,7 +35,13 @@ export default function Master_SettingList() {
 
   useEffect(() => {
     axios
-      .get(`http://admin.ishop.sunhimlabs.com/api/v1/getAllSiteOptions`)
+      .get(`http://admin.ishop.sunhimlabs.com/api/v1/getAllSiteOptions`,{
+        headers: {
+          Accept: "application/json",
+          "Content-Type": "Application/json",
+          storename:storename,
+        },
+      })
       .then((res) => setFirst(res.data.data));
   }, []);
 

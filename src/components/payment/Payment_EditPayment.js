@@ -3,6 +3,7 @@ import axios from "axios";
 import React, { useState, useEffect } from "react";
 import { useParams } from "react-router-dom";
 export default function Payment_EditPayment() {
+  const storename = localStorage.getItem("USER_NAME")
   const [first_name, setFirst_name] = useState("");
   const [last_name, setLast_name] = useState("");
   const [email, setEmail] = useState("");
@@ -19,7 +20,13 @@ export default function Payment_EditPayment() {
   useEffect(() => {
     axios
       .get(
-        `http://admin.ishop.sunhimlabs.com/api/v1/customer/details/${user_id}`
+        `http://admin.ishop.sunhimlabs.com/api/v1/customer/details/${user_id}`{
+          headers: {
+            Accept: "application/json",
+            "content-Type": "Application/json",
+            storename: storename,
+          },
+        }
       )
       .then((res) => {
         const getData = res.data.data;
@@ -45,6 +52,7 @@ export default function Payment_EditPayment() {
       headers: {
         Accept: "application/json",
         "Content-Type": "Application/json",
+        storename:storename,
       },
       body: JSON.stringify(userdata),
     }).then((result) => {

@@ -7,6 +7,7 @@ import Navbar from "react-bootstrap/Navbar";
 import NavDropdown from "react-bootstrap/NavDropdown";
 import "./Payment_Payment.css";
 export default function Payment_Payment() {
+  
   return (
     <div>
       <Navbar expand="lg">

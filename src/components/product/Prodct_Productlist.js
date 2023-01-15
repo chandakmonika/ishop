@@ -21,6 +21,7 @@ import EmptyPage from "../emptypage";
 import { toaster } from "../../utils/toaster";
 
 export default function ProductsComponent() {
+  const storename = localStorage.getItem("USER_NAME")
   const [searchParams, setSearchParams] = useSearchParams();
   const [index, setIndex] = useState([]);
   const pageNo = searchParams.get("page");
@@ -68,7 +69,13 @@ export default function ProductsComponent() {
 
   useEffect(() => {
     axios
-      .get(`http://admin.ishop.sunhimlabs.com/api/v1/products/parentcategories`)
+      .get(`http://admin.ishop.sunhimlabs.com/api/v1/products/parentcategories`,{
+        headers: {
+          Accept: "application/json",
+          "Content-Type": "Application/json",
+          storename:storename
+        },
+      })
       .then((res) => setIndex(res.data.data));
   }, []);
 
@@ -133,8 +140,15 @@ export default function ProductsComponent() {
     order === "ASC" ? setOrder("DESC") : setOrder("ASC");
     axios
       .get(
-        `${process.env.REACT_APP_BACKEND_APIURL}api/v1/products/list?q=${query.search ? query.search : ""}&category_id=${query.category_id ? query.category_id : ""}&status=${query.status}&page=${Number(page.current)}&per_page=${page.records_per_page}&sort_by=${sortBy}&order_by=${order}`
-      )
+        `${process.env.REACT_APP_BACKEND_APIURL}api/v1/products/list?q=${query.search ? query.search : ""}&category_id=${query.category_id ? query.category_id : ""}&status=${query.status}&page=${Number(page.current)}&per_page=${page.records_per_page}&sort_by=${sortBy}&order_by=${order}`,
+      {
+        headers: {
+          Accept: "application/json",
+          "Content-Type": "Application/json",
+          storename:storename
+        },
+      }
+        )
       .then((res) => setFirst(res.data.data));
   };
 
@@ -146,6 +160,7 @@ export default function ProductsComponent() {
         headers: {
           Accept: "application/json",
           "Content-Type": "Application/json",
+          storename:storename
         },
         body: JSON.stringify(apidata),
       }

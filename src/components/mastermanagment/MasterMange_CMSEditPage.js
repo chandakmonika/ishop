@@ -28,7 +28,7 @@ const config = {
     ],
   };
 export default function mastermange_CMSEditPage() {
-    const [value, setValue] = useState("");
+    const [value, setValue] = useState([]);
   return (
     <div style={{ paddingLeft: "4rem" }}>
       <br />

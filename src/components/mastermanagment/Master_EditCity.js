@@ -5,6 +5,7 @@ import { Link } from "react-router-dom";
 
 
 export default function Master_EditCity() {
+  const storename = localStorage.getItem("USER_NAME")
   const [city_name, setCity_name] = useState("");
   // const [city_id, setCity_id] = useState("");
   const [state_id, setState_id] = useState("");
@@ -22,7 +23,13 @@ export default function Master_EditCity() {
   const { city_id } = useParams();
   useEffect(() => {
     axios
-      .get(`http://admin.ishop.sunhimlabs.com/api/v1/cities/details/${city_id}`)
+      .get(`http://admin.ishop.sunhimlabs.com/api/v1/cities/details/${city_id}`,{
+        headers: {
+          Accept: "application/json",
+          "Content-Type": "Application/json",
+          storename:storename,
+        },
+      })
       .then((res) => {
         const getData = res.data.data;
         console.log(getData);
@@ -31,13 +38,25 @@ export default function Master_EditCity() {
   }, []);
   useEffect(() => {
     axios
-      .get(`http://admin.ishop.sunhimlabs.com/api/v1/allstates/${country_id}`)
+      .get(`http://admin.ishop.sunhimlabs.com/api/v1/allstates/${country_id}`,{
+        headers: {
+          Accept: "application/json",
+          "Content-Type": "Application/json",
+          storename:storename,
+        },
+      })
       .then((res) => setIndexs(res.data.data));
   }, [country_id]);
 
   useEffect(() => {
     axios
-      .get(`http://admin.ishop.sunhimlabs.com/api/v1/allcountries/`)
+      .get(`http://admin.ishop.sunhimlabs.com/api/v1/allcountries/`,{
+        headers: {
+          Accept: "application/json",
+          "Content-Type": "Application/json",
+          storename:storename,
+        },
+      })
       .then((res) => setIndex(res.data.data));
   }, []);
   const handleChange = (e) => {
@@ -57,6 +76,7 @@ export default function Master_EditCity() {
       headers: {
         Accept: "application/json",
         "Content-Type": "Application/json",
+        storename:storename
       },
       body: JSON.stringify(userdata),
     }).then((result) => {

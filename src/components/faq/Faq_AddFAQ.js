@@ -1,6 +1,7 @@
 import React,{ useState } from "react";
 
 export default function Faq_AddFAQ() {
+  const storename = localStorage.getItem("USER_NAME")
   const [category_id, setCategory_id] = useState("");
   const [question, setQuestion] = useState("");
   const [answer, setAnswer] = useState("");
@@ -14,6 +15,7 @@ export default function Faq_AddFAQ() {
       headers: {
         Accept: "application/json",
         "Content-Type": "Application/json",
+        storename: storename,
       },
       body: JSON.stringify(datas),
     }).then((result) => {

@@ -4,6 +4,7 @@ import { Link } from "react-router-dom";
 import { useParams } from "react-router-dom";
 
 export default function Payment_PaymentAdd() {
+  const storename = localStorage.getItem("USER_NAME")
   const [payment_gateway_name,setPayment_gateway_name] = useState("");
   const [payment_gateway_logo,setPayment_gateway_logo] = useState("");
   const [index, setIndex] = useState([]);
@@ -25,6 +26,7 @@ export default function Payment_PaymentAdd() {
       headers: {
         Accept: "application/json",
         "content-Type" : "Application/json",
+        storename: storename,
       },
       body: JSON.stringify(datas),
     }).then((result) => {

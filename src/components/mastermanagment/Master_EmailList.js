@@ -8,6 +8,7 @@ import Nav from "react-bootstrap/Nav";
 import Navbar from "react-bootstrap/Navbar";
 import NavDropdown from "react-bootstrap/NavDropdown";
 export default function Master_EmailList() {
+  const storename = localStorage.getItem("USER_NAME")
   const [first, setFirst] = useState([]);
   const [query, setQuery] = useState({ text: "" });
 
@@ -19,13 +20,25 @@ export default function Master_EmailList() {
     e.preventDefault();
     axios
       .get(
-        `http://admin.ishop.sunhimlabs.com/api/v1/emailtemplates/list/?q=${query.text}`
+        `http://admin.ishop.sunhimlabs.com/api/v1/emailtemplates/list/?q=${query.text}`,{
+          headers: {
+            Accept: "application/json",
+            "Content-Type": "Application/json",
+            storename:storename,
+          },
+        }
       )
       .then((res) => setFirst(res.data.data));
   };
   useEffect(() => {
     axios
-      .get(`http://admin.ishop.sunhimlabs.com/api/v1/emailtemplates/list`)
+      .get(`http://admin.ishop.sunhimlabs.com/api/v1/emailtemplates/list`,{
+        headers: {
+          Accept: "application/json",
+          "Content-Type": "Application/json",
+          storename:storename,
+        },
+      })
       .then((res) => setFirst(res.data.data));
   }, []);
   return (

@@ -31,6 +31,7 @@ const config = {
   ],
 };
 export default function M_CMSEditpage() {
+  const storename = localStorage.getItem("USER_NAME")
   const [value, setValue] = useState("");
   const [page_title, setPage_title] = useState("");
   const [page_description, setPage_description] = useState("");
@@ -50,7 +51,13 @@ export default function M_CMSEditpage() {
   useEffect(() => {
     axios
       .get(
-        `http://admin.ishop.sunhimlabs.com/api/v1/cmspages/details/${page_id}`
+        `http://admin.ishop.sunhimlabs.com/api/v1/cmspages/details/${page_id}`,{
+          headers: {
+            Accept: "application/json",
+            "Content-Type": "Application/json",
+            storename:storename
+          }
+        }
       )
       .then((res) => {
         const getData = {
@@ -60,12 +67,11 @@ export default function M_CMSEditpage() {
           seo_page_keywords: res?.data?.seo?.page_keywords,
           seo_page_description: res?.data?.seo?.page_description
         }
-        // const getData = res.data;
-        // const getSeo = res.data.seo;
+        
         console.log(678, getData);
-        // console.log(getSeo);
+      
         setUser_data(getData);
-        // setUser_data(getSeo);
+       
       });
   }, [page_id]);
 
@@ -99,6 +105,7 @@ export default function M_CMSEditpage() {
         headers: {
           Accept: "application/json",
           "Content-Type": "Application/json",
+          storename:storename
         },
         body: JSON.stringify(cmsPageData),
       }

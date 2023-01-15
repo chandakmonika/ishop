@@ -5,6 +5,7 @@ import { Link } from "react-router-dom";
 import Form from "react-bootstrap/Form";
 
 export default function Coupen_CoupenCodeEdit() {
+  const storename = localStorage.getItem("USER_NAME")
   const [couponcode, setCouponcode] = useState("");
   const [discount_type, setDiscount_type] = useState("");
   const [valid_from, setValid_from] = useState("");
@@ -29,7 +30,7 @@ export default function Coupen_CoupenCodeEdit() {
           headers: {
             Accept: "application/json",
             "content-Type": "Application/json",
-            storename: "kbtrends",
+            storename: storename,
           },
           // body: JSON.stringify(productInputData),
         }
@@ -71,7 +72,7 @@ else{
       headers: {
         Accept: "application/json",
         "Content-Type": "Application/json",
-        storename: "kbtrends",
+        storename: storename,
       },
       body: JSON.stringify({
         ...userdata,

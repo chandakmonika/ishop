@@ -1,5 +1,3 @@
-
-
 import React, { useEffect, useState } from "react";
 import {
   Route,
@@ -284,6 +282,7 @@ export default function RoutingPage() {
               element={<Customer_Editcustomer />}
             />
 
+            <Route path="/order/orderlist/all" element={<Order_OrderList />} />
             <Route path="/order/orderlist/:user_id" element={<Order_OrderList />} />
 
             <Route
@@ -313,7 +312,7 @@ export default function RoutingPage() {
 
             <Route path="/editblog/:blog_id" element={<Blog_EditBlog />} />
             <Route path="/hometheme" element={<Theme_HomeTheme />} />
- <Route path="/menutheme" element={<Theme_MenuTheme />} />
+            <Route path="/menutheme" element={<Theme_MenuTheme />} />
 
           </Route>
         )}

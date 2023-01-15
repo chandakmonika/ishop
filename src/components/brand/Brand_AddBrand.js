@@ -6,6 +6,7 @@ import { toaster } from "../../utils/toaster";
 import { validateEmail, validateMobileNumber } from "../../utils/form-validation";
 
 export default function Customer_Addnewcustomer() {
+  const storename = localStorage.getItem("USER_NAME")
   const [product_category_id, setProduct_category_id] = useState("");
   const [brand_name, setBrand_name] = useState("");
   const [brand_image, setBrand_image] = useState("");
@@ -36,6 +37,7 @@ export default function Customer_Addnewcustomer() {
       headers: {
         Accept: "application/json",
         "Content-Type": "Application/json",
+        storename:storename,
       },
       body: JSON.stringify(datas),
     }).then((result) => {

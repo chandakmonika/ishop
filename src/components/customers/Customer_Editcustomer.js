@@ -5,6 +5,7 @@ import { Link, useNavigate } from "react-router-dom";
 import { toaster } from "../../utils/toaster";
 
 export default function Customer_Editcustomer() {
+  const storename = localStorage.getItem("USER_NAME")
   const [first_name, setFirst_name] = useState("");
   const [last_name, setLast_name] = useState("");
   const [email, setEmail] = useState("");
@@ -30,7 +31,7 @@ export default function Customer_Editcustomer() {
           headers: {
             Accept: "application/json",
             "content-Type": "Application/json",
-            storename: "kbtrends",
+            storename: storename,
           },
           // body: JSON.stringify(productInputData),
         }
@@ -60,7 +61,7 @@ export default function Customer_Editcustomer() {
       headers: {
         Accept: "application/json",
         "Content-Type": "Application/json",
-        storename: "kbtrends",
+        storename: storename,
       },
       body: JSON.stringify(userdata),
     }).then((result) => {

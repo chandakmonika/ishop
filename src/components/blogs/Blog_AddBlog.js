@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 
 export default function Blog_AddBlog() {
+  const storename = localStorage.getItem("USER_NAME")
   const [file, setFile] = useState();
   const [title, setTitle] = useState();
   const [description, setDescription] = useState();
@@ -22,6 +23,7 @@ export default function Blog_AddBlog() {
       headers: {
         Accept: "application/json",
         "Content-Type": "Application/json",
+        storename:storename,
       },
       body: JSON.stringify(datas),
     }).then((result) => {

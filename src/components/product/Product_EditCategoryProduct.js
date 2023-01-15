@@ -14,9 +14,7 @@ export default function Product_EditCategoryProduct() {
   // const [is_variant_key, setIs_variant_key] = useState("");
   const [attributes_group_name, setAttributes_group_name] = useState("");
   const [index, setIndex] = useState([]);
-
   // const navigate = useNavigate();
-
 
   const [userdata, setUser_data] = useState({
     parent_category_id: "",
@@ -38,14 +36,14 @@ export default function Product_EditCategoryProduct() {
 
   useEffect(() => {
     axios
-      .get(`http://admin.ishop.sunhimlabs.com/api/v1/products/parentcategories`)
+      .get(`${process.env.REACT_APP_BACKEND_APIURL}api/v1/products/parentcategories`)
       .then((res) => setIndex(res.data.data));
   }, []);
 
   useEffect(() => {
     axios
       .get(
-        `http://admin.ishop.sunhimlabs.com/api/v1/products/category/details/${category_id}`
+        `${process.env.REACT_APP_BACKEND_APIURL}api/v1/products/category/details/${category_id}`
       )
       .then((res) => {
         const getData = res.data.data;
@@ -104,7 +102,7 @@ export default function Product_EditCategoryProduct() {
       attributes: formFields,
     };
 
-    fetch(`http://admin.ishop.sunhimlabs.com/api/v1/products/category/edit`, {
+    fetch(`${process.env.REACT_APP_BACKEND_APIURL}api/v1/products/category/edit`, {
       method: "POST",
       headers: {
         Accept: "application/json",
@@ -287,6 +285,7 @@ export default function Product_EditCategoryProduct() {
                         }}
                         value={form.attributes_name}
                         style={{ width: "29rem" }}
+                        disabled
                       />
                       <br />
                       <label className="demo" style={{ width: "29rem" }}>
@@ -375,4 +374,3 @@ export default function Product_EditCategoryProduct() {
     </div>
   );
 }
-

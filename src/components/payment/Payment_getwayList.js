@@ -12,6 +12,7 @@ import Typography from '@mui/material/Typography';
 import Modal from '@mui/material/Modal';
 import EmptyPage from '../emptypage';
 export default function Payment_getwayList() {
+  const storename = localStorage.getItem("USER_NAME")
   const [first, setFirst] = useState([]);
   const [query, setQuery] = useState({ text: "" });
   const [selectedcustomer, setSelectedcustomer] = useState([]);
@@ -46,7 +47,13 @@ export default function Payment_getwayList() {
     e.preventDefault();
     axios
       .get(
-        `http://admin.ishop.sunhimlabs.com/api/v1/payments/list/?q=${query.text}`
+        `http://admin.ishop.sunhimlabs.com/api/v1/payments/list/?q=${query.text}`,{
+          headers: {
+            Accept: "application/json",
+            "content-Type": "Application/json",
+            storename: storename,
+          },
+        }
       )
       .then((res) => setFirst(res.data.data));
   };
@@ -79,7 +86,13 @@ export default function Payment_getwayList() {
 
   const getCustomerList = () => {
     axios
-      .get(`http://admin.ishop.sunhimlabs.com/api/v1/payments/list`)
+      .get(`http://admin.ishop.sunhimlabs.com/api/v1/payments/list`,{
+        headers: {
+          Accept: "application/json",
+          "content-Type": "Application/json",
+          storename: storename,
+        },
+      })
       .then((res) => setFirst(res.data.data));
   };
 
@@ -105,6 +118,7 @@ export default function Payment_getwayList() {
         headers: {
           Accept: "application/json",
           "Content-Type": "Application/json",
+          storename:storename,
         },
         body: JSON.stringify(apidata),
       }

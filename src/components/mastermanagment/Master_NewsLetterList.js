@@ -16,6 +16,7 @@ import { toaster } from "../../utils/toaster";
 
 
 export default function Master_NewsLetterList() {
+  const storename = localStorage.getItem("USER_NAME")
   const [first, setFirst] = useState([]);
   const [searchParams, setSearchParams] = useSearchParams();
   const pageNo = searchParams.get("page");
@@ -113,6 +114,7 @@ const statusChange = (apidata) => {
     headers: {
       Accept: "application/json",
       "Content-Type": "Application/json",
+      storename:storename,
     },
     body: JSON.stringify(apidata),
   }).then((result) => {

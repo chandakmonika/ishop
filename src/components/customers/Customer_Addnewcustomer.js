@@ -11,7 +11,7 @@ export default function Customer_Addnewcustomer() {
   //   error: ''
   // });
   // const [phone, setPhone] = useState("");
-
+  const storename = localStorage.getItem("USER_NAME")
   const [addCustomerData, setAddCustomerData] = useState({
     first_name: {
       value: '',
@@ -62,6 +62,7 @@ export default function Customer_Addnewcustomer() {
         headers: {
           Accept: "application/json",
           "Content-Type": "Application/json",
+          storename: storename,
         },
         body: JSON.stringify(datas),
       }).then((result) => {

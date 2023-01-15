@@ -12,6 +12,7 @@ import Box from "@mui/material/Box";
 import Typography from "@mui/material/Typography";
 import Modal from "@mui/material/Modal";
 export default function Master_NewsLetterSubscribtion() {
+  const storename = localStorage.getItem("USER_NAME")
   const [first, setFirst] = useState([]);
   const [query, setQuery] = useState({ text: "" });
   const [order, setOrder] = useState("ASC");
@@ -47,7 +48,13 @@ export default function Master_NewsLetterSubscribtion() {
     e.preventDefault();
     axios
       .get(
-        `http://admin.ishop.sunhimlabs.com/api/v1/newsletter/subscribers/list/?q=${query.text}`
+        `http://admin.ishop.sunhimlabs.com/api/v1/newsletter/subscribers/list/?q=${query.text}`,{
+          headers: {
+            Accept: "application/json",
+            "Content-Type": "Application/json",
+            storename:storename,
+          },
+        }
       )
       .then((res) => setFirst(res.data.data));
   };
@@ -66,7 +73,13 @@ export default function Master_NewsLetterSubscribtion() {
 
   const getCustomerList = () => {
     axios
-      .get(`http://admin.ishop.sunhimlabs.com/api/v1/newsletter/subscribers/list`)
+      .get(`http://admin.ishop.sunhimlabs.com/api/v1/newsletter/subscribers/list`,{
+        headers: {
+          Accept: "application/json",
+          "Content-Type": "Application/json",
+          storename:storename,
+        },
+      })
       .then((res) => setFirst(res.data.data));
   };
 
@@ -77,7 +90,13 @@ export default function Master_NewsLetterSubscribtion() {
   useEffect(() => {
     axios
       .get(
-        `http://admin.ishop.sunhimlabs.com/api/v1/newsletter/subscribers/list`
+        `http://admin.ishop.sunhimlabs.com/api/v1/newsletter/subscribers/list`,{
+          headers: {
+            Accept: "application/json",
+            "Content-Type": "Application/json",
+            storename:storename,
+          },
+        }
       )
       .then((res) => setFirst(res.data.data));
   }, []);

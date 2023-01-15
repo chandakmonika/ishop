@@ -27,6 +27,7 @@ const config = {
     ],
   };
 export default function Master_EditNewsLetter() {
+  const storename = localStorage.getItem("USER_NAME")
     const [value, setValue] = useState("");
   return (
     <div style={{ paddingLeft: "4rem" }}>

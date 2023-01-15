@@ -4,13 +4,20 @@ import { useParams } from "react-router-dom";
 import { Link } from "react-router-dom";
 
 export default function Master_EditState() {
+  const storename = localStorage.getItem("USER_NAME")
   const [state_name, setState_name] = useState("");
   const [country_id, setCountry_id] = useState("");
   const [index, setIndex] = useState([]);
   const [country_name, setCountry_name] = useState("");
   useEffect(() => {
     axios
-      .get(`http://admin.ishop.sunhimlabs.com/api/v1/allcountries/`)
+      .get(`http://admin.ishop.sunhimlabs.com/api/v1/allcountries/`,{
+        headers: {
+          Accept: "application/json",
+          "Content-Type": "Application/json",
+          storename:storename,
+        },
+      })
       .then((res) => setIndex(res.data.data));
   }, []);
 
@@ -23,7 +30,13 @@ export default function Master_EditState() {
   useEffect(() => {
     axios
       .get(
-        `http://admin.ishop.sunhimlabs.com/api/v1/states/details/${state_id}`
+        `http://admin.ishop.sunhimlabs.com/api/v1/states/details/${state_id}`,{
+          headers: {
+            Accept: "application/json",
+            "Content-Type": "Application/json",
+            storename:storename,
+          },
+        }
       )
       .then((res) => {
         const getData = res.data.data;
@@ -49,6 +62,7 @@ export default function Master_EditState() {
       headers: {
         Accept: "application/json",
         "Content-Type": "Application/json",
+        storename:storename,
       },
       body: JSON.stringify(userdata),
     }).then((result) => {
