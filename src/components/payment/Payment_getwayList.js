@@ -37,7 +37,7 @@ export default function Payment_getwayList() {
   });
   
   const [isSingleStatusUpdate, setIsSingleStatusUpdate] = useState(true)
-  const url = "http://admin.ishop.sunhimlabs.com/api/v1/payments/list";
+  const url = `${process.env.REACT_APP_BACKEND_APIURL}api/v1/payments/list`;
 
   const handleChange = (e) => {
     setQuery({ text: e.target.value });
@@ -47,7 +47,7 @@ export default function Payment_getwayList() {
     e.preventDefault();
     axios
       .get(
-        `http://admin.ishop.sunhimlabs.com/api/v1/payments/list/?q=${query.text}`,{
+        `${process.env.REACT_APP_BACKEND_APIURL}api/v1/payments/list/?q=${query.text}`,{
           headers: {
             Accept: "application/json",
             "content-Type": "Application/json",
@@ -86,7 +86,7 @@ export default function Payment_getwayList() {
 
   const getCustomerList = () => {
     axios
-      .get(`http://admin.ishop.sunhimlabs.com/api/v1/payments/list`,{
+      .get(`${process.env.REACT_APP_BACKEND_APIURL}api/v1/payments/list`,{
         headers: {
           Accept: "application/json",
           "content-Type": "Application/json",
@@ -105,14 +105,14 @@ export default function Payment_getwayList() {
     order === "ASC" ? setOrder("DESC") : setOrder("ASC");
     axios
       .get(
-        `http://admin.ishop.sunhimlabs.com/api/v1/payments/list?q=&per_page=12&page=1&sort_by=payment_gateway_name&order_by=${order}`
+        `${process.env.REACT_APP_BACKEND_APIURL}api/v1/payments/list?q=&per_page=12&page=1&sort_by=payment_gateway_name&order_by=${order}`
       )
       .then((res) => setFirst(res.data.data));
   };
 
   const statusChange = (apidata) => {
     fetch(
-      "http://admin.ishop.sunhimlabs.com/api/v1/payments/changestatus",
+      `${process.env.REACT_APP_BACKEND_APIURL}api/v1/payments/changestatus`,
       {
         method: "POST",
         headers: {

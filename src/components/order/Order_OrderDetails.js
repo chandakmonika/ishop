@@ -12,7 +12,7 @@ export default function Order_OrderDetails() {
     console.log(23, order_id);
     axios
       .get(
-        `http://admin.ishop.sunhimlabs.com/api/v1/orders/details/${order_id}`,
+        `${process.env.REACT_APP_BACKEND_APIURL}api/v1/orders/details/${order_id}`,
         {
           headers: {
             Accept: "application/json",

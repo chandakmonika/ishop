@@ -1,5 +1,8 @@
 import "./Product_AddProduct.css";
+
 import React, { useEffect, useState, } from "react";
+import { validateAlphaNumeric, validateNumeric, validateRequired } from "../../utils/form-validation";
+
 import Product_Editor from "./Product_Editor";
 import axios from "axios";
 import { toaster } from "../../utils/toaster";
@@ -47,58 +50,177 @@ export default function Product_AddProduct() {
     },
   ]);
   const [productInputData, setProductInputData] = useState({
-    product_name: "",
-    parent_category_id: "",
-    category_id: "",
+    product_name: {
+      value: '',
+      error: ''
+    },
+    parent_category_id: {
+      value: '',
+      error: ''
+    },
+    category_id: {
+      value: '',
+      error: ''
+    },
     brand: "",
-    model_number: "",
+    model_number: {
+      value: '',
+      error: ''
+    },
     product_short_desc: "",
     product_long_desc: "",
-    product_image: [],
+    product_image: [{
+      media_id: ""
+    }],
     product_status: "1",
-    product_qty: "",
+    product_qty: {
+      value: '',
+      error: ''
+    },
     attributes: [],
     faq: [],
-    sku: "",
-    price_base: "",
-    price_sell: "",
-    price_mrp: "",
+    sku: {
+      value: '',
+      error: ''
+    },
+    shipping_charges: {
+      value: '',
+      error: ''
+    },
+    price_base: {
+      value: '',
+      error: ''
+    },
+    price_sell: {
+      value: '',
+      error: ''
+    },
+    price_mrp: {
+      value: '',
+      error: ''
+    },
     product_tags: "",
     product_seo_title: "",
     product_seo_description: "",
     product_seo_keywords: "",
-    product_weight: "",
+    product_weight: {
+      value: '',
+      error: ''
+    },
+    tax_amount: {
+      value: '',
+      error: ''
+    },
     variants: [],
   });
 
   const navigate = useNavigate();
 
-  function productUser() {
-    const productData = {
+  function addProductSubmitForm() {
+
+    const { product_name, parent_category_id, category_id, sku, model_number, product_qty, product_weight, shipping_charges, price_base, price_mrp, price_sell, tax_amount } = productInputData
+
+    const productDataValidated = {
       ...productInputData,
-    };
-    fetch(`${process.env.REACT_APP_BACKEND_APIURL}api/v1/products/add`, {
-      method: "POST",
-      headers: {
-        Accept: "application/json",
-        "content-Type": "Application/json",
-        storename: storename,
+      product_name: {
+        value: product_name.value,
+        error: validateRequired(product_name.value).error ? validateRequired(product_name.value).error : validateAlphaNumeric(product_name.value).error
       },
-      body: JSON.stringify(productData),
-    })
-      .then((result) => {
-        result.json().then((response) => {
-          toaster(response, "Product Added Successfully!");
-          if (response === true) {
-            navigate("/product/list?page=1");
-          }
-          console.warn("response", response);
-        });
+      parent_category_id: {
+        value: parent_category_id.value,
+        error: validateRequired(parent_category_id.value).error
+      },
+      category_id: {
+        value: category_id.value,
+        error: validateRequired(category_id.value).error
+      },
+      sku: {
+        value: sku.value,
+        error: validateAlphaNumeric(sku.value).error
+      },
+      model_number: {
+        value: model_number.value,
+        error: validateAlphaNumeric(model_number.value).error
+      },
+      product_qty: {
+        value: product_qty.value,
+        error: validateNumeric(product_qty.value).error
+      },
+      price_base: {
+        value: price_base.value,
+        error: validateNumeric(price_base.value).error
+      },
+      price_mrp: {
+        value: price_mrp.value,
+        error: validateNumeric(price_mrp.value).error
+      },
+      price_sell: {
+        value: price_sell.value,
+        error: validateNumeric(price_sell.value).error
+      },
+      shipping_charges: {
+        value: shipping_charges.value,
+        error: validateNumeric(shipping_charges.value).error
+      },
+      product_weight: {
+        value: product_weight.value,
+        error: validateNumeric(product_weight.value).error
+      },
+      tax_amount: {
+        value: tax_amount.value,
+        error: validateNumeric(tax_amount.value).error
+      }
+    }
+
+    setProductInputData(productDataValidated)
+
+    const ErrorFields = Object.entries(productDataValidated).filter((err) => typeof err[1] === "object" && err[1].error)
+
+    console.log(54546, Object.entries(productDataValidated), ErrorFields)
+
+    if (ErrorFields.length <= 0) {
+      const productData = {
+        ...productDataValidated,
+        product_name: product_name.value,
+        parent_category_id: parent_category_id.value,
+        category_id: category_id.value,
+        sku: sku.value,
+        model_number: model_number.value,
+        product_qty: product_qty.value,
+        price_base: price_base.value,
+        price_mrp: price_mrp.value,
+        price_sell: price_sell.value,
+        shipping_charges: shipping_charges.value,
+        product_weight: product_weight.value,
+        tax_amount: tax_amount.value
+      }
+      console.log(761233, productData)
+      fetch(`${process.env.REACT_APP_BACKEND_APIURL}api/v1/products/add`, {
+        method: "POST",
+        headers: {
+          Accept: "application/json",
+          "content-Type": "Application/json",
+          storename: storename,
+        },
+        body: JSON.stringify(productData),
       })
-      .catch((err) => {
-        console.log(32324, err);
-        // toast.error(err.message)
-      });
+        .then((result) => {
+          result.json().then((response) => {
+            toaster(response, "Product Added Successfully!");
+            if (response === true) {
+              navigate("/product/list?page=1");
+            }
+            console.warn("response", response);
+          });
+        })
+        .catch((err) => {
+          console.log(32324, err);
+          // toast.error(err.message)
+        });
+    } else {
+      toaster({message: "Please fill proper input data"})
+    }
+
   }
 
   useEffect(() => {
@@ -112,7 +234,7 @@ export default function Product_AddProduct() {
             "content-Type": "Application/json",
             storename: storename,
           },
-         
+
         }
       )
       .then((res) => {
@@ -159,15 +281,22 @@ export default function Product_AddProduct() {
     } else if (inputField === "parent_cat_id") {
       setProductInputData({
         ...productInputData,
-        [inputName]: e.toString(),
+        [inputName]: {
+          value: e.toString(),
+          error: ''
+        },
       });
     } else {
       setProductInputData({
         ...productInputData,
-        [e.target.name]: e.target.value,
+        [e.target.name]: typeof productInputData[e.target.name] === "object" ? {
+          value: e.target.value,
+          error: ''
+        } : e.target.value
       });
     }
   };
+
   // <----------------Dynamic Form--------------->
 
   const handleVarientFormChange = (fieldName, e, index, itemIndex) => {
@@ -264,7 +393,10 @@ export default function Product_AddProduct() {
     console.log(897, e.target.value);
     setProductInputData({
       ...productInputData,
-      category_id: e.target.value,
+      category_id: {
+        value: e.target.value,
+        error: ''
+      },
     });
     axios
       .get(
@@ -332,11 +464,21 @@ export default function Product_AddProduct() {
     setMediaFiles(data);
   };
 
+  const { product_name, parent_category_id, category_id, sku, model_number, product_qty } = productInputData
+
+  const inputFieldError = (error) => {
+    if (error && error.length > 0) {
+      return <p style={{ color: 'red', fontSize: '12px' }}>{error}</p>
+    }
+
+    return <></>
+  }
+
   return (
     <div>
       <div>
         <div class="py-4">
-          {console.log(6756, varientFormFields)}
+          {console.log(6756, productInputData)}
           <div class="d-flex justify-content-between">
             <div class="">
               <button type="button" class="btn ">
@@ -345,7 +487,7 @@ export default function Product_AddProduct() {
               <span>Add Product</span>
             </div>
             <div>
-              <button type="button" class="btn btn-info float-right">
+              <button type="button" class="btn btn-info float-right" onClick={addProductSubmitForm}>
                 Add Product
               </button>
             </div>
@@ -368,16 +510,17 @@ export default function Product_AddProduct() {
                         Title
                       </label>
                       <input
-                        type="email"
+                        type="text"
                         className="form-control"
                         id="exampleInputEmail1"
-                        aria-describedby="emailHelp"
-                        value={productInputData.product_name}
+                        aria-describedby="product_name"
+                        value={product_name.value}
                         onChange={(e) => {
                           productInputChange(e);
                         }}
                         name="product_name"
                       />
+                      {inputFieldError(product_name.error)}
                     </div>
                     <h6>Product Short Discription</h6>
                     <Product_Editor
@@ -469,116 +612,119 @@ export default function Product_AddProduct() {
                     <br />
 
                     <p>Category</p>
-                    <div class="list-group">
-                      {categoryData &&
-                        categoryData.length > 0 &&
-                        categoryData.map((cat) => {
-                          return (
-                            <div className="category-item">
-                              <div key={`category${cat.category_id}`}>
-                                <input
-                                  type="checkbox"
-                                  id={cat.category_slug}
-                                  name="parent_category_id"
-                                  value={productInputData.category_id}
-                                  checked={cat.isChecked ? "checked" : false}
-                                  onChange={(e) => {
-                                    productInputChange(e);
-                                    const checkedData = categoryData.map(
-                                      (d) => {
-                                        if (d.category_id === cat.category_id) {
-                                          productInputChange(
-                                            cat.category_id,
-                                            "parent_cat_id",
-                                            "parent_category_id"
-                                          );
-                                          return {
-                                            ...d,
-                                            isChecked: e.target.checked,
-                                          };
-                                        } else {
-                                          return {
-                                            ...d,
-                                            isChecked: false,
-                                          };
+                    <div>
+                      <div class="list-group category-scrollbar">
+                        {categoryData &&
+                          categoryData.length > 0 &&
+                          categoryData.map((cat) => {
+                            return (
+                              <div className="category-item">
+                                <div key={`category${cat.category_id}`}>
+                                  <input
+                                    type="checkbox"
+                                    id={cat.category_slug}
+                                    name="parent_category_id"
+                                    value={category_id.value}
+                                    checked={cat.isChecked ? "checked" : false}
+                                    onChange={(e) => {
+                                      productInputChange(e);
+                                      const checkedData = categoryData.map(
+                                        (d) => {
+                                          if (d.category_id === cat.category_id) {
+                                            productInputChange(
+                                              cat.category_id,
+                                              "parent_cat_id",
+                                              "parent_category_id"
+                                            );
+                                            return {
+                                              ...d,
+                                              isChecked: e.target.checked,
+                                            };
+                                          } else {
+                                            return {
+                                              ...d,
+                                              isChecked: false,
+                                            };
+                                          }
                                         }
-                                      }
-                                    );
-                                    setCategoryData(checkedData);
-                                  }}
-                                />
-                                <label for={cat.category_slug}>
-                                  {cat.isChecked ? (
-                                    <span> - </span>
-                                  ) : (
-                                    <span> + </span>
-                                  )}
-                                  <span>{cat.category_name} </span>
-                                </label>
-                                {cat.isChecked && (
-                                  <div
-                                    class="list-group"
-                                    style={{ paddingLeft: "2rem" }}
-                                  >
-                                    {cat.subcategories.map((subCat) => {
-                                      return (
-                                        <div
-                                          key={`sub-category${subCat.category_id}`}
-                                        >
-                                          <input
-                                            type="radio"
-                                            id={subCat.category_slug}
-                                            name="sub-category-list"
-                                            value={subCat.category_id}
-                                            onChange={(e) =>
-                                              handleSubCategoryClick(e)
-                                            }
-                                          />
-                                          <label for={subCat.category_slug}>
-                                            {subCat.category_name}
-                                          </label>
-                                        </div>
                                       );
-                                    })}
-                                  </div>
-                                )}
+                                      setCategoryData(checkedData);
+                                    }}
+                                  />
+                                  <label for={cat.category_slug}>
+                                    {cat.isChecked ? (
+                                      <span> - </span>
+                                    ) : (
+                                      <span> + </span>
+                                    )}
+                                    <span>{cat.category_name} </span>
+                                  </label>
+                                  {cat.isChecked && (
+                                    <div
+                                      class="list-group"
+                                      style={{ paddingLeft: "2rem" }}
+                                    >
+                                      {cat.subcategories.map((subCat) => {
+                                        return (
+                                          <div
+                                            key={`sub-category${subCat.category_id}`}
+                                          >
+                                            <input
+                                              type="radio"
+                                              id={subCat.category_slug}
+                                              name="sub-category-list"
+                                              value={subCat.category_id}
+                                              onChange={(e) =>
+                                                handleSubCategoryClick(e)
+                                              }
+                                            />
+                                            <label for={subCat.category_slug}>
+                                              {subCat.category_name}
+                                            </label>
+                                          </div>
+                                        );
+                                      })}
+                                    </div>
+                                  )}
+                                </div>
                               </div>
-                            </div>
-                          );
-                        })}
+                            );
+                          })}
+                      </div>
+                      {inputFieldError(category_id.error ? category_id.error : parent_category_id.error)}
                     </div>
-                    <br />
-                    <br />
-                    {selectSubCatData.brands &&
-                      selectSubCatData.brands.length > 0 && (
-                        <div>
-                          <p>Brand</p>
-                          <div className="list-group">
-                            {selectSubCatData.brands.map((brand) => {
-                              return (
-                                <div key={`sub-category${brand.brand_id}`}>
-                                  {/* <a
+                    <div>
+                      {selectSubCatData.brands &&
+                        selectSubCatData.brands.length > 0 && (
+                          <div>
+                            <p>Brand</p>
+                            <div className="list-group">
+                              {selectSubCatData.brands.map((brand) => {
+                                return (
+                                  <div key={`sub-category${brand.brand_id}`}>
+                                    {/* <a
                                           href="#"
                                           class="list-group-item"
                                           style={{ border: "none" }}
                                         > */}
-                                  <input
-                                    type="radio"
-                                    id={brand.brand_name}
-                                    name="brand"
-                                    value={brand.brand_id}
-                                    onChange={(e) => productInputChange(e)}
-                                  />
-                                  <label for={brand.brand_name}>
-                                    {brand.brand_name}
-                                  </label>
-                                  {/* </a> */}
-                                </div>
-                              );
-                            })}
+                                    <input
+                                      type="radio"
+                                      id={brand.brand_name}
+                                      name="brand"
+                                      value={brand.brand_id}
+                                      onChange={(e) => productInputChange(e)}
+                                    />
+                                    <label for={brand.brand_name}>
+                                      {brand.brand_name}
+                                    </label>
+                                    {/* </a> */}
+                                  </div>
+                                );
+                              })}
+                            </div>
                           </div>
-                        </div>
-                      )}
+                        )}
+                    </div>
                     <br />
 
                     <div className="form-group">
@@ -586,7 +732,7 @@ export default function Product_AddProduct() {
                       <input
                         type="email"
                         className="form-control"
-                        id="exampleInputEmail1"
+                        id="product_tags"
                         aria-describedby="emailHelp"
                         value={productInputData.product_tags}
                         onChange={(e) => {
@@ -620,14 +766,15 @@ export default function Product_AddProduct() {
                     <input
                       type="text"
                       className="form-control"
-                      id="exampleInputEmail1"
+                      id="sku"
                       // aria-describedby="emailHelp"
-                      value={productInputData.sku}
+                      value={sku.value}
                       onChange={(e) => {
                         productInputChange(e);
                       }}
                       name="sku"
                     />
+                    {inputFieldError(sku.error)}
                   </div>
 
                   <div className="col-md-3">
@@ -635,14 +782,14 @@ export default function Product_AddProduct() {
                     <input
                       type="text"
                       className="form-control"
-                      id="exampleInputEmail1"
-                      // aria-describedby="emailHelp"
-                      value={productInputData.model_number}
+                      id="model_number"
+                      value={model_number.value}
                       onChange={(e) => {
                         productInputChange(e);
                       }}
                       name="model_number"
                     />
+                    {inputFieldError(model_number.error)}
                   </div>
 
                   <div className="col-md-3">
@@ -650,14 +797,15 @@ export default function Product_AddProduct() {
                     <input
                       type="text"
                       className="form-control"
-                      id="exampleInputEmail1"
-                      aria-describedby="emailHelp"
-                      value={productInputData?.product_qty}
+                      id="product_qty"
+                      aria-describedby="product_qty"
+                      value={product_qty.value}
                       onChange={(e) => {
                         productInputChange(e);
                       }}
                       name="product_qty"
                     />
+                    {inputFieldError(product_qty.error)}
                   </div>
                 </div>
               </div>
@@ -679,14 +827,15 @@ export default function Product_AddProduct() {
                     <input
                       type="text"
                       className="form-control"
-                      id="exampleInputEmail1"
+                      id="price_base"
                       aria-describedby="emailHelp"
-                      value={productInputData.price_base}
+                      value={productInputData.price_base.value}
                       onChange={(e) => {
                         productInputChange(e);
                       }}
                       name="price_base"
                     />
+                    {inputFieldError(productInputData.price_base.error)}
                   </div>
 
                   <div className="col-md-4">
@@ -694,28 +843,30 @@ export default function Product_AddProduct() {
                     <input
                       type="email"
                       className="form-control"
-                      id="exampleInputEmail1"
+                      id="price_mrp"
                       aria-describedby="emailHelp"
-                      value={productInputData.price_mrp}
+                      value={productInputData.price_mrp.value}
                       onChange={(e) => {
                         productInputChange(e);
                       }}
                       name="price_mrp"
                     />
+                    {inputFieldError(productInputData.price_mrp.error)}
                   </div>
                   <div className="col-md-4">
                     <label className="demo">Selling Price</label>
                     <input
                       type="email"
                       className="form-control"
-                      id="exampleInputEmail1"
+                      id="price_sell"
                       aria-describedby="emailHelp"
-                      value={productInputData.price_sell}
+                      value={productInputData.price_sell.value}
                       onChange={(e) => {
                         productInputChange(e);
                       }}
                       name="price_sell"
                     />
+                    {inputFieldError(productInputData.price_sell.error)}
                   </div>
                 </div>
               </div>
@@ -736,14 +887,15 @@ export default function Product_AddProduct() {
                     <input
                       type="text"
                       className="form-control"
-                      id="exampleInputEmail1"
+                      id="shipping_charges"
                       aria-describedby="emailHelp"
-                      value={productInputData.shipping_charges}
+                      value={productInputData.shipping_charges.value}
                       onChange={(e) => {
                         productInputChange(e);
                       }}
                       name="shipping_charges"
                     />
+                    {inputFieldError(productInputData.shipping_charges.error)}
                   </div>
 
                   <div className="col-md-4">
@@ -751,14 +903,15 @@ export default function Product_AddProduct() {
                     <input
                       type="email"
                       className="form-control"
-                      id="exampleInputEmail1"
+                      id="product_weight"
                       aria-describedby="emailHelp"
-                      value={productInputData.product_weight}
+                      value={productInputData.product_weight.value}
                       onChange={(e) => {
                         productInputChange(e);
                       }}
                       name="product_weight"
                     />
+                    {inputFieldError(productInputData.product_weight.error)}
                   </div>
                 </div>
               </div>
@@ -780,14 +933,15 @@ export default function Product_AddProduct() {
                     <input
                       type="text"
                       className="form-control"
-                      id="exampleInputEmail1"
+                      id="tax_amount"
                       aria-describedby="emailHelp"
-                      value={productInputData.tax_amount}
+                      value={productInputData.tax_amount.value}
                       onChange={(e) => {
                         productInputChange(e);
                       }}
                       name="tax_amount"
                     />
+                    {inputFieldError(productInputData.tax_amount.error)}
                   </div>
                 </div>
               </div>
@@ -811,7 +965,7 @@ export default function Product_AddProduct() {
                         </label>
                         <div class="col-sm-4">
                           {attr.attributes_type === "select" ||
-                          attr.attributes_type === "s" ? (
+                            attr.attributes_type === "s" ? (
                             <select
                               name={attr.attributes_label}
                               id={attr.attributes_label}
@@ -949,14 +1103,14 @@ export default function Product_AddProduct() {
                           );
                         })}
                       </tbody>
+                    </table>
                       <button
                         onClick={addVarientFields}
-                        style={{ marginLeft: "48rem" }}
+                        className="float-end"
+                      // style={{ marginLeft: "48rem" }}
                       >
                         Add More..
                       </button>
-                      <br />
-                    </table>
                   </div>
                 </div>
               </div>
@@ -1091,25 +1245,22 @@ export default function Product_AddProduct() {
                       </tr>
                     );
                   })}
-                  <tr>
-                    <td colSpan={3}>
-                      <button
-                        onClick={addFaqFields}
-                        style={{ marginLeft: "48rem" }}
-                      >
-                        Add More..
-                      </button>
-                    </td>
-                  </tr>
                 </tbody>
               </table>
+              <button
+                onClick={addFaqFields}
+                // style={{ marginLeft: "48rem" }}
+                className="float-end"
+              >
+                Add More..
+              </button>
             </div>
           </div>
           {/* <--------------------------------Pricing From End-----------------------------------> */}
           <button
             type="button"
             class="btn btn-info float-right my-3"
-            onClick={productUser}
+            onClick={addProductSubmitForm}
           >
             Add Product
           </button>
@@ -1119,3 +1270,4 @@ export default function Product_AddProduct() {
     </div>
   );
 }
+

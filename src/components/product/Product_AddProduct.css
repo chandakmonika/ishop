@@ -92,3 +92,9 @@ td {
    cursor: pointer;
    border-radius: 50%;
 }
+
+.category-scrollbar{
+   max-height: 420px;
+   overflow: auto;
+}
+

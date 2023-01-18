@@ -20,7 +20,7 @@ export default function Payment_EditPayment() {
   useEffect(() => {
     axios
       .get(
-        `http://admin.ishop.sunhimlabs.com/api/v1/customer/details/${user_id}`{
+        `${process.env.REACT_APP_BACKEND_APIURL}api/v1/customer/details/${user_id}`,{
           headers: {
             Accept: "application/json",
             "content-Type": "Application/json",
@@ -47,7 +47,7 @@ export default function Payment_EditPayment() {
   function customerUser() {
     console.warn(first_name, last_name, email, phone, gender);
 
-    fetch(`http://admin.ishop.sunhimlabs.com/api/v1/customer/edit/`, {
+    fetch(`${process.env.REACT_APP_BACKEND_APIURL}api/v1/customer/edit/`, {
       method: "POST",
       headers: {
         Accept: "application/json",

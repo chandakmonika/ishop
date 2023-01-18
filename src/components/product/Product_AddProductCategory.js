@@ -1,87 +1,145 @@
-import axios from "axios";
-import React, { useState, useEffect } from "react";
-import { Link,  useNavigate } from "react-router-dom";
-import { toast } from 'react-toastify';
-import { toaster } from "../../utils/toaster";
-
 import "./Product_AddProductCategory.css";
 
+import { Link, useNavigate } from "react-router-dom";
+import React, { useEffect, useState } from "react";
+
+import axios from "axios";
+import { toaster } from "../../utils/toaster";
+import { validateRequired } from "../../utils/form-validation";
+
 export default function Product_AddProductCategory() {
-  const [parent_category_id, setParent_category_id] = useState("");
-  const [category_name, setCategory_name] = useState("");
-  const [category_image, setCategory_image] = useState("");
-  const [attributes_label, setAttributes_label] = useState("");
-  const [attributes_name, setAttributes_name] = useState("");
-  const [attributes_type, setAttributes_type] = useState("");
-  const [attributes_value, setAttributes_value] = useState("");
-  const [is_variant_key, setIs_variant_key] = useState("");
-  const [attributes_group_name, setAttributes_group_name] = useState("");
-  const [media_id, setMedia_id] = useState({
-    id: '',
-    previewImg: ''
-  })
+  const storename = localStorage.getItem("USER_NAME")
+  const [prodCategoryData, setProdCategoryData] = useState({
+    parent_category_id: {
+      value: "",
+      error: ""
+    },
+    category_name: {
+      value: "",
+      error: ""
+    },
+    category_image: "",
+    media_id: {
+      id: '',
+      previewImg: ''
+    }
+  });
+  // const [category_image, setCategory_image] = useState("");
+  // const [attributes_label, setAttributes_label] = useState("");
+  // const [attributes_name, setAttributes_name] = useState("");
+  // const [attributes_type, setAttributes_type] = useState("");
+  // const [attributes_value, setAttributes_value] = useState("");
+  // const [is_variant_key, setIs_variant_key] = useState("");
+  // const [attributes_group_name, setAttributes_group_name] = useState("");
+  // const [media_id, setMedia_id] = useState({
+  //   id: '',
+  //   previewImg: ''
+  // })
   const [index, setIndex] = useState([]);
 
   const navigate = useNavigate();
 
+  // <----------------Dynamic Form--------------->
+  const [formFields, setFormFields] = useState([
+    {
+      attributes_label: "",
+      attributes_name: "",
+      attributes_type: "",
+      attributes_value: "",
+      is_variant_key: "",
+      attributes_group_name: ""
+    },
+  ]);
+
+
 
   useEffect(() => {
     axios
-      .get(`http://admin.ishop.sunhimlabs.com/api/v1/products/parentcategories`)
+      .get(`${process.env.REACT_APP_BACKEND_APIURL}api/v1/products/parentcategories`,{
+        headers: {
+          Accept: "application/json",
+          "content-Type": "Application/json",
+          storename: storename,
+        }
+      })
       .then((res) => setIndex(res.data.data));
   }, []);
 
   function productCategoryUser() {
-    console.warn(
-      parent_category_id,
-      category_name,
-      category_image,
-      attributes_group_name,
-      attributes_label,
-      attributes_name,
-      attributes_type,
-      attributes_value,
-      is_variant_key
-    );
-    let data = {
-      parent_category_id: Number(parent_category_id),
-      category_name,
-      category_image,
-      attributes: formFields,
-      media_id: media_id.id
-    };
-    
-    fetch("http://admin.ishop.sunhimlabs.com/api/v1/products/category/add", {
-      method: "POST",
-      headers: {
-        Accept: "application/json",
-        // "Content-Type": "multipart/form-data",
-        "Content-Type": "application/json"
+    // console.warn(
+    //   parent_category_id,
+    //   category_name,
+    //   category_image,
+    //   attributes_group_name,
+    //   attributes_label,
+    //   attributes_name,
+    //   attributes_type,
+    //   attributes_value,
+    //   is_variant_key
+    // );
+
+    const { parent_category_id, category_name } = prodCategoryData
+
+    const productDataValidated = {
+      ...prodCategoryData,
+      parent_category_id: {
+        value: parent_category_id.value,
+        error: validateRequired(parent_category_id.value).error
       },
-      // body: formData,
-      body: JSON.stringify(data)
-    }).then((result) => {
-      result.json().then((resp) => {
-        console.warn("resp", resp);
-        toaster(resp, 'Product Category Added Successfully!')
-        if(resp === true ){
+      category_name: {
+        value: category_name.value,
+        error: validateRequired(category_name.value).error
+      }
+    }
+
+    setProdCategoryData(productDataValidated)
+
+    const ErrorFields = Object.entries(productDataValidated).filter((err) => typeof err[1] === "object" && err[1].error)
+
+    if (ErrorFields <= 0) {
+
+      let data = {
+        parent_category_id: Number(productDataValidated.parent_category_id.value),
+        category_name: productDataValidated.category_name.value,
+        category_image: productDataValidated.category_image,
+        attributes: formFields,
+        media_id: productDataValidated.media_id.id
+      };
+
+      console.log(9878, data)
+
+      fetch(`${process.env.REACT_APP_BACKEND_APIURL}api/v1/products/category/add`, {
+        method: "POST",
+        headers: {
+          Accept: "application/json",
+          "Content-Type": "application/json",
+          storename: storename,
+        },
+        // body: formData,
+        body: JSON.stringify(data)
+      }).then((result) => {
+        result.json().then((resp) => {
+          console.warn("resp", resp);
+          toaster(resp, 'Product Category Added Successfully!')
+          if (resp === true) {
             navigate("/product/category/list")
-        }
+          }
+        });
       });
-    });
+    } else {
+      toaster({ message: "Please fill proper input data" })
+    }
   }
 
-  // <----------------Dynamic Form--------------->
-  const [formFields, setFormFields] = useState([
-    { 
-    attributes_label:"",
-    attributes_name:"",
-    attributes_type:"",
-    attributes_value:"",
-    is_variant_key:"",
-    attributes_group_name:""
-  },
-  ]);
+  const handleInputFields = (e) => {
+    setProdCategoryData({
+      ...prodCategoryData,
+      [e.target.name]: typeof prodCategoryData[e.target.name] === "object" ? {
+        value: e.target.value,
+        error: ''
+      } : e.target.value
+    })
+  }
 
   const handleFormChange = (e, index) => {
     let data = [...formFields];
@@ -96,12 +154,12 @@ export default function Product_AddProductCategory() {
 
   const addFields = () => {
     let object = {
-    attributes_label:"",
-    attributes_name:"",
-    attributes_type:"",
-    attributes_value:"",
-    is_variant_key:"",
-    attributes_group_name:"",
+      attributes_label: "",
+      attributes_name: "",
+      attributes_type: "",
+      attributes_value: "",
+      is_variant_key: "",
+      attributes_group_name: "",
     };
     setFormFields([...formFields, object]);
   };
@@ -114,44 +172,67 @@ export default function Product_AddProductCategory() {
 
 
 
-  const handleImageUpload1 = (event) => {
-    // setImgError('')
-    const reader = new FileReader()
-    const file = event.target.files
-    const fieSize = Number((file[0]?.size / 1024 / 1024)?.toFixed(2))
-    const extension = file[0]?.name?.substring(file[0]?.name?.lastIndexOf(".") + 1)?.toLowerCase()
-    if (extension === "png" || extension === "jpeg" || extension === "jpg") {
-        // if (fieSize <= (Number(process.env.ORGANIZATION_LOGO_MAX_SIZE) | imageSizeAccepted)) {
-        //     if (file[0] !== undefined) {
-                reader.onloadend = () => {
-                  console.log(fieSize,file,extension,file[0])
-                    setCategory_image({
-                        logoFile: file[0],
-                        imagePreviewUrl: reader.result
-                    })
-                }
-                reader.readAsDataURL(file[0])
-            // }
-            event.preventDefault()
-        //     setEditLogo(true)
-        // } else {
-        //     setImgError("Please check image size")
-        // }
-    } else {
-        // setImgError("Invalid image type")
+  // const handleImageUpload1 = (event) => {
+  //   // setImgError('')
+  //   const reader = new FileReader()
+  //   const file = event.target.files
+  //   const fieSize = Number((file[0]?.size / 1024 / 1024)?.toFixed(2))
+  //   const extension = file[0]?.name?.substring(file[0]?.name?.lastIndexOf(".") + 1)?.toLowerCase()
+  //   if (extension === "png" || extension === "jpeg" || extension === "jpg") {
+  //     // if (fieSize <= (Number(process.env.ORGANIZATION_LOGO_MAX_SIZE) | imageSizeAccepted)) {
+  //     //     if (file[0] !== undefined) {
+  //     reader.onloadend = () => {
+  //       console.log(fieSize, file, extension, file[0])
+  //       setCategory_image({
+  //         logoFile: file[0],
+  //         imagePreviewUrl: reader.result
+  //       })
+  //     }
+  //     reader.readAsDataURL(file[0])
+  //     // }
+  //     event.preventDefault()
+  //     //     setEditLogo(true)
+  //     // } else {
+  //     //     setImgError("Please check image size")
+  //     // }
+  //   } else {
+  //     // setImgError("Invalid image type")
+  //   }
+  // }
+
+  const handleImageUpload = (e) => {
+    const fileData = e.target.files[0]
+    console.log(37, fileData, e.target.files, URL.createObjectURL(e.target.files[0]));
+
+    // setCategory_image(fileData.lastModified.toString())
+    setProdCategoryData({
+      ...prodCategoryData,
+      media_id: {
+        id: fileData.lastModified.toString(),
+        previewImg: URL.createObjectURL(fileData)
+      },
+      category_image: fileData.lastModified.toString()
+    })
+    // handleInputFields(e)
+    // setMedia_id({
+    //   id: fileData.lastModified.toString(),
+    //   previewImg: URL.createObjectURL(fileData)
+    // });
+  }
+
+  const inputFieldError = (error) => {
+    if (error && error.length > 0) {
+      return <p style={{ color: 'red', fontSize: '12px' }}>{error}</p>
     }
-}
 
-const handleImageUpload = (e) => {
-  const fileData = e.target.files[0]
-  console.log(37, fileData, e.target.files, URL.createObjectURL(e.target.files[0]));
+    return <></>
+  }
 
-  setCategory_image(fileData.lastModified.toString())
-  setMedia_id({
-    id: fileData.lastModified.toString(),
-    previewImg: URL.createObjectURL(fileData)
-  });
-}
+  const redirectToErrorField = () => {
+    const label = Object.entries(prodCategoryData).filter((err) => typeof err[1] === "object" && err[1].error)
+    console.log(546, label, prodCategoryData )
+    return label.length > 0 ? label[1][0] : ""
+  }
 
   return (
     <div>
@@ -160,42 +241,44 @@ const handleImageUpload = (e) => {
         <div class="card-body">
           <form enctype="multipart/form-data" onSubmit={submit}>
             <div className="form-group" style={{ width: "30rem" }}>
-              <label for="exampleFormControlSelect1">Product Category</label>
-              <select
-                class="form-control"
-                id="exampleFormControlSelect1"
-                value={parent_category_id}
-                onChange={(e) => {
-                  setParent_category_id(e.target.value);
-                }}
-                name="parent_category_id"
-                category
-              >
-                <option value="">
-                      
-                     Select Category
-                    </option>
-                {index.map((item) => {
-                  return (
-                    <option value={item.category_id}>
-                      
-                      {item.category_name}
-                    </option>
-                  );
-                })}
-              </select>
-              <label className="demo">Category Name</label>
-              <input
-                type="text"
-                className="form-control"
-                id="exampleInputEmail1"
-                aria-describedby="emailHelp"
-                value={category_name}
-                onChange={(e) => {
-                  setCategory_name(e.target.value);
-                }}
-                name="category_name"
-              />
+              <div>
+                <label for="exampleFormControlSelect1">Product Category</label>
+                <select
+                  class="form-control"
+                  id="parent_category_id"
+                  value={prodCategoryData.parent_category_id.value}
+                  onChange={(e) => handleInputFields(e)}
+                  name="parent_category_id"
+                  category
+                >
+                  <option value="">
+
+                    Select Category
+                  </option>
+                  {index.map((item) => {
+                    return (
+                      <option value={item.category_id}>
+
+                        {item.category_name}
+                      </option>
+                    );
+                  })}
+                </select>
+                {inputFieldError(prodCategoryData.parent_category_id.error)}
+              </div>
+              <div>
+                <label className="demo">Category Name</label>
+                <input
+                  type="text"
+                  className="form-control"
+                  id="category_name"
+                  aria-describedby="emailHelp"
+                  value={prodCategoryData.category_name.value}
+                  onChange={(e) => handleInputFields(e)}
+                  name="category_name"
+                />
+                {inputFieldError(prodCategoryData.category_name.error)}
+              </div>
             </div>
 
             {/* <---------------CustomerImage--------------> */}
@@ -211,12 +294,12 @@ const handleImageUpload = (e) => {
                       // console.log(e?.target?.files[0])
                       // setCategory_image(e?.target?.files[0]);
 
-                      handleImageUpload(e) 
+                      handleImageUpload(e)
 
                     }}
 
                   />
-                  { media_id.previewImg && <img style={{width: '100%', height: '250px'}} src={media_id.previewImg} alt="preview" />}
+                  {prodCategoryData.media_id.previewImg && <img style={{ width: '100%', height: '250px' }} src={prodCategoryData.media_id.previewImg} alt="preview" />}
                   {/* <input
                     type="file"
                     name="category_image"
@@ -234,9 +317,9 @@ const handleImageUpload = (e) => {
             <h6>Custom Attribute</h6>
             <div class="card" style={{ height: "auto" }}>
               <div class="card-body">
-                {console.log(2,formFields)}
+                {console.log(2, formFields)}
                 {formFields.map((form, index) => {
-                  return (   
+                  return (
                     <div key={index}>
                       <label className="demos" style={{ width: "29rem" }}>
                         Group Name
@@ -244,9 +327,9 @@ const handleImageUpload = (e) => {
                       <input
                         name="attributes_group_name"
                         onChange={(e) => {
-                          handleFormChange(e,index);
+                          handleFormChange(e, index);
                         }}
-                      
+
                         style={{ width: "29rem" }}
                       />
                       <br />
@@ -258,7 +341,7 @@ const handleImageUpload = (e) => {
                         // placeholder='Field Label'
                         // onChange={(e) => handleFormChange(e, index)}
                         onChange={(e) => {
-                          handleFormChange(e,index);
+                          handleFormChange(e, index);
                         }}
                         // value={attributes_label}
                         style={{ width: "29rem" }}
@@ -270,7 +353,7 @@ const handleImageUpload = (e) => {
                       <input
                         name="attributes_name"
                         onChange={(e) => {
-                          handleFormChange(e,index);
+                          handleFormChange(e, index);
                         }}
                         // value={attributes_name}
                         style={{ width: "29rem" }}
@@ -288,21 +371,21 @@ const handleImageUpload = (e) => {
                         style={{ width: "29rem" }}
                       /> */}
                       <select
-                class="demos"
-                id="exampleFormControlSelect1"
-              
-                onChange={(e) => {
-                  handleFormChange(e,index);
-                }}
-                name="attributes_type"
-                style={{ width: "29rem" }}
-               
-              >
-                <option disabled></option>
-                  <option>Select Box</option>
-                    <option>Text Box</option>
-                 
-              </select>
+                        class="demos"
+                        id="exampleFormControlSelect1"
+
+                        onChange={(e) => {
+                          handleFormChange(e, index);
+                        }}
+                        name="attributes_type"
+                        style={{ width: "29rem" }}
+
+                      >
+                        <option disabled></option>
+                        <option>Select Box</option>
+                        <option>Text Box</option>
+
+                      </select>
                       <br />
                       <label className="demos" style={{ width: "29rem" }}>
                         Field Value
@@ -310,7 +393,7 @@ const handleImageUpload = (e) => {
                       <input
                         name="attributes_value"
                         onChange={(e) => {
-                          handleFormChange(e,index);
+                          handleFormChange(e, index);
                         }}
                         // value={attributes_value}
                         style={{ width: "29rem" }}
@@ -320,24 +403,24 @@ const handleImageUpload = (e) => {
                         Is_Variant_Key
                       </label>
                       {/* <div style={{ paddingRight: "30rem" }}> */}
-                        <input
-                          type="radio"
-                          name={`is_variant_key`}
-                          onChange={(e) => {
-                            handleFormChange(e,index);
-                          }}
-                          value={"y"}
-                        />
-                        Y &nbsp;&nbsp;
-                        <input
-                          type="radio"
-                          name={`is_variant_key`}
-                          onChange={(e) => {
-                            handleFormChange(e,index);
-                          }}
-                          value={"n"}
-                        />
-                        N
+                      <input
+                        type="radio"
+                        name={`is_variant_key`}
+                        onChange={(e) => {
+                          handleFormChange(e, index);
+                        }}
+                        value={"y"}
+                      />
+                      Y &nbsp;&nbsp;
+                      <input
+                        type="radio"
+                        name={`is_variant_key`}
+                        onChange={(e) => {
+                          handleFormChange(e, index);
+                        }}
+                        value={"n"}
+                      />
+                      N
                       {/* </div> */}
                       <br />
                       <br />
@@ -358,9 +441,11 @@ const handleImageUpload = (e) => {
             {/* <--------------------Dynamic Form end------------------> */}
             <br />
             <div class="float-right">
-              <button type="submit" class="btn btn-info" onClick={productCategoryUser}>
-              Add Product Category
-              </button>
+              <a href={`#${redirectToErrorField()}`}>
+                <button type="submit" class="btn btn-info" onClick={productCategoryUser}>
+                  Add Product Category
+                </button>
+              </a>
             </div>
           </form>
         </div>
@@ -368,4 +453,5 @@ const handleImageUpload = (e) => {
     </div>
   );
 }
+
 

@@ -2,32 +2,91 @@ import React, { useState, useEffect } from "react";
 import axios from "axios";
 import { Link, useParams,useNavigate } from "react-router-dom";
 import { toaster } from "../../utils/toaster";
+import { validateEmail, validateMobileNumber } from "../../utils/form-validation";
 
 export default function Address_AddAddress() {
   const storename = localStorage.getItem("USER_NAME")
-  const [first_name, setFirst_name] = useState("");
-  const [last_name, setLast_name] = useState("");
-  const [email, setEmail] = useState("");
-  const [phone, setPhone] = useState("");
-  const [addressline1, setAddressline1] = useState("");
-  const [addressline2, setAddressline2] = useState("");
-  const [zipcode, setZipcode] = useState("");
-  const [gender, setGender] = useState("m");
-  const [isdefault, setIsdefault] = useState("y");
-  const [address_type, setAddress_type] = useState("h");
-  const [countryName, setCountryName] = useState("");
-  const [country_id, setCountry_id] = useState("");
-  const [country, setCountry] = useState("");
-  const [state_id, setState_id] = useState("");
-  const [state_name, setState_name] = useState("");
-  const [state, setState] = useState("");
-  const [city_id, setCity_id] = useState("");
-  const [city_name, setCity_name] = useState("");
-  const [city, setCity] = useState("");
+  // const [first_name, setFirst_name] = useState("");
+  // const [last_name, setLast_name] = useState("");
+  // const [email, setEmail] = useState("");
+  // const [phone, setPhone] = useState("");
+  // const [addressline1, setAddressline1] = useState("");
+  // const [addressline2, setAddressline2] = useState("");
+  // const [zipcode, setZipcode] = useState("");
+  // const [gender, setGender] = useState("m");
+  // const [isdefault, setIsdefault] = useState("y");
+  // const [address_type, setAddress_type] = useState("h");
+  // const [countryName, setCountryName] = useState("");
+  // const [country_id, setCountry_id] = useState("");
+  // const [country, setCountry] = useState("");
+  // const [state_id, setState_id] = useState("");
+  // const [state_name, setState_name] = useState("");
+  // const [state, setState] = useState("");
+  // const [city_id, setCity_id] = useState("");
+  // const [city_name, setCity_name] = useState("");
+  // const [city, setCity] = useState("");
   const [user_id, setUser_id] = useState("");
   const [index, setIndex] = useState([]);
   const [indexs, setIndexs] = useState([]);
   const [indexss, setIndexss] = useState([]);
+
+  const [addCustomerData, setAddCustomerData] = useState({
+    first_name: {
+      value: '',
+      error: ''
+    },
+    last_name: {
+      value: '',
+      error: ''
+    },
+    email: {
+      value: '',
+      error: ''
+    },
+    phone: {
+      value: '',
+      error: ''
+    },
+    addressline1: {
+      value: '',
+      error: '',
+    },
+    addressline2: {
+      value: '',
+      error: '',
+    },
+    zipcode: {
+      value: '',
+      error: '',
+    },
+    gender:{
+      value: '',
+      error: '',
+    },
+    isdefault:{
+      value: '',
+      error: '',
+    },
+    address_type:{
+      value: '',
+      error: '',
+    },
+    country:{
+      value: '',
+      error: '',
+    },
+    state:{
+      value: '',
+      error: '',
+    },
+    city:{
+      value: '',
+      error: '',
+    },
+
+  })
+
+  
   const params= useParams()
 
   console.log(indexs);
@@ -75,24 +134,57 @@ export default function Address_AddAddress() {
       setUser_id(params.user_id);
   }, []);
 
-  function customerUser() {
-   
-    let datas = {
-      first_name,
-      last_name,
-      email,
-      phone,
-      addressline1,
-      addressline2,
-      zipcode,
-      gender,
-      isdefault,
-      address_type,
-      country,
-      state,
-      city,
+const customerUser = (e) => {
+    e.preventDefault();
+    const { first_name, last_name, email, phone,addressline1,addressline2,zipcode,gender,isdefault,address_type,country,state,city,user_id } = addCustomerData
+
+    setAddCustomerData({
+      ...addCustomerData,
+      email: {
+        value: email.value,
+        error: validateEmail(email.value).error
+      },
+      phone: {
+        value: phone.value,
+        error: validateMobileNumber(phone.value).error
+      }
+    })
+    
+    if (!validateEmail(email.value).isError && !validateMobileNumber(phone.value).isError) {
+      let datas = {
+        first_name: first_name.value,
+        last_name: last_name.value,
+        email: email.value,
+        phone: phone.value,
+        addressline1: addressline1.value,
+      addressline2: addressline2.value,
+      zipcode: zipcode.value,
+      gender: gender.value,
+      isdefault: isdefault.value,
+      address_type: address_type.value,
+      country: country.value,
+      state: state.value,
+      city: city.value,
       user_id,
-    };
+      };
+
+
+    // let datas = {
+    //   first_name,
+    //   last_name,
+    //   email,
+    //   phone,
+    //   addressline1,
+    //   addressline2,
+    //   zipcode,
+    //   gender,
+    //   isdefault,
+    //   address_type,
+    //   country,
+    //   state,
+    //   city,
+    //   user_id,
+    // };
 
     fetch("http://admin.ishop.sunhimlabs.com/api/v1/customer/address/add", {
       method: "POST",
@@ -112,11 +204,19 @@ export default function Address_AddAddress() {
       });
     });
   }
-  const submit = (e) => {
-    e.preventDefault();
-  };
+}
+const handleChange = (e) => {
+  setAddCustomerData({
+    ...addCustomerData,
+    [e.target.name]: {
+      value: e.target.value,
+      error: ''
+    }
+  })
+};
 
-  
+const { first_name, last_name, email, phone,addressline1,addressline2,zipcode,gender,isdefault,address_type,country,state,city, } = addCustomerData
+
   return (
     <div style={{ paddingLeft: "4rem" }}>
       <br />
@@ -127,7 +227,7 @@ export default function Address_AddAddress() {
 
       <div className="card" style={{ paddingLeft: "2rem", width: "68rem" }}>
         <br />
-        <form onSubmit={submit} style={{ Display: "float-right" }}>
+        <form onSubmit={customerUser} style={{ Display: "float-right" }}>
           <div
             className="form-group"
             controlId="formBasicFirstName"
@@ -139,9 +239,7 @@ export default function Address_AddAddress() {
               className="form-control"
               placeholder="Enter First Name"
               value={first_name}
-              onChange={(e) => {
-                setFirst_name(e.target.value);
-              }}
+              onChange={(e) => handleChange(e)}
               name="first_name"
             />
             <br />
@@ -152,9 +250,7 @@ export default function Address_AddAddress() {
               className="form-control"
               placeholder="Enter Last Name"
               value={last_name}
-              onChange={(e) => {
-                setLast_name(e.target.value);
-              }}
+              onChange={(e) => handleChange(e)}
               name="last_name"
             />
             <br />
@@ -165,9 +261,7 @@ export default function Address_AddAddress() {
               className="form-control"
               placeholder="Enter Email"
               value={email}
-              onChange={(e) => {
-                setEmail(e.target.value);
-              }}
+              onChange={(e) => handleChange(e)}
               name="email"
             />
             <br />
@@ -178,9 +272,7 @@ export default function Address_AddAddress() {
               className="form-control"
               placeholder="Enter Mobile Number"
               value={phone}
-              onChange={(e) => {
-                setPhone(e.target.value);
-              }}
+              onChange={(e) => handleChange(e)}
               name="phone"
             />
             <br />
@@ -190,9 +282,7 @@ export default function Address_AddAddress() {
               class="form-control"
               id="exampleFormControlSelect1"
               value={gender}
-              onChange={(e) => {
-                setGender(e.target.value);
-              }}
+              onChange={(e) => handleChange(e)}
               name="gender"
             >
               <option value={"m"}>Male</option>
@@ -207,9 +297,7 @@ export default function Address_AddAddress() {
               className="form-control"
               placeholder="Enter Address 1"
               value={addressline1}
-              onChange={(e) => {
-                setAddressline1(e.target.value);
-              }}
+              onChange={(e) => handleChange(e)}
               name="addressline1"
             />
             <br />
@@ -220,9 +308,7 @@ export default function Address_AddAddress() {
               className="form-control"
               placeholder="Enter Address 2"
               value={addressline2}
-              onChange={(e) => {
-                setAddressline2(e.target.value);
-              }}
+              onChange={(e) => handleChange(e)}
               name="addressline2"
             />
             <br />
@@ -233,9 +319,7 @@ export default function Address_AddAddress() {
               className="form-control"
               placeholder="Enter Zip Code"
               value={zipcode}
-              onChange={(e) => {
-                setZipcode(e.target.value);
-              }}
+              onChange={(e) => handleChange(e)}
               name="zipcode"
             />
             <br />
@@ -245,9 +329,7 @@ export default function Address_AddAddress() {
               class="form-control"
               id="exampleFormControlSelect1"
               value={country}
-              onChange={(e) => {
-                setCountry(e.target.value);
-              }}
+              onChange={(e) => handleChange(e)}
               name="country"
             >
               {index.map((item) => {
@@ -263,9 +345,7 @@ export default function Address_AddAddress() {
               class="form-control"
               id="exampleFormControlSelect1"
               value={state}
-              onChange={(e) => {
-                setState(e.target.value);
-              }}
+              onChange={(e) => handleChange(e)}
               name="state"
             >
               {indexs.map((item) => {
@@ -279,9 +359,7 @@ export default function Address_AddAddress() {
               class="form-control"
               id="exampleFormControlSelect1"
               value={city}
-              onChange={(e) => {
-                setCity(e.target.value);
-              }}
+              onChange={(e) => handleChange(e)}
               name="city"
             >
               {indexss.map((item) => {
@@ -295,10 +373,7 @@ export default function Address_AddAddress() {
               class="form-control"
               id="exampleFormControlSelect1"
               value={address_type}
-              onChange={(e) => {
-                console.log(e.target.value);
-                setAddress_type(e.target.value);
-              }}
+              onChange={(e) => handleChange(e)}
               name="address_type"
             >
               <option value={"h"}>Home Address</option>
@@ -309,9 +384,7 @@ export default function Address_AddAddress() {
             <label for="exampleFormControlSelect1">Is Default?</label>
             <select
               value={isdefault}
-              onChange={(e) => {
-                setIsdefault(e.target.value);
-              }}
+              onChange={(e) => handleChange(e)}
               name="isdefault"
               class="form-control"
               id="exampleFormControlSelect1"

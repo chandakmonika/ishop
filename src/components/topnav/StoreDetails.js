@@ -35,11 +35,12 @@ const[subscription_id, setSubscription_id] = useState();
   useEffect(() => {
     console.log(19,user_id);
     axios
-      .get(`http://admin.ishop.sunhimlabs.com/api/v1/seller/details/${user_id}`)
+      .get(`${process.env.REACT_APP_BACKEND_APIURL}api/v1/seller/details/${user_id}`,{
+        
+      })
       .then((res) => {
         const getData = res.data.data;
-        console.log(getData);
-        
+        console.log(getData); 
         setUser_data(getData);
       });
   }, []);
@@ -73,7 +74,7 @@ const[subscription_id, setSubscription_id] = useState();
       phone,
       business_name,
       business_address_id,
-   pan_number,
+      pan_number,
       gst_number,
       category_id,
       password,
@@ -82,7 +83,7 @@ const[subscription_id, setSubscription_id] = useState();
     }
 
 
-    fetch(`http://admin.ishop.sunhimlabs.com/api/v1/seller/edit`, {
+    fetch(`${process.env.REACT_APP_BACKEND_APIURL}api/v1/seller/edit`, {
       method: "POST",
       headers: {
         Accept: "application/json",
@@ -101,12 +102,6 @@ const[subscription_id, setSubscription_id] = useState();
   };
 
 
-
-
-
-  // function handleChange(event) {
-  //   setFile(event.target.files[0]);
-  // }
   return (
     <div style={{ paddingLeft: "4rem" }}>
       <br />

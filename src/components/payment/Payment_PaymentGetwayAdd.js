@@ -11,7 +11,13 @@ export default function Payment_PaymentAdd() {
 
   useEffect(() => {
     axios
-    .get(`http://admin.ishop.sunhimlabs.com/api/v1/payments/add`)
+    .get(`${process.env.REACT_APP_BACKEND_APIURL}api/v1/payments/add`,{
+      headers: {
+        Accept: "application/json",
+        "content-Type" : "Application/json",
+        storename: storename,
+      },
+    })
     .then((res) => setIndex(res.data.data));
   }, []);
 
@@ -21,7 +27,7 @@ export default function Payment_PaymentAdd() {
       payment_gateway_name,
       payment_gateway_logo,
     };
-    fetch("http://admin.ishop.sunhimlabs.com/api/v1/payments/add",{
+    fetch(`${process.env.REACT_APP_BACKEND_APIURL}api/v1/payments/add`,{
       method: "POST",
       headers: {
         Accept: "application/json",

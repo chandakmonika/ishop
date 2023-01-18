@@ -1,7 +1,8 @@
 export const passwordRegex = /^(?=.*[0-9])(?=.*[A-Z])(?=.*[a-z])(?=.*[-!@$%^*])(?=.*[!"$%*,-.\/:;=@^_])[a-zA-Z0-9!"$%*,-.\/:;=@^_]{8,}$/
 const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
 const numericRegex = /^[0-9]*$/
-const alphaNumeric = /^[0-9a-zA-Z]*$/
+const alphaNumeric = /^[0-9a-zA-Z ]*$/ // accepts space as well
+const zipcode = /^\d{5}([-]|\s*)?(\d{4})?$/
 
 export const validateRequired = (value) => {
     console.log('validateRequired', value)
@@ -67,8 +68,8 @@ export const validateMobileNumber = (value) => {
     }
 }
 
-export const validateNumeric = (value) => {
-    if (value.match(numericRegex)) {
+export const validateZipCode = (value) => {
+    if (!isNaN(Number(zipcode))) { // to check only numeric value
         return {
             isError: false,
             error: ''
@@ -91,6 +92,19 @@ export const validateAlphaNumeric = (value) => {
         return {
             isError: true,
             error: 'Field accepts alpha-numeric only'
+        }
+    }
+}
+export const validateNumeric = (value) => {
+    if (!isNaN(Number(value))) { // to check only numeric value
+        return {
+            isError: false,
+            error: ''
+        }
+    } else {
+        return {
+            isError: true,
+            error: 'Field accepts numeric only'
         }
     }
 }
