@@ -1,6 +1,7 @@
 export const passwordRegex = /^(?=.*[0-9])(?=.*[A-Z])(?=.*[a-z])(?=.*[-!@$%^*])(?=.*[!"$%*,-.\/:;=@^_])[a-zA-Z0-9!"$%*,-.\/:;=@^_]{8,}$/
 const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
 const numericRegex = /^[0-9]*$/
+const zipCodeRegex = /^[0-9]{6}$/
 const alphaNumeric = /^[0-9a-zA-Z ]*$/ // accepts space as well
 const zipcode = /^\d{5}([-]|\s*)?(\d{4})?$/
 
@@ -41,7 +42,7 @@ export const validateEmail = (value) => {
 
 export const validateMobileNumber = (value) => {
     console.log('validateMobileNumber', value)
-    if (!validateRequired(value).isError) {
+    // if (!validateRequired(value).isError) {
         if (value.match(numericRegex)) {
             if ((Number(value[0]) === 0 ? value.length === 11 : value.length === 10)) {
                 return {
@@ -60,16 +61,16 @@ export const validateMobileNumber = (value) => {
                 error: 'Phone number must be numeric'
             }
         }
-    } else {
-        return {
-            isError: true,
-            error: 'Field is required'
-        }
-    }
+    // } else {
+    //     return {
+    //         isError: true,
+    //         error: 'Field is required'
+    //     }
+    // }
 }
 
 export const validateZipCode = (value) => {
-    if (!isNaN(Number(zipcode))) { // to check only numeric value
+    if (value.match(zipCodeRegex)) { // to check only numeric value and have only 6 characters
         return {
             isError: false,
             error: ''
@@ -77,7 +78,7 @@ export const validateZipCode = (value) => {
     } else {
         return {
             isError: true,
-            error: 'Field accepts numeric only'
+            error: 'Invalid zipcode'
         }
     }
 }
@@ -108,4 +109,5 @@ export const validateNumeric = (value) => {
         }
     }
 }
+
 

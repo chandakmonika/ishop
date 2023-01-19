@@ -1,7 +1,8 @@
 import React, { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { validateEmail, validateMobileNumber, validateRequired } from "../../utils/form-validation";
+
 import { toaster } from "../../utils/toaster";
-import { validateEmail, validateMobileNumber } from "../../utils/form-validation";
+import { useNavigate } from "react-router-dom";
 
 export default function Customer_Addnewcustomer() {
   // const [first_name, setFirst_name] = useState("");
@@ -35,9 +36,10 @@ export default function Customer_Addnewcustomer() {
 
   const customerUser = (e) => {
     e.preventDefault();
+
     const { first_name, last_name, email, phone } = addCustomerData
 
-    setAddCustomerData({
+    const productDataValidated = {
       ...addCustomerData,
       email: {
         value: email.value,
@@ -45,11 +47,17 @@ export default function Customer_Addnewcustomer() {
       },
       phone: {
         value: phone.value,
-        error: validateMobileNumber(phone.value).error
+        error: validateRequired(phone.value).isError ? validateRequired(phone.value).error : validateMobileNumber(phone.value).error
       }
-    })
-    
-    if (!validateEmail(email.value).isError && !validateMobileNumber(phone.value).isError) {
+    }
+
+    setAddCustomerData(productDataValidated)
+
+    const ErrorFields = Object.entries(productDataValidated).filter((err) => typeof err[1] === "object" && err[1].error)
+
+    console.log(54546, Object.entries(productDataValidated), ErrorFields)
+
+    if (ErrorFields.length === 0) {
       let datas = {
         first_name: first_name.value,
         last_name: last_name.value,
@@ -166,5 +174,6 @@ export default function Customer_Addnewcustomer() {
     </div>
   );
 }
+
 
 

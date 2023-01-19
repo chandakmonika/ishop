@@ -2,29 +2,30 @@ import axios from "axios";
 import React, { useState, useEffect } from "react";
 import { Link, useParams, useNavigate } from "react-router-dom";
 import { toast } from 'react-toastify';
+import { validateAlphaNumeric, validateEmail, validateMobileNumber, validateRequired, validateZipCode } from "../../utils/form-validation";
 import { toaster } from "../../utils/toaster";
 
 export default function Address_EditAddress() {
   const storename = localStorage.getItem("USER_NAME")
-  const [first_name, setFirst_name] = useState("");
-  const [last_name, setLast_name] = useState("");
-  const [email, setEmail] = useState("");
-  const [phone, setPhone] = useState("");
-  const [addressline1, setAddressline1] = useState("");
-  const [addressline2, setAddressline2] = useState("");
-  const [country, setCountry] = useState("");
-  const [state, setState] = useState("");
-  const [city, setCity] = useState("");
-  const [zipcode, setZipcode] = useState("");
-  const [isdefault, setIsdefault] = useState("");
-  const [address_type, setAddress_type] = useState("");
-  const [gender, setGender] = useState("");
-  const [state_id, setState_id] = useState("");
-  const [country_id, setCountry_id] = useState("");
-  const [city_id, setCity_id] = useState("");
-  const [countryName, setCountryName] = useState("");
-  const [state_name, setState_name] = useState("");
-  const [city_name, setCity_name] = useState("");
+  // const [first_name, setFirst_name] = useState("");
+  // const [last_name, setLast_name] = useState("");
+  // const [email, setEmail] = useState("");
+  // const [phone, setPhone] = useState("");
+  // const [addressline1, setAddressline1] = useState("");
+  // const [addressline2, setAddressline2] = useState("");
+  // const [country, setCountry] = useState("");
+  // const [state, setState] = useState("");
+  // const [city, setCity] = useState("");
+  // const [zipcode, setZipcode] = useState("");
+  // const [isdefault, setIsdefault] = useState("");
+  // const [address_type, setAddress_type] = useState("");
+  // const [gender, setGender] = useState("");
+  // const [state_id, setState_id] = useState("");
+  // const [country_id, setCountry_id] = useState("");
+  // const [city_id, setCity_id] = useState("");
+  // const [countryName, setCountryName] = useState("");
+  // const [state_name, setState_name] = useState("");
+  // const [city_name, setCity_name] = useState("");
 
   const [user_id, setUser_id] = useState("");
   const [index, setIndex] = useState([]);
@@ -32,28 +33,69 @@ export default function Address_EditAddress() {
   const [indexss, setIndexss] = useState([]);
 
   const [userdata, setUser_data] = useState({
-    first_name: "",
-    last_name: "",
-    email: "",
-    phone: "",
-    gender: "",
-    addressline1: "",
-    addressline2: "",
-    country: "",
-    state: "",
-    city: "",
-    zipcode: "",
-    isdefault: "",
-    address_type: "",
+    first_name: {
+      value: '',
+      error: ''
+    },
+    last_name: {
+      value: '',
+      error: ''
+    },
+    email: {
+      value: '',
+      error: ''
+    },
+    phone: {
+      value: '',
+      error: ''
+    },
+    addressline1: {
+      value: '',
+      error: '',
+    },
+    addressline2: {
+      value: '',
+      error: '',
+    },
+    zipcode: {
+      value: '',
+      error: '',
+    },
+    gender: {
+      value: 'm',
+      error: '',
+    },
+    isdefault: {
+      value: 'y',
+      error: '',
+    },
+    address_type: {
+      value: 'h',
+      error: '',
+    },
+    country: {
+      value: '',
+      error: '',
+    },
+    state: {
+      value: '',
+      error: '',
+    },
+    city: {
+      value: '',
+      error: '',
+    },
     user_id: "",
   });
 
-  const navigate = useNavigate();
   const { address_id } = useParams();
+
+  const navigate = useNavigate();
+ 
 
   useEffect(() => {
     axios
-      .get(`http://admin.ishop.sunhimlabs.com/api/v1/allstates/${userdata.country}`,{
+      .get(`http://admin.ishop.sunhimlabs.com/api/v1/allstates/${userdata.country.value}`,{
         headers: {
           Accept: "application/json",
           "Content-Type": "Application/json",
@@ -62,7 +104,7 @@ export default function Address_EditAddress() {
       })
       .then((res) => setIndexs(res.data.data));
     axios
-      .get(`http://admin.ishop.sunhimlabs.com/api/v1/allcities/${userdata.state}`,{
+      .get(`http://admin.ishop.sunhimlabs.com/api/v1/allcities/${userdata.state.value}`,{
         headers: {
           Accept: "application/json",
           "Content-Type": "Application/json",
@@ -98,7 +140,7 @@ export default function Address_EditAddress() {
         console.log(getData);
         setUser_data(getData);
       });
-  }, []);
+  }, [userdata.country.value]);
 
   const handleChange = (e) => {
     console.log(e.target);
@@ -109,7 +151,80 @@ export default function Address_EditAddress() {
     });
   };
 
-  function customerUser() {
+  const customerUser = (e) => {
+    e.preventDefault();
+    const { first_name, last_name, email, phone, addressline1, addressline2, zipcode, gender, isdefault, address_type, country, state, city } = userdata
+
+    const productDataValidated = {
+      ...userdata,
+      first_name: {
+        value: first_name.value,
+        error: validateRequired(first_name.value).isError ? validateRequired(first_name.value).error : validateAlphaNumeric(first_name.value).error
+      },
+      last_name: {
+        value: last_name.value,
+        error: validateAlphaNumeric(last_name.value).error
+      },
+      email: {
+        value: email.value,
+        error: email.value ? validateEmail(email.value).error : ""
+      },
+      phone: {
+        value: phone.value,
+        error: phone.value ? validateMobileNumber(phone.value).error : ""
+      },
+      zipcode: {
+        value: zipcode.value,
+        error: zipcode.value ? validateZipCode(zipcode.value).error : ""
+      },
+      // gender: {
+      //   value: gender.value,
+      //   error: ""
+      // },
+      // price_sell: {
+      //   value: price_sell.value,
+      //   error: validateNumeric(price_sell.value).error
+      // },
+      // shipping_charges: {
+      //   value: shipping_charges.value,
+      //   error: validateNumeric(shipping_charges.value).error
+      // },
+      // product_weight: {
+      //   value: product_weight.value,
+      //   error: validateNumeric(product_weight.value).error
+      // },
+      // tax_amount: {
+      //   value: tax_amount.value,
+      //   error: validateNumeric(tax_amount.value).error
+      // }
+    }
+
+    console.log(324, productDataValidated)
+
+    setUser_data(productDataValidated)
+
+    const ErrorFields = Object.entries(productDataValidated).filter((err) => typeof err[1] === "object" && err[1].error)
+
+    console.log(54546, Object.entries(productDataValidated), ErrorFields)
+
+    if (ErrorFields.length === 0) {
+
+      let datas = {
+        first_name: first_name.value,
+        last_name: last_name.value,
+        email: email.value,
+        phone: phone.value,
+        addressline1: addressline1.value,
+        addressline2: addressline2.value,
+        zipcode: zipcode.value,
+        gender: gender.value,
+        isdefault: isdefault.value,
+        address_type: address_type.value,
+        country: country.value,
+        state: state.value,
+        city: city.value,
+        user_id,
+      };
     console.warn(
       345,
       first_name,
@@ -135,20 +250,36 @@ export default function Address_EditAddress() {
         "Content-Type": "Application/json",
         storename:storename
       },
-      body: JSON.stringify(userdata),
+      body: JSON.stringify(datas),
     }).then((result) => {
       result.json().then((resps) => {
         console.warn("resps", resps);
         toaster(resps, 'Address Edited Successfully!')
         if (resps === true) {
-          navigate(`/customer/address/list/${userdata.user_id}`)
+          navigate(`/customer/address/list/${user_id}`)
         }
       });
     });
   }
-  const submit = (e) => {
-    e.preventDefault();
+  const handleChange = (e) => {
+    setUser_data({
+      ...userdata,
+      [e.target.name]: {
+        value: e.target.value,
+        error: ''
+      }
+    })
   };
+
+  const inputFieldError = (error) => {
+    if (error && error.length > 0) {
+      return <p style={{ color: 'red', fontSize: '12px' }}>{error}</p>
+    }
+
+    return <></>
+  }
+
+  // const { first_name, last_name, email, phone, addressline1, addressline2, zipcode, gender, isdefault, address_type, country, state, city, } = userdata
 
   return (
     <div style={{ paddingLeft: "10rem" }}>
@@ -157,7 +288,7 @@ export default function Address_EditAddress() {
         <div className="ind">
           <br />
           <form
-            onSubmit={submit}
+            onSubmit={customerUser}
             style={{ Display: "float-right", paddingLeft: "2rem" }}
           >
             <div
@@ -171,9 +302,11 @@ export default function Address_EditAddress() {
                 className="form-control"
                 name="first_name"
                 placeholder="Enter First Name"
-                value={userdata.first_name}
-                onChange={handleChange}
+                value={userdata.first_name.value}
+                onChange={(e) => handleChange(e)}
               />
+                 {inputFieldError(first_name.error)}
+                 <br/>
 
               <label className="demo">Last Name</label>
               <input
@@ -182,8 +315,10 @@ export default function Address_EditAddress() {
                 name="last_name"
                 placeholder="Enter Last Name"
                 value={userdata.last_name}
-                onChange={handleChange}
+                onChange={(e) => handleChange(e)}
               />
+ {inputFieldError(last_name.error)}
+            <br />
 
               <label className="demo">Email</label>
               <input
@@ -192,8 +327,10 @@ export default function Address_EditAddress() {
                 name="email"
                 placeholder="Enter Email"
                 value={userdata.email}
-                onChange={handleChange}
+                onChange={(e) => handleChange(e)}
               />
+{inputFieldError(email.error)}
+            <br />
 
               <label className="demo">Mobile Number</label>
               <input
@@ -202,8 +339,10 @@ export default function Address_EditAddress() {
                 name="phone"
                 placeholder="Enter Mobile Number"
                 value={userdata.phone}
-                onChange={handleChange}
+                onChange={(e) => handleChange(e)}
               />
+               {inputFieldError(phone.error)}
+            <br />
 
               <label for="exampleFormControlSelect1">Gender</label>
               <select
@@ -211,7 +350,7 @@ export default function Address_EditAddress() {
                 id="exampleFormControlSelect1"
                 name="gender"
                 value={userdata.gender}
-                onChange={handleChange}
+                onChange={(e) => handleChange(e)}
               >
                 <option>M</option>
                 <option>F</option>
@@ -225,7 +364,7 @@ export default function Address_EditAddress() {
                 name="addressline1"
                 placeholder="Enter Address Line 1"
                 value={userdata.addressline1}
-                onChange={handleChange}
+                onChange={(e) => handleChange(e)}
               />
 
               <label className="demo">Address Line 2</label>
@@ -235,7 +374,7 @@ export default function Address_EditAddress() {
                 name="addressline2"
                 placeholder="Enter Address Line 2"
                 value={userdata.addressline2}
-                onChange={handleChange}
+                onChange={(e) => handleChange(e)}
               />
 
               <label className="demo">Zip Code</label>
@@ -245,8 +384,10 @@ export default function Address_EditAddress() {
                 name="zipcode"
                 placeholder="Enter Zip Code"
                 value={userdata.zipcode}
-                onChange={handleChange}
+                onChange={(e) => handleChange(e)}
               />
+  {inputFieldError(zipcode.error)}
+            <br />
 
               <label for="exampleFormControlSelect1">Country</label>
 
@@ -254,7 +395,7 @@ export default function Address_EditAddress() {
                 class="form-control"
                 id="exampleFormControlSelect1"
                 value={userdata.country}
-                onChange={handleChange}
+                onChange={(e) => handleChange(e)}
                 name="country"
               >
                 {index.map((item) => {
@@ -270,7 +411,7 @@ export default function Address_EditAddress() {
                 class="form-control"
                 id="exampleFormControlSelect1"
                 value={userdata.state}
-                onChange={handleChange}
+                onChange={(e) => handleChange(e)}
                 name="state"
               >
                 {indexs.map((item) => {
@@ -286,7 +427,7 @@ export default function Address_EditAddress() {
                 class="form-control"
                 id="exampleFormControlSelect1"
                 value={userdata.city}
-                onChange={handleChange}
+                onChange={(e) => handleChange(e)}
                 name="city"
               >
                 {indexss.map((item) => {
@@ -300,11 +441,11 @@ export default function Address_EditAddress() {
                 id="exampleFormControlSelect1"
                 name="address_type"
                 value={userdata.address_type}
-                onChange={handleChange}
+                onChange={(e) => handleChange(e)}
               >
-                <option>Home Address</option>
+                <option value={"h"}>Home Address</option>
 
-                <option>Office Address</option>
+                <option value={"o"}>Office Address</option>
               </select>
 
               <label for="exampleFormControlSelect1">Is Default</label>
@@ -313,10 +454,10 @@ export default function Address_EditAddress() {
                 id="exampleFormControlSelect1"
                 name="isdefault"
                 value={userdata.isdefault}
-                onChange={handleChange}
+                onChange={(e) => handleChange(e)}
               >
-                <option>Yes</option>
-                <option>No</option>
+                <option value={"y"}>Yes</option>
+                <option value={"n"}>No</option>
               </select>
             </div>
             {/* <Link to="/customer/address/list"> */}
@@ -333,4 +474,4 @@ export default function Address_EditAddress() {
     </div>
   );
 }
-
+}

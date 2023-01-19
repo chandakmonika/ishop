@@ -71,6 +71,10 @@ import Master_AddCMS from "./components/mastermanagment/Master_AddCMS";
 import Payment_PaymentGetwayAdd from "./components/payment/Payment_PaymentGetwayAdd";
 import Master_EditSetting from "./components/mastermanagment/Master_EditSetting";
 import Product_EditCategoryProduct from "./components/product/Product_EditCategoryProduct";
+import EmailOtp from "./components/signup/EmailOtp";
+import Login_ByEmail from "./components/signup/Login_ByEmail";
+import Login_ByMobile from "./components/signup/Login_ByMobile";
+import MobileOtp from "./components/signup/Mobile_ByOtp";
 
 export default function RoutingPage() {
   // const token = localStorage.getItem("ACCESS_TOKEN")
@@ -313,6 +317,11 @@ export default function RoutingPage() {
             <Route path="/editblog/:blog_id" element={<Blog_EditBlog />} />
             <Route path="/hometheme" element={<Theme_HomeTheme />} />
             <Route path="/menutheme" element={<Theme_MenuTheme />} />
+            <Route path="/signup/emailotp" element={<EmailOtp/>}/>
+            <Route path="/signup/loginbyemail" element={<Login_ByEmail/>}/>
+            <Route path="/signup/loginbymobile" element={<Login_ByMobile/>}/>
+            <Route path="/signup/mobileotp" element={<MobileOtp/>}/>
+
 
           </Route>
         )}

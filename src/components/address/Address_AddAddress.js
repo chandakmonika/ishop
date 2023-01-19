@@ -1,8 +1,9 @@
-import React, { useState, useEffect } from "react";
+import { Link, useNavigate, useParams } from "react-router-dom";
+import React, { useEffect, useState } from "react";
+import { validateAlphaNumeric, validateEmail, validateMobileNumber, validateRequired, validateZipCode } from "../../utils/form-validation";
+
 import axios from "axios";
-import { Link, useParams,useNavigate } from "react-router-dom";
 import { toaster } from "../../utils/toaster";
-import { validateEmail, validateMobileNumber } from "../../utils/form-validation";
 
 export default function Address_AddAddress() {
   const storename = localStorage.getItem("USER_NAME")
@@ -59,35 +60,35 @@ export default function Address_AddAddress() {
       value: '',
       error: '',
     },
-    gender:{
+    gender: {
+      value: 'm',
+      error: '',
+    },
+    isdefault: {
+      value: 'y',
+      error: '',
+    },
+    address_type: {
+      value: 'h',
+      error: '',
+    },
+    country: {
       value: '',
       error: '',
     },
-    isdefault:{
+    state: {
       value: '',
       error: '',
     },
-    address_type:{
-      value: '',
-      error: '',
-    },
-    country:{
-      value: '',
-      error: '',
-    },
-    state:{
-      value: '',
-      error: '',
-    },
-    city:{
+    city: {
       value: '',
       error: '',
     },
 
   })
 
-  
-  const params= useParams()
+
+  const params = useParams()
 
   console.log(indexs);
 
@@ -96,126 +97,177 @@ export default function Address_AddAddress() {
 
   useEffect(() => {
     axios
-      .get(`http://admin.ishop.sunhimlabs.com/api/v1/allstates/${country}`,{
+      .get(`http://admin.ishop.sunhimlabs.com/api/v1/allstates/${addCustomerData.country.value}`, {
         headers: {
           Accept: "application/json",
           "Content-Type": "Application/json",
-          storename:storename,
+          storename: storename,
         }
       })
       .then((res) => setIndexs(res.data.data));
-  }, [country]);
+  }, [addCustomerData.country.value]);
 
   useEffect(() => {
     axios
-      .get(`http://admin.ishop.sunhimlabs.com/api/v1/allcities/${state}`,{
+      .get(`http://admin.ishop.sunhimlabs.com/api/v1/allcities/${addCustomerData.state.value}`, {
         headers: {
           Accept: "application/json",
           "Content-Type": "Application/json",
-          storename:storename,
+          storename: storename,
         }
 
       })
       .then((res) => setIndexss(res.data.data));
-  }, [state]);
+  }, [addCustomerData.state.value]);
 
   useEffect(() => {
     axios
-      .get(`http://admin.ishop.sunhimlabs.com/api/v1/allcountries/`,{
+      .get(`http://admin.ishop.sunhimlabs.com/api/v1/allcountries/`, {
         headers: {
           Accept: "application/json",
           "Content-Type": "Application/json",
-          storename:storename,
+          storename: storename,
         }
 
       })
       .then((res) => setIndex(res.data.data));
-      console.log(2,params);
-      setUser_id(params.user_id);
+    console.log(2, params);
+    setUser_id(params.user_id);
   }, []);
 
-const customerUser = (e) => {
+  const customerUser = (e) => {
     e.preventDefault();
-    const { first_name, last_name, email, phone,addressline1,addressline2,zipcode,gender,isdefault,address_type,country,state,city,user_id } = addCustomerData
+    const { first_name, last_name, email, phone, addressline1, addressline2, zipcode, gender, isdefault, address_type, country, state, city } = addCustomerData
 
-    setAddCustomerData({
+
+    const productDataValidated = {
       ...addCustomerData,
+      first_name: {
+        value: first_name.value,
+        error: validateRequired(first_name.value).isError ? validateRequired(first_name.value).error : validateAlphaNumeric(first_name.value).error
+      },
+      last_name: {
+        value: last_name.value,
+        error: validateAlphaNumeric(last_name.value).error
+      },
       email: {
         value: email.value,
-        error: validateEmail(email.value).error
+        error: email.value ? validateEmail(email.value).error : ""
       },
       phone: {
         value: phone.value,
-        error: validateMobileNumber(phone.value).error
-      }
-    })
-    
-    if (!validateEmail(email.value).isError && !validateMobileNumber(phone.value).isError) {
+        error: phone.value ? validateMobileNumber(phone.value).error : ""
+      },
+      zipcode: {
+        value: zipcode.value,
+        error: zipcode.value ? validateZipCode(zipcode.value).error : ""
+      },
+      // gender: {
+      //   value: gender.value,
+      //   error: ""
+      // },
+      // price_sell: {
+      //   value: price_sell.value,
+      //   error: validateNumeric(price_sell.value).error
+      // },
+      // shipping_charges: {
+      //   value: shipping_charges.value,
+      //   error: validateNumeric(shipping_charges.value).error
+      // },
+      // product_weight: {
+      //   value: product_weight.value,
+      //   error: validateNumeric(product_weight.value).error
+      // },
+      // tax_amount: {
+      //   value: tax_amount.value,
+      //   error: validateNumeric(tax_amount.value).error
+      // }
+    }
+
+    console.log(324, productDataValidated)
+
+    setAddCustomerData(productDataValidated)
+
+    const ErrorFields = Object.entries(productDataValidated).filter((err) => typeof err[1] === "object" && err[1].error)
+
+    console.log(54546, Object.entries(productDataValidated), ErrorFields)
+
+    if (ErrorFields.length === 0) {
+
       let datas = {
         first_name: first_name.value,
         last_name: last_name.value,
         email: email.value,
         phone: phone.value,
         addressline1: addressline1.value,
-      addressline2: addressline2.value,
-      zipcode: zipcode.value,
-      gender: gender.value,
-      isdefault: isdefault.value,
-      address_type: address_type.value,
-      country: country.value,
-      state: state.value,
-      city: city.value,
-      user_id,
+        addressline2: addressline2.value,
+        zipcode: zipcode.value,
+        gender: gender.value,
+        isdefault: isdefault.value,
+        address_type: address_type.value,
+        country: country.value,
+        state: state.value,
+        city: city.value,
+        user_id,
       };
 
 
-    // let datas = {
-    //   first_name,
-    //   last_name,
-    //   email,
-    //   phone,
-    //   addressline1,
-    //   addressline2,
-    //   zipcode,
-    //   gender,
-    //   isdefault,
-    //   address_type,
-    //   country,
-    //   state,
-    //   city,
-    //   user_id,
-    // };
+      // let datas = {
+      //   first_name,
+      //   last_name,
+      //   email,
+      //   phone,
+      //   addressline1,
+      //   addressline2,
+      //   zipcode,
+      //   gender,
+      //   isdefault,
+      //   address_type,
+      //   country,
+      //   state,
+      //   city,
+      //   user_id,
+      // };
 
-    fetch("http://admin.ishop.sunhimlabs.com/api/v1/customer/address/add", {
-      method: "POST",
-      headers: {
-        Accept: "application/json",
-        "Content-Type": "Application/json",
-        storename:storename,
-      },
-      body: JSON.stringify(datas),
-    }).then((result) => {
-      result.json().then((resps) => {
-        console.warn("resps", resps);
-        toaster(resps, 'Address Added Successfully!')
-        if(resps === true ){
+      fetch("http://admin.ishop.sunhimlabs.com/api/v1/customer/address/add", {
+        method: "POST",
+        headers: {
+          Accept: "application/json",
+          "Content-Type": "Application/json",
+          storename: storename,
+        },
+        body: JSON.stringify(datas),
+      }).then((result) => {
+        result.json().then((resps) => {
+          console.warn("resps", resps);
+          toaster(resps, 'Address Added Successfully!')
+          if (resps === true) {
             navigate(`/customer/address/list/${user_id}`)
-        }
+          }
+        });
       });
-    });
-  }
-}
-const handleChange = (e) => {
-  setAddCustomerData({
-    ...addCustomerData,
-    [e.target.name]: {
-      value: e.target.value,
-      error: ''
     }
-  })
-};
+  }
 
-const { first_name, last_name, email, phone,addressline1,addressline2,zipcode,gender,isdefault,address_type,country,state,city, } = addCustomerData
+  const handleChange = (e) => {
+    setAddCustomerData({
+      ...addCustomerData,
+      [e.target.name]: {
+        value: e.target.value,
+        error: ''
+      }
+    })
+  };
+
+  const inputFieldError = (error) => {
+    if (error && error.length > 0) {
+      return <p style={{ color: 'red', fontSize: '12px' }}>{error}</p>
+    }
+
+    return <></>
+  }
+
+  const { first_name, last_name, email, phone, addressline1, addressline2, zipcode, gender, isdefault, address_type, country, state, city, } = addCustomerData
 
   return (
     <div style={{ paddingLeft: "4rem" }}>
@@ -238,10 +290,11 @@ const { first_name, last_name, email, phone,addressline1,addressline2,zipcode,ge
               type="text"
               className="form-control"
               placeholder="Enter First Name"
-              value={first_name}
+              value={first_name.value}
               onChange={(e) => handleChange(e)}
               name="first_name"
             />
+            {inputFieldError(first_name.error)}
             <br />
 
             <label className="demo">Last Name</label>
@@ -249,10 +302,11 @@ const { first_name, last_name, email, phone,addressline1,addressline2,zipcode,ge
               type="text"
               className="form-control"
               placeholder="Enter Last Name"
-              value={last_name}
+              value={last_name.value}
               onChange={(e) => handleChange(e)}
               name="last_name"
             />
+            {inputFieldError(last_name.error)}
             <br />
 
             <label className="demo">Email</label>
@@ -260,10 +314,11 @@ const { first_name, last_name, email, phone,addressline1,addressline2,zipcode,ge
               type="email"
               className="form-control"
               placeholder="Enter Email"
-              value={email}
+              value={email.value}
               onChange={(e) => handleChange(e)}
               name="email"
             />
+            {inputFieldError(email.error)}
             <br />
 
             <label className="demo">Mobile Number</label>
@@ -271,17 +326,18 @@ const { first_name, last_name, email, phone,addressline1,addressline2,zipcode,ge
               type="phone"
               className="form-control"
               placeholder="Enter Mobile Number"
-              value={phone}
+              value={phone.value}
               onChange={(e) => handleChange(e)}
               name="phone"
             />
+            {inputFieldError(phone.error)}
             <br />
 
             <label for="exampleFormControlSelect1">Gender</label>
             <select
               class="form-control"
               id="exampleFormControlSelect1"
-              value={gender}
+              value={gender.value}
               onChange={(e) => handleChange(e)}
               name="gender"
             >
@@ -296,7 +352,7 @@ const { first_name, last_name, email, phone,addressline1,addressline2,zipcode,ge
               type="text"
               className="form-control"
               placeholder="Enter Address 1"
-              value={addressline1}
+              value={addressline1.value}
               onChange={(e) => handleChange(e)}
               name="addressline1"
             />
@@ -307,7 +363,7 @@ const { first_name, last_name, email, phone,addressline1,addressline2,zipcode,ge
               type="text"
               className="form-control"
               placeholder="Enter Address 2"
-              value={addressline2}
+              value={addressline2.value}
               onChange={(e) => handleChange(e)}
               name="addressline2"
             />
@@ -318,17 +374,18 @@ const { first_name, last_name, email, phone,addressline1,addressline2,zipcode,ge
               type="text"
               className="form-control"
               placeholder="Enter Zip Code"
-              value={zipcode}
+              value={zipcode.value}
               onChange={(e) => handleChange(e)}
               name="zipcode"
             />
+            {inputFieldError(zipcode.error)}
             <br />
 
             <label for="exampleFormControlSelect1">Country</label>
             <select
               class="form-control"
               id="exampleFormControlSelect1"
-              value={country}
+              value={country.value}
               onChange={(e) => handleChange(e)}
               name="country"
             >
@@ -344,7 +401,7 @@ const { first_name, last_name, email, phone,addressline1,addressline2,zipcode,ge
             <select
               class="form-control"
               id="exampleFormControlSelect1"
-              value={state}
+              value={state.value}
               onChange={(e) => handleChange(e)}
               name="state"
             >
@@ -358,7 +415,7 @@ const { first_name, last_name, email, phone,addressline1,addressline2,zipcode,ge
             <select
               class="form-control"
               id="exampleFormControlSelect1"
-              value={city}
+              value={city.value}
               onChange={(e) => handleChange(e)}
               name="city"
             >
@@ -372,7 +429,7 @@ const { first_name, last_name, email, phone,addressline1,addressline2,zipcode,ge
             <select
               class="form-control"
               id="exampleFormControlSelect1"
-              value={address_type}
+              value={address_type.value}
               onChange={(e) => handleChange(e)}
               name="address_type"
             >
@@ -383,7 +440,7 @@ const { first_name, last_name, email, phone,addressline1,addressline2,zipcode,ge
 
             <label for="exampleFormControlSelect1">Is Default?</label>
             <select
-              value={isdefault}
+              value={isdefault.value}
               onChange={(e) => handleChange(e)}
               name="isdefault"
               class="form-control"
@@ -393,7 +450,7 @@ const { first_name, last_name, email, phone,addressline1,addressline2,zipcode,ge
               <option value={"n"}>No</option>
             </select>
 
-            <br/>
+            <br />
 
             {/* <label className="demo">User Id</label>
             <input
@@ -419,4 +476,5 @@ const { first_name, last_name, email, phone,addressline1,addressline2,zipcode,ge
     </div>
   );
 }
+
 
