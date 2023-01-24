@@ -75,6 +75,9 @@ import EmailOtp from "./components/signup/EmailOtp";
 import Login_ByEmail from "./components/signup/Login_ByEmail";
 import Login_ByMobile from "./components/signup/Login_ByMobile";
 import MobileOtp from "./components/signup/Mobile_ByOtp";
+import Gallary_List from "./components/gallary/Gallary_List";
+import Gallary_Add from "./components/gallary/Gallary_Add";
+import Gallary_Edit from "./components/gallary/Gallary_Edit";
 
 export default function RoutingPage() {
   // const token = localStorage.getItem("ACCESS_TOKEN")
@@ -321,6 +324,9 @@ export default function RoutingPage() {
             <Route path="/signup/loginbyemail" element={<Login_ByEmail/>}/>
             <Route path="/signup/loginbymobile" element={<Login_ByMobile/>}/>
             <Route path="/signup/mobileotp" element={<MobileOtp/>}/>
+            <Route path="/gallary/list" element={<Gallary_List/>}/>
+            <Route path="/gallary/add" element={<Gallary_Add/>}/>
+            <Route path="/gallary/edit" element={<Gallary_Edit/>}/>
 
 
           </Route>

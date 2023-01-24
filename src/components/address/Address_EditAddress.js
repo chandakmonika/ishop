@@ -1,8 +1,9 @@
-import axios from "axios";
-import React, { useState, useEffect } from "react";
-import { Link, useParams, useNavigate } from "react-router-dom";
-import { toast } from 'react-toastify';
+import { Link, useNavigate, useParams } from "react-router-dom";
+import React, { useEffect, useState } from "react";
 import { validateAlphaNumeric, validateEmail, validateMobileNumber, validateRequired, validateZipCode } from "../../utils/form-validation";
+
+import axios from "axios";
+import { toast } from 'react-toastify';
 import { toaster } from "../../utils/toaster";
 
 export default function Address_EditAddress() {
@@ -62,7 +63,7 @@ export default function Address_EditAddress() {
       error: '',
     },
     gender: {
-      value: 'm',
+      value: '',
       error: '',
     },
     isdefault: {
@@ -70,7 +71,7 @@ export default function Address_EditAddress() {
       error: '',
     },
     address_type: {
-      value: 'h',
+      value: '',
       error: '',
     },
     country: {
@@ -91,65 +92,82 @@ export default function Address_EditAddress() {
   const { address_id } = useParams();
 
   const navigate = useNavigate();
- 
+
+
+  useEffect(() => {
+    if (userdata.country.value) {
+      axios
+        .get(`http://admin.ishop.sunhimlabs.com/api/v1/allstates/${userdata.country.value}`, {
+          headers: {
+            Accept: "application/json",
+            "Content-Type": "Application/json",
+            storename: storename
+          },
+        })
+        .then((res) => setIndexs(res.data.data));
+    }
+  }, [userdata.country.value]);
+
+  useEffect(() => {
+    console.log(98987, userdata.state.value)
+    if (userdata.state.value) {
+      axios
+        .get(`http://admin.ishop.sunhimlabs.com/api/v1/allcities/${userdata.state.value}`, {
+          headers: {
+            Accept: "application/json",
+            "Content-Type": "Application/json",
+            storename: storename
+          },
+        })
+        .then((res) => setIndexss(res.data.data));
+    }
+  }, [userdata.state.value]);
 
   useEffect(() => {
     axios
-      .get(`http://admin.ishop.sunhimlabs.com/api/v1/allstates/${userdata.country.value}`,{
+      .get(`http://admin.ishop.sunhimlabs.com/api/v1/allcountries/`, {
         headers: {
           Accept: "application/json",
           "Content-Type": "Application/json",
-          storename:storename
-        },
-      })
-      .then((res) => setIndexs(res.data.data));
-    axios
-      .get(`http://admin.ishop.sunhimlabs.com/api/v1/allcities/${userdata.state.value}`,{
-        headers: {
-          Accept: "application/json",
-          "Content-Type": "Application/json",
-          storename:storename
-        },
-      })
-      .then((res) => setIndexss(res.data.data));
-  }, [userdata.country && userdata.state]);
-  
-  useEffect(() => {
-    axios
-      .get(`http://admin.ishop.sunhimlabs.com/api/v1/allcountries/`,{
-        headers: {
-          Accept: "application/json",
-          "Content-Type": "Application/json",
-          storename:storename
+          storename: storename
         },
       })
       .then((res) => setIndex(res.data.data));
 
     axios
       .get(
-        `http://admin.ishop.sunhimlabs.com/api/v1/customer/address/details/${address_id}`,{
-          headers: {
-            Accept: "application/json",
-            "Content-Type": "Application/json",
-            storename:storename
-          },
-        }
+        `http://admin.ishop.sunhimlabs.com/api/v1/customer/address/details/${address_id}`, {
+        headers: {
+          Accept: "application/json",
+          "Content-Type": "Application/json",
+          storename: storename
+        },
+      }
       )
       .then((res) => {
         const getData = res.data.data;
-        console.log(getData);
-        setUser_data(getData);
+        // console.log(getData);
+        // setUser_data(getData);
+        let setObj = {}
+        Object.entries(getData).forEach((obj) => {
+          // console.log(546, obj)
+          setObj = {
+            ...setObj,
+            [obj[0]]: {
+              value: obj[1],
+              error: ""
+            }
+          }
+        })
+        // console.log('setObj', setObj)
+        setUser_data({
+          ...userdata,
+          ...setObj
+        })
       });
-  }, [userdata.country.value]);
+  }, []);
 
-  const handleChange = (e) => {
-    console.log(e.target);
 
-    setUser_data({
-      ...userdata,
-      [e.target.name]: e.target.value,
-    });
-  };
 
   const customerUser = (e) => {
     e.preventDefault();
@@ -177,26 +195,7 @@ export default function Address_EditAddress() {
         value: zipcode.value,
         error: zipcode.value ? validateZipCode(zipcode.value).error : ""
       },
-      // gender: {
-      //   value: gender.value,
-      //   error: ""
-      // },
-      // price_sell: {
-      //   value: price_sell.value,
-      //   error: validateNumeric(price_sell.value).error
-      // },
-      // shipping_charges: {
-      //   value: shipping_charges.value,
-      //   error: validateNumeric(shipping_charges.value).error
-      // },
-      // product_weight: {
-      //   value: product_weight.value,
-      //   error: validateNumeric(product_weight.value).error
-      // },
-      // tax_amount: {
-      //   value: tax_amount.value,
-      //   error: validateNumeric(tax_amount.value).error
-      // }
+      
     }
 
     console.log(324, productDataValidated)
@@ -225,41 +224,42 @@ export default function Address_EditAddress() {
         city: city.value,
         user_id,
       };
-    console.warn(
-      345,
-      first_name,
-      last_name,
-      email,
-      phone,
-      gender,
-      addressline1,
-      addressline2,
-      country,
-      state,
-      city,
-      zipcode,
-      isdefault,
-      address_type,
-      user_id
-    );
+      console.warn(
+        345,
+        first_name,
+        last_name,
+        email,
+        phone,
+        gender,
+        addressline1,
+        addressline2,
+        country,
+        state,
+        city,
+        zipcode,
+        isdefault,
+        address_type,
+        user_id
+      );
 
-    fetch(`http://admin.ishop.sunhimlabs.com/api/v1/customer/address/edit`, {
-      method: "POST",
-      headers: {
-        Accept: "application/json",
-        "Content-Type": "Application/json",
-        storename:storename
-      },
-      body: JSON.stringify(datas),
-    }).then((result) => {
-      result.json().then((resps) => {
-        console.warn("resps", resps);
-        toaster(resps, 'Address Edited Successfully!')
-        if (resps === true) {
-          navigate(`/customer/address/list/${user_id}`)
-        }
+      fetch(`http://admin.ishop.sunhimlabs.com/api/v1/customer/address/edit`, {
+        method: "POST",
+        headers: {
+          Accept: "application/json",
+          "Content-Type": "Application/json",
+          storename: storename
+        },
+        body: JSON.stringify(datas),
+      }).then((result) => {
+        result.json().then((resps) => {
+          // console.warn("resps", resps);
+          toaster(resps, 'Address Edited Successfully!')
+          if (resps === true) {
+            navigate(-1)
+          }
+        });
       });
-    });
+    }
   }
   const handleChange = (e) => {
     setUser_data({
@@ -275,11 +275,10 @@ export default function Address_EditAddress() {
     if (error && error.length > 0) {
       return <p style={{ color: 'red', fontSize: '12px' }}>{error}</p>
     }
-
     return <></>
   }
 
-  // const { first_name, last_name, email, phone, addressline1, addressline2, zipcode, gender, isdefault, address_type, country, state, city, } = userdata
+  const { first_name, last_name, email, phone, addressline1, addressline2, zipcode, gender, isdefault, address_type, country, state, city, } = userdata
 
   return (
     <div style={{ paddingLeft: "10rem" }}>
@@ -305,8 +304,8 @@ export default function Address_EditAddress() {
                 value={userdata.first_name.value}
                 onChange={(e) => handleChange(e)}
               />
-                 {inputFieldError(first_name.error)}
-                 <br/>
+              {inputFieldError(first_name.error)}
+              <br />
 
               <label className="demo">Last Name</label>
               <input
@@ -314,11 +313,11 @@ export default function Address_EditAddress() {
                 className="form-control"
                 name="last_name"
                 placeholder="Enter Last Name"
-                value={userdata.last_name}
+                value={userdata.last_name.value}
                 onChange={(e) => handleChange(e)}
               />
- {inputFieldError(last_name.error)}
-            <br />
+              {inputFieldError(last_name.error)}
+              <br />
 
               <label className="demo">Email</label>
               <input
@@ -326,11 +325,11 @@ export default function Address_EditAddress() {
                 className="form-control"
                 name="email"
                 placeholder="Enter Email"
-                value={userdata.email}
+                value={userdata.email.value}
                 onChange={(e) => handleChange(e)}
               />
-{inputFieldError(email.error)}
-            <br />
+              {inputFieldError(email.error)}
+              <br />
 
               <label className="demo">Mobile Number</label>
               <input
@@ -338,23 +337,23 @@ export default function Address_EditAddress() {
                 className="form-control"
                 name="phone"
                 placeholder="Enter Mobile Number"
-                value={userdata.phone}
+                value={userdata.phone.value}
                 onChange={(e) => handleChange(e)}
               />
-               {inputFieldError(phone.error)}
-            <br />
+              {inputFieldError(phone.error)}
+              <br />
 
               <label for="exampleFormControlSelect1">Gender</label>
               <select
                 class="form-control"
                 id="exampleFormControlSelect1"
                 name="gender"
-                value={userdata.gender}
+                value={userdata.gender.value}
                 onChange={(e) => handleChange(e)}
               >
-                <option>M</option>
-                <option>F</option>
-                <option>O</option>
+                <option value={"m"}>Male</option>
+                <option value={"f"}>Female</option>
+                <option value={"o"}>Other</option>
               </select>
 
               <label className="demo">Address Line 1</label>
@@ -363,7 +362,7 @@ export default function Address_EditAddress() {
                 className="form-control"
                 name="addressline1"
                 placeholder="Enter Address Line 1"
-                value={userdata.addressline1}
+                value={userdata.addressline1.value}
                 onChange={(e) => handleChange(e)}
               />
 
@@ -373,7 +372,7 @@ export default function Address_EditAddress() {
                 className="form-control"
                 name="addressline2"
                 placeholder="Enter Address Line 2"
-                value={userdata.addressline2}
+                value={userdata.addressline2.value}
                 onChange={(e) => handleChange(e)}
               />
 
@@ -383,18 +382,18 @@ export default function Address_EditAddress() {
                 className="form-control"
                 name="zipcode"
                 placeholder="Enter Zip Code"
-                value={userdata.zipcode}
+                value={userdata.zipcode.value}
                 onChange={(e) => handleChange(e)}
               />
-  {inputFieldError(zipcode.error)}
-            <br />
+              {inputFieldError(zipcode.error)}
+              <br />
 
               <label for="exampleFormControlSelect1">Country</label>
 
               <select
                 class="form-control"
                 id="exampleFormControlSelect1"
-                value={userdata.country}
+                value={userdata.country.value}
                 onChange={(e) => handleChange(e)}
                 name="country"
               >
@@ -410,7 +409,7 @@ export default function Address_EditAddress() {
               <select
                 class="form-control"
                 id="exampleFormControlSelect1"
-                value={userdata.state}
+                value={userdata.state.value}
                 onChange={(e) => handleChange(e)}
                 name="state"
               >
@@ -426,7 +425,7 @@ export default function Address_EditAddress() {
               <select
                 class="form-control"
                 id="exampleFormControlSelect1"
-                value={userdata.city}
+                value={userdata.city.value}
                 onChange={(e) => handleChange(e)}
                 name="city"
               >
@@ -440,7 +439,7 @@ export default function Address_EditAddress() {
                 class="form-control"
                 id="exampleFormControlSelect1"
                 name="address_type"
-                value={userdata.address_type}
+                value={userdata.address_type.value}
                 onChange={(e) => handleChange(e)}
               >
                 <option value={"h"}>Home Address</option>
@@ -453,7 +452,7 @@ export default function Address_EditAddress() {
                 class="form-control"
                 id="exampleFormControlSelect1"
                 name="isdefault"
-                value={userdata.isdefault}
+                value={userdata.isdefault.value}
                 onChange={(e) => handleChange(e)}
               >
                 <option value={"y"}>Yes</option>
@@ -474,4 +473,4 @@ export default function Address_EditAddress() {
     </div>
   );
 }
-}
+

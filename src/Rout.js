@@ -93,12 +93,12 @@ export default function DashboardPage() {
                         data-bs-parent="#menu"
                       >
                         <li>
-                          <Link to={`/order/orderlist-all`}>Order List</Link>
+                          <Link to={`/order/orderlist/all`}>Order List</Link>
                         </li>
-                        <br />
-                        <li>
+                        
+                        {/* <li>
                           <Link to={`/order/orderdetails/${user_id}`}>Order Details</Link>
-                        </li>
+                        </li> */}
                       </ul>
                     </li>
 
@@ -364,7 +364,7 @@ export default function DashboardPage() {
                     </li>
                     <li>
                       <a
-                        href="#submenu3"
+                        href="#submenu7"
                         data-bs-toggle="collapse"
                         class="nav-link px-0 align-middle"
                       >
@@ -374,7 +374,7 @@ export default function DashboardPage() {
                       </a>
                       <ul
                         class="collapse nav flex-column ms-1"
-                        id="submenu3"
+                        id="submenu7"
                         data-bs-parent="#menu"
                       >
                         <li>
@@ -403,7 +403,7 @@ export default function DashboardPage() {
                     </li>
                     <li>
                       <a
-                        href="#submenu3"
+                        href="#submenu8"
                         data-bs-toggle="collapse"
                         class="nav-link px-0 align-middle"
                       >
@@ -413,7 +413,7 @@ export default function DashboardPage() {
                       </a>
                       <ul
                         class="collapse nav flex-column ms-1"
-                        id="submenu3"
+                        id="submenu8"
                         data-bs-parent="#menu"
                       >
                         <li>
@@ -425,6 +425,32 @@ export default function DashboardPage() {
                         <li>
                           <Link to="/media/editmedia">Edit Media File</Link>
                         </li>
+                        <br />
+                      </ul>
+                    </li>
+
+                    <li>
+                      <a
+                        href="#submenu9"
+                        data-bs-toggle="collapse"
+                        class="nav-link px-0 align-middle"
+                      >
+                        <i className="fa fa-home"></i>&nbsp;Gallary
+                        &nbsp;&nbsp;&nbsp;
+                        <i className="fa fa-chevron-right arrow-icon"></i>
+                      </a>
+                      <ul
+                        class="collapse nav flex-column ms-1"
+                        id="submenu9"
+                        data-bs-parent="#menu"
+                      >
+                        <li>
+                          <Link to="/gallary/list">Gallary List</Link>
+                        </li>
+                        <li>
+                          <Link to="/gallary/add">Add Gallary</Link>
+                        </li>
+                       
                         <br />
                       </ul>
                     </li>

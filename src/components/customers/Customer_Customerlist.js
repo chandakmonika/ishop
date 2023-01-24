@@ -58,19 +58,7 @@ export default function Customer_Customerlist() {
       ...page,
       current: 0,
     });
-    // axios
-    //   .get(
-    //     `http://admin.ishop.sunhimlabs.com/api/v1/customer/list/?q=${query.text}`,{
-    //       method: "GET",
-    //       headers: {
-    //         Accept: "application/json",
-    //         "content-Type": "Application/json",
-    //         storename: "kbtrends",
-    //       },
-
-    //     }
-    //   )
-    //   .then((res) => setIndex(res.data.data));
+    
 
     navigate(
       `/routing/customer/list?page=${page.current}&search=${
@@ -113,6 +101,7 @@ export default function Customer_Customerlist() {
     // setPage(newPage);
   };
 
+  
   const getData = async (newPage) => {
     try {
       const res = await axios.get(

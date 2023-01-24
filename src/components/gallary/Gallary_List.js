@@ -11,7 +11,7 @@ import Box from '@mui/material/Box';
 import Typography from '@mui/material/Typography';
 import Modal from '@mui/material/Modal';
 import EmptyPage from '../emptypage';
-export default function Payment_getwayList() {
+export default function Gallary_List() {
   const storename = localStorage.getItem("USER_NAME")
   const [first, setFirst] = useState([]);
   const [query, setQuery] = useState({ text: "" });
@@ -244,12 +244,11 @@ const selectAllItems = (e) =>{
     [page]
   );
 
-
   return (
     <div>
     <Navbar expand="lg">
       <Container fluid>
-        <Navbar.Brand href="#">Payment Getway List</Navbar.Brand>
+        <Navbar.Brand href="#">Gallary List</Navbar.Brand>
         {/* <Navbar.Toggle aria-controls="navbarScroll" /> */}
         <Navbar.Collapse id="navbarScroll">
           <Nav
@@ -313,8 +312,8 @@ const selectAllItems = (e) =>{
                     <label for="customCheck"></label>
                   </div>
                 </th>
-              <th scope="col">Payment Getway Name</th>
-              <th scope="col">Payment Getway Logo</th>
+              <th scope="col">Gallary Name</th>
+             
               <th scope="col">Status</th>
               <th scope='col'>Action</th>
              
@@ -340,7 +339,7 @@ const selectAllItems = (e) =>{
                           </label>
                       </div>
                     </td>
-                    <td>{item.payment_gateway_name}</td>
+                 
                     <td>{item.payment_gateway_logo}</td>
                     <td> <button
                           type="button"
@@ -360,7 +359,6 @@ const selectAllItems = (e) =>{
                 );
               })}
             </tbody>
-            
         </table>
         {first.length <= 0 && <div>
           <EmptyPage/>

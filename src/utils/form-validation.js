@@ -3,7 +3,8 @@ const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
 const numericRegex = /^[0-9]*$/
 const zipCodeRegex = /^[0-9]{6}$/
 const alphaNumeric = /^[0-9a-zA-Z ]*$/ // accepts space as well
-const zipcode = /^\d{5}([-]|\s*)?(\d{4})?$/
+// const zipcode = /^\d{5}([-]|\s*)?(\d{4})?$/
+
 
 export const validateRequired = (value) => {
     console.log('validateRequired', value)
@@ -61,16 +62,11 @@ export const validateMobileNumber = (value) => {
                 error: 'Phone number must be numeric'
             }
         }
-    // } else {
-    //     return {
-    //         isError: true,
-    //         error: 'Field is required'
-    //     }
-    // }
+    
 }
 
 export const validateZipCode = (value) => {
-    if (value.match(zipCodeRegex)) { // to check only numeric value and have only 6 characters
+    if (value?.toString().match(zipCodeRegex)) { // to check only numeric value and have only 6 characters
         return {
             isError: false,
             error: ''
@@ -109,5 +105,6 @@ export const validateNumeric = (value) => {
         }
     }
 }
+
 
 

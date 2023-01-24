@@ -38,7 +38,10 @@ export default function Address_AddressList() {
   const url = `${process.env.REACT_APP_BACKEND_APIURL}api/v1/customer/address/list`;
 
   const handleChange = (e) => {
-    setQuery({ text: e.target.value });
+    setQuery({
+      ...query,
+      [e.target.name]: e.target.value,
+    });
   };
   const handleSubmit = (e) => {
     e.preventDefault();
