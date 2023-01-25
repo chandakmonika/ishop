@@ -102,6 +102,7 @@ export default function Brand_EditBrand() {
                 name="product_category_id"
                 category
               >
+                  <option value="">Select Category</option>
                 {index.map((item) => {
                   return (
                     <option value={item.category_id}>

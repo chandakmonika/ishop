@@ -5,33 +5,39 @@ import Container from "react-bootstrap/Container";
 import Nav from "react-bootstrap/Nav";
 import Navbar from "react-bootstrap/Navbar";
 import TablePagination from "@mui/material/TablePagination";
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useNavigate,useSearchParams } from "react-router-dom";
 import Box from "@mui/material/Box";
 import Typography from "@mui/material/Typography";
 import Modal from "@mui/material/Modal";
+import EmptyPage from "../emptypage";
+import { toaster } from "../../utils/toaster";
 
 export default function Master_StateList() {
   const storename = localStorage.getItem("USER_NAME")
   const [first, setFirst] = useState([]);
+  const [searchParams, setSearchParams] = useSearchParams();
+  const pageNo = searchParams.get("page");
+  const searchQuery = searchParams.get("search");
+  const [query, setQuery] = useState({search: searchQuery });
+  const [order, setOrder] = useState("ASC");
   const[stateData, setStateData] = useState([]);
   const [country, setCountry] = useState([]);
   const [states, setStates] = useState([]);
   const [country_id, setCountry_id] = useState("");
-  const [query, setQuery] = useState({ text: "" });
   const [cpage, setCpage] = useState();
   const [rowsPerPage, setRowsPerPage] = useState(10);
   const [state_id, setState_id] = useState([]);
   const [selectedcustomer, setSelectedcustomer] = useState([]);
-  const [selectedStatus, setSelectedStatus] = useState("0");
+  const [selectedStatus, setSelectedStatus] = useState("");
   const [page, setPage] = useState({
     current: 0,
     previous: 0,
-    records_per_page: 0,
+    records_per_page: 15,
     totalpages: 0,
     totalrecords: 0,
   });
 
-  // const navigate = useNavigate();
+  const navigate = useNavigate();
 
   const [changeStatusId, setChangeStatusId] = useState({
     state_id: "",
@@ -40,11 +46,10 @@ export default function Master_StateList() {
 
 
   console.log(page);
-  const navigate = useNavigate()
 
   const [isSingleStatusUpdate, setIsSingleStatusUpdate] = useState(true);
 
-  const url = "http://admin.ishop.sunhimlabs.com/api/v1/";
+  const url = `${process.env.REACT_APP_BACKEND_APIURL}api/v1/states/list`;
  
   useEffect(() => {
     axios.get(`${`http://admin.ishop.sunhimlabs.com/api/v1/`}/allcountries/`,{
@@ -57,19 +62,21 @@ export default function Master_StateList() {
   }, []);
 
   const handlePageChange = async (e, newPage) => {
-    navigate(`/mastermanagement/state/list?page=${newPage + 1}`);
+    navigate(`/mastermanagement/state/list?page=${newPage + 1}&search=${query.search ? query.search : ""}`);
   };
 
 const handleChangePage = async (e, newPage) => {
-    setPage(newPage);
-    try {
-      const res = await axios.get(`${url}?&page=${newPage + 1}`);
-      const { data, pages } = res.data;
-      setStateData(data);
-      setPage(pages);
-    } catch (error) {
-      console.log(error);
-    }
+    // setPage(newPage);
+    // try {
+    //   const res = await axios.get(`${url}?&page=${newPage + 1}`);
+    //   const { data, pages } = res.data;
+    //   setStateData(data);
+    //   setPage(pages);
+    // } catch (error) {
+    //   console.log(error);
+    // }
+    navigate(`/mastermanagement/state/list?page=${newPage + 1}&search=${query.search ? query.search : ""} `);
+
   };
   // const handleChangePage = async (e, newPage) => {
   //   setCpage(newPage);
@@ -103,21 +110,48 @@ const handleChangePage = async (e, newPage) => {
     }
   };
 
-  const getStateList = () => {
-    axios
-      .get(
-        `${url}/states/list/?country_id=`,{headers: {
-          Accept: "application/json",
-          "Content-Type": "Application/json",
-          storename:storename
-        },}
-      )
-      .then((res) => setStateData(res.data.data));
+  const getStateList = async (newPage) => {
+    try {
+      const res = await axios.get(
+        `${url}?q=${query.search ? query.search : ''}&page=${Number(newPage)}&per_page=${page.records_per_page}`
+      );
+      const { data, pages } = res.data;
+      console.log("pages", pages);
+      setStateData(data);
+      setPage(pages);
+    } catch (error) {
+      console.log(error);
+    }
+    // axios
+    //   .get(
+    //     `${url}/states/list/?country_id=`,{headers: {
+    //       Accept: "application/json",
+    //       "Content-Type": "Application/json",
+    //       storename:storename
+    //     },}
+    //   )
+    //   .then((res) => setStateData(res.data.data));
   };
 
   useEffect(() => {
     getStateList();
   }, []);
+
+  const sortTableData = (e,sortBy) => {
+    e.preventDefault();
+    order === "ASC" ? setOrder("DESC") : setOrder("ASC");
+    axios
+      .get(
+        `${process.env.REACT_APP_BACKEND_APIURL}api/v1/states/list?q=${query.search ? query.search : ""}&page=${Number(page.current)}&per_page=${page.records_per_page}&sort_by=${sortBy}&order_by=${order}`,{
+          headers: {
+            Accept: "application/json",
+            "Content-Type": "Application/json",
+            storename:storename,
+          },
+        }
+      )
+      .then((res) => setFirst(res.data.data));
+  };
 
   const statusChange = (apidata) => {
     fetch("http://admin.ishop.sunhimlabs.com/api/v1/states/changestatus", {
@@ -131,6 +165,8 @@ const handleChangePage = async (e, newPage) => {
     }).then((result) => {
       result.json().then((resps) => {
         console.warn("resps", resps);
+        toaster(resps, "Status Changed Successfully!");
+        setSelectedStatus("")
         handleClose();
         getStateList();
         

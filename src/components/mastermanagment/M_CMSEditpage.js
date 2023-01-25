@@ -112,7 +112,7 @@ export default function M_CMSEditpage() {
     ).then((result) => {
       result.json().then((resps) => {
         console.warn("resps", resps);
-        toaster(resps, 'CMS Sata Updated Successfully!')
+        toaster(resps, 'CMS Data Updated Successfully!')
         if(resps === true ){
             navigate(`/mastermanagement/cms/list`)
         }

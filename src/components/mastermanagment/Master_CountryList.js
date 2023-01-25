@@ -1,6 +1,6 @@
 import React,{ useEffect, useState,useMemo } from "react";
 import axios from "axios";
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useNavigate,useSearchParams } from "react-router-dom";
 import Button from "react-bootstrap/Button";
 import Dropdown from "react-bootstrap/Dropdown";
 import Container from "react-bootstrap/Container";
@@ -11,18 +11,25 @@ import TablePagination from "@mui/material/TablePagination";
 import Box from '@mui/material/Box';
 import Typography from '@mui/material/Typography';
 import Modal from '@mui/material/Modal';
+import EmptyPage from "../emptypage";
+import { toaster } from "../../utils/toaster";
+
 export default function Master_CountryList() {
   const storename = localStorage.getItem("USER_NAME")
   const [first, setFirst] = useState([]);
-  const [query, setQuery] = useState({ text: "" });
+  const [searchParams, setSearchParams] = useSearchParams();
+  const pageNo = searchParams.get("page");
+  const searchQuery = searchParams.get("search");
+  const [query, setQuery] = useState({search: searchQuery });
   const [order, setOrder] = useState("ASC");
   const [country_id, setCountry_id] = useState([]);
   const [selectedcustomer, setSelectedcustomer] = useState([]);
-  const [selectedStatus, setSelectedStatus] = useState("0");
+  const [selectedStatus, setSelectedStatus] = useState("");
+
   const [page, setPage] = useState({
     current: 0,
     previous: 0,
-    records_per_page: 0,
+    records_per_page: 15,
     totalpages: 0,
     totalrecords: 0,
   });
@@ -34,66 +41,96 @@ export default function Master_CountryList() {
     status: ""
   });
   const [isSingleStatusUpdate, setIsSingleStatusUpdate] = useState(true)
-  const url = "http://admin.ishop.sunhimlabs.com/api/v1/countries/list";
+  const url = `${process.env.REACT_APP_BACKEND_APIURL}api/v1/countries/list`;
 
 
 
   console.log(query);
   const handleChange = (e) => {
-    setQuery({ text: e.target.value });
+     setQuery({
+      ...query,
+      [e.target.name]: e.target.value
+    });
   };
   const handleSubmit = (e) => {
     e.preventDefault();
-    axios
-      .get(
-        `http://admin.ishop.sunhimlabs.com/api/v1/countries/list/1/?q=${query.text}`,{
-          headers: {
-            Accept: "application/json",
-            "Content-Type": "Application/json",
-            storename:storename,
-          },
-        }
-      )
-      .then((res) => setFirst(res.data.data));
+    setPage({
+      ...page,
+      current: 0
+    })
+    navigate(`/mastermanagement/country/list?page=${page.current}&search=${query.search ? query.search : "" }`);
+   
+    // axios
+    //   .get(
+    //     `http://admin.ishop.sunhimlabs.com/api/v1/countries/list/1/?q=${query.text}`,{
+    //       headers: {
+    //         Accept: "application/json",
+    //         "Content-Type": "Application/json",
+    //         storename:storename,
+    //       },
+    //     }
+    //   )
+    //   .then((res) => setFirst(res.data.data));
   };
 
- const getData = async () => {
-    try {
-      const res = await axios.get(`${url}`);
-      const { data, pages } = res.data;
-      setFirst(data);
-      setPage(pages);
-    } catch (error) {
-      console.log(error);
-    }
-  };
   useEffect(() => {
-    getData();
-  }, []);
+    getCustomerList(pageNo);
+    setQuery({
+      ...query,
+      search: searchQuery
+    })
+  }, [pageNo, page.records_per_page, searchQuery]);
+
+//  const getData = async () => {
+//     try {
+//       const res = await axios.get(`${url}`);
+//       const { data, pages } = res.data;
+//       setFirst(data);
+//       setPage(pages);
+//     } catch (error) {
+//       console.log(error);
+//     }
+//   };
+  // useEffect(() => {
+  //   getData();
+  // }, []);
 
   const handleChangePage = async (e, newPage) => {
-    setPage(newPage);
+    // setPage(newPage);
+    // try {
+    //   const res = await axios.get(`${url}?&page=${newPage + 1}`);
+    //   const { data, pages } = res.data;
+    //   setFirst(data);
+    //   setPage(pages);
+    // } catch (error) {
+    //   console.log(error);
+    // }
+    navigate(`/mastermanagement/country/list?page=${newPage + 1}&search=${query.search ? query.search : ""} `);
+  };
+
+
+  const getCustomerList = async (newPage) => {
+
     try {
-      const res = await axios.get(`${url}?&page=${newPage + 1}`);
+      const res = await axios.get(
+        `${url}?q=${query.search ? query.search : ''}&page=${Number(newPage)}&per_page=${page.records_per_page}`
+      );
       const { data, pages } = res.data;
+      console.log("pages", pages);
       setFirst(data);
       setPage(pages);
     } catch (error) {
       console.log(error);
     }
-  };
-
-
-  const getCustomerList = () => {
-    axios
-    .get(`http://admin.ishop.sunhimlabs.com/api/v1/countries/list/`,{
-      headers: {
-        Accept: "application/json",
-        "Content-Type": "Application/json",
-        storename:storename,
-      },
-    })
-      .then((res) => setFirst(res.data.data));
+    // axios
+    // .get(`http://admin.ishop.sunhimlabs.com/api/v1/countries/list/`,{
+    //   headers: {
+    //     Accept: "application/json",
+    //     "Content-Type": "Application/json",
+    //     storename:storename,
+    //   },
+    // })
+    //   .then((res) => setFirst(res.data.data));
   };
 
   useEffect(() => {
@@ -101,12 +138,12 @@ export default function Master_CountryList() {
   }, []);
 
 
-  const update = (e) => {
+  const sortTableData = (e,sortBy) => {
     e.preventDefault();
     order === "ASC" ? setOrder("DESC") : setOrder("ASC");
     axios
       .get(
-        `http://admin.ishop.sunhimlabs.com/api/v1/countries/list?q=&per_page=12&page=1&sort_by=country_name&order_by=${order}`,{
+        `${process.env.REACT_APP_BACKEND_APIURL}api/v1/countries/list?q=${query.search ? query.search : ""}&page=${Number(page.current)}&per_page=${page.records_per_page}&sort_by=${sortBy}&order_by=${order}`,{
           headers: {
             Accept: "application/json",
             "Content-Type": "Application/json",
@@ -131,9 +168,10 @@ export default function Master_CountryList() {
     }).then((result) => {
       result.json().then((resps) => {
         console.warn("resps", resps);
+        toaster(resps, "Status Changed Successfully!");
+        setSelectedStatus("")
         handleClose();
         getCustomerList();
-        
       });
     });
   };
@@ -279,7 +317,8 @@ export default function Master_CountryList() {
                     id="exampleInputEmail1"
                     aria-describedby="texthelp"
                     placeholder="Search this blog"
-                    onChange={handleChange}
+                    value={query.search}
+                    onChange={(e) => handleChange(e)}
                   />
                 <div class="input-group-append">
                   <Button variant="info" type="submit">
@@ -308,21 +347,18 @@ export default function Master_CountryList() {
                         .includes(false)
                     }
                     onChange={(e) => selectAllItems(e)}
-                    
+                    disabled={first.length === 0}
                     />
                     <label for="customCheck"></label>
                   </div>
                 </th>
-                <th scope="col">Country Name&nbsp;
-                  <i class="fas fa-arrow-down" onClick={update}></i>
-                  <i class="fas fa-arrow-up" onClick={update}></i></th>
+                <th scope="col">Country Name</th>
                 <th scope="col">Status</th>
                 <th scope="col">Action</th>
               </tr>
             </thead>
             <tbody>
-            {first &&
-                first.length > 0 &&
+            {
               first.map((item) => {
                 return (
                   <tr key={item.country_id}>
@@ -335,7 +371,9 @@ export default function Master_CountryList() {
                     checked={item.isSelected ? 'checked' : false}
                     onChange={(e) => onSelectCustomer(e, item.country_id)}
                   />
-                  <label for="customCheck{item.id}"></label>
+                  <label for="customCheck{item.id}">
+                  {item.isSelected}
+                  </label>
                 </div>
              
             </td>
@@ -356,46 +394,87 @@ export default function Master_CountryList() {
               })}
             </tbody>
           </table>
+          {first.length <= 0 && (
+            <div className="text-center">
+              <EmptyPage />
+            </div>
+          )}
           {/* <-------------------------TableEnd----------------------> */}
 
           <div class="text-left">
             <div className="row">
-            <div className="col-md-2">
+              <div className="col-md-2">
                 <select
                   class="form-control"
                   id="exampleFormControlSelect1"
                   placeholder="Action"
                   onChange={(e) => setSelectedStatus(e.target.value)}
+                  value={selectedStatus}
                 >
-                  <option selected>Action</option>
+                  <option selected value={""}>Action</option>
                   <option value={"1"}>Active</option>
                   <option value={"0"}>Inactive</option>
                   <option value={"2"}>Delete</option>
                 </select>
+                
               </div>
-              <div className="col-md-4">
+              <div className="">
                 <button
-                  type="button"
-                  class="btn btn-light"
-                  style={{ width: "8rem" }}
+                  type="button "
+                  class="btn btn-light col-md-2"
+                  style={{ minWidth: "fit-content" }}
                   onClick={() => handleOpen(null, null, false)}
                 >
                   Apply
                 </button>
               </div>
 
-              <h6>Pages:</h6>
-              <p className="col-md-3">
-                  &nbsp; Pages:
-                  <b style={{ color: "black" }}> {page.current}</b> /{" "}
-                  {page.totalpages}{" "}
-                </p>
+              <div className="w-auto ml-auto">
+                  <span>Records per page: </span>
+                  <select
+                    class="form-control"
+                    id="exampleFormControlSelect1"
+                    placeholder="Action"
+                    defaultValue={page.records_per_page}
+                    onChange={(e) => {
+                      setPage({
+                        ...page,
+                        records_per_page: e.target.value,
+                      });
+                      handleChangePage(e, 0)
+                    }}
+                  >
+                    {/* <option selected>Action</option> */}
+                    <option value={"5"}>5</option>
+                    <option value={"10"}>10</option>
+                    <option value={"15"}>
+                      15
+                    </option>
+                    <option value={"20"}>20</option>
+                    <option value={"30"}>30</option>
+                    <option value={"50"}>50</option>
+                    <option value={"100"}>100</option>
+                  </select>
+                </div>
 
-                {paginationFunction}
+                <div className="ml-auto">
+                  {page.totalpages > 1 && paginationFunction}
+                </div>
+          
+              <div className=" ">
+                &nbsp; Pages:
+                <b style={{ color: "black" }}> {page.current}</b> /{" "}
+                {page.totalpages}{" "}
+              </div>
+              
             </div>
+            
           </div>
+          
         </div>
+        
       </div>
+      
       <Modal
         open={open}
         onClose={handleClose}
@@ -403,11 +482,11 @@ export default function Master_CountryList() {
         aria-describedby="modal-modal-description"
       >
         <Box sx={style}>
-          <Typography id="modal-modal-title" variant="h6" component="h2">
-
-
-          </Typography>
-
+          <Typography
+            id="modal-modal-title"
+            variant="h6"
+            component="h2"
+          ></Typography>
           <Typography id="modal-modal-description" sx={{ mt: 2 }}>
             Are you sure want to change the status?
           </Typography>
@@ -415,6 +494,7 @@ export default function Master_CountryList() {
           <Button onClick={() => handleStatusChange()}>Yes</Button>
         </Box>
       </Modal>
+      
     </div>
   );
 }

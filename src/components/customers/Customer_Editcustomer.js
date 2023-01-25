@@ -1,9 +1,10 @@
-import axios from "axios";
-import React, { useState, useEffect } from "react";
-import { useParams } from "react-router-dom";
 import { Link, useNavigate } from "react-router-dom";
-import { toaster } from "../../utils/toaster";
+import React, { useEffect, useState } from "react";
 import { validateAlphaNumeric, validateEmail, validateMobileNumber, validateRequired, validateZipCode } from "../../utils/form-validation";
+
+import axios from "axios";
+import { toaster } from "../../utils/toaster";
+import { useParams } from "react-router-dom";
 
 export default function Customer_Editcustomer() {
   const storename = localStorage.getItem("USER_NAME")
@@ -147,13 +148,13 @@ export default function Customer_Editcustomer() {
         "Content-Type": "Application/json",
         storename: storename,
       },
-      body: JSON.stringify(userdata),
+      body: JSON.stringify(datas),
     }).then((result) => {
       result.json().then((resps) => {
         console.warn("resps", resps);
         toaster(resps, 'Customer Updated Successfully!')
         if(resps === true ){
-            navigate("-1")
+            navigate("/customer/list")
         }
       });
     });
@@ -266,3 +267,4 @@ const { first_name, last_name, email, phone, addressline1, addressline2, zipcode
     </div>
   );
 }
+

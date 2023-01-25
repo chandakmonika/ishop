@@ -67,7 +67,7 @@ else{
   function customerUser() {
     console.warn(couponcode,discount_type,valid_from,valid_to,coupon_price);
 
-    fetch(`http://admin.ishop.sunhimlabs.com/api/v1/coupons/edit/`, {
+    fetch(`http://admin.ishop.sunhimlabs.com/api/v1/coupons/edit`, {
       method: "POST",
       headers: {
         Accept: "application/json",

@@ -46,7 +46,10 @@ export default function Master_NewsLetterList() {
 
   console.log(query);
   const handleChange = (e) => {
-    setQuery({ text: e.target.value });
+    setQuery({
+      ...query,
+      [e.target.name]: e.target.value
+    });
   };
 
   const handleSubmit = (e) => {

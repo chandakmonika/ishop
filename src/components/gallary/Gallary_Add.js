@@ -12,7 +12,7 @@ export default function Gallary_Add() {
     <div>
        <div style={{ paddingLeft: "10rem" }}>
         <h4 style={{ paddingLeft: "2rem" }}>
-          <span>Add Blog</span>
+          <span>Add Gallary</span>
         </h4>
         <div className="card" style={{ width: "50rem" }}>
           <div className="ind">

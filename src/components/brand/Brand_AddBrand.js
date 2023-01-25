@@ -81,6 +81,7 @@ export default function Customer_Addnewcustomer() {
                 name="product_category_id"
                 category
               >
+                  <option value="">Select Category</option>
                 {index.map((item) => {
                   return (
                     <option value={item.category_id}>

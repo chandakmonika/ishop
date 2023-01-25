@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import Form from "react-bootstrap/Form";
+import { Link, useNavigate } from "react-router-dom";
 import { validateAlphaNumeric, validateNumeric } from "../../utils/form-validation";
 import { toaster } from "../../utils/toaster";
 import "./Coupen_CoupenCode.css";
@@ -18,6 +19,7 @@ export default function Coupen_CoupenCode() {
     error: ''
   });
 
+  const navigate = useNavigate();
 
   function addCouponCode(e) {
     e.preventDefault();
@@ -54,7 +56,7 @@ export default function Coupen_CoupenCode() {
           console.warn("resps", resps);
           toaster(resps, 'Coupon Code Added Successfully!')
           if (resps === true) {
-            // navigate("/routing/customer/list")
+            navigate("/coupencode/list")
           }
         });
       });

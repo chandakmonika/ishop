@@ -4,6 +4,8 @@ import axios from "axios";
 import { Link, useNavigate } from "react-router-dom";
 
 export default function LoginPage() {
+  const storename = localStorage.getItem("USER_NAME")
+
   const navigate = useNavigate();
   const loginFunction = (e) => {
     e.preventDefault();
@@ -24,11 +26,12 @@ export default function LoginPage() {
       device_details,
     };
 
-    fetch("http://admin.ishop.sunhimlabs.com/api/v1/user/login", {
+    fetch(`${process.env.REACT_APP_BACKEND_APIURL}api/v1/user/login`, {
       method: "POST",
       headers: {
         Accept: "application/json",
         "Content-Type": "Application/json",
+        storename:storename,
       },
       body: JSON.stringify(datas),
     }).then((result) => {

@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
+import { Link, useNavigate } from "react-router-dom";
 import Master_CMSEditor from "./Master_CMSEditor";
 
 const config = {
@@ -156,9 +157,11 @@ export default function Master_AddCMS() {
             <br />
           </div>
           <br />
+             <Link to="/mastermanagement/cms/list">
           <button type="button" class="btn btn-info" onClick={customerUser}>
             Add
           </button>
+          </Link>
         </form>
       </div>
     </div>

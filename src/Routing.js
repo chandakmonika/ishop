@@ -116,7 +116,7 @@ export default function RoutingPage() {
               element={<Customer_Addnewcustomer />}
             />
             <Route
-              path="/routing/customer/list"
+              path="/customer/list"
               element={<Customer_Customerlist />}
             />
             <Route path="/product/list" element={<Prodct_Productlist />} />

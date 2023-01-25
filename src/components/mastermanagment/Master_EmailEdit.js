@@ -1,6 +1,9 @@
 import axios from "axios";
 import React, { useState, useEffect } from "react";
 import { useParams } from "react-router-dom";
+import { Link,useNavigate } from "react-router-dom";
+import { toaster } from "../../utils/toaster";
+
 import Master_CMSEditor from './Master_CMSEditor';
 const config = {
     buttons: [
@@ -44,12 +47,15 @@ export default function Master_EmailEdit() {
       email_content: "",
       
     });
+
+    const navigate = useNavigate();
     const { template_id } = useParams();
     useEffect(() => {
       axios
         .get(
           `http://admin.ishop.sunhimlabs.com/api/v1/emailtemplates/details/${template_id}`,{
-            headers: {
+          method: "POST",  
+          headers: {
               Accept: "application/json",
               "Content-Type": "Application/json",
               storename:storename,
@@ -59,6 +65,7 @@ export default function Master_EmailEdit() {
         .then((res) => {
           const getData = res.data.data;
           console.log(getData);
+          
           setUser_data(getData);
         });
     }, []);
@@ -86,6 +93,10 @@ export default function Master_EmailEdit() {
       }).then((result) => {
         result.json().then((resps) => {
           console.warn("resps", resps);
+          toaster(resps, 'Email Updated Successfully!')
+        if(resps === true ){
+            navigate("/mastermanagement/email/list")
+        }
         });
       });
     }

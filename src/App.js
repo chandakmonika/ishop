@@ -20,7 +20,7 @@
 import Routing from "./Routing";
 import 'react-toastify/dist/ReactToastify.css';
 import { ToastContainer  } from 'react-toastify';
-
+import './Style.css';
 function App() {
   return (
     <div className="App">

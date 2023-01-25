@@ -78,7 +78,7 @@ export default function Customer_Addnewcustomer() {
           console.warn("resps", resps);
           toaster(resps, 'Customer Added Successfully!')
           if (resps === true) {
-            navigate("/routing/customer/list")
+            navigate("/customer/list")
           }
         });
       });
